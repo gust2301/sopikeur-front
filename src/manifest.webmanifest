@@ -1,0 +1,12 @@
+{
+  "name": "Sopi Keur",
+  "short_name": "Sopi Keur",
+  "theme_color": "#111827",
+  "background_color": "#F8FAFC",
+  "display": "standalone",
+  "start_url": "/",
+  "icons": [
+    { "src": "assets/logos/sopi_keur_logo_192x192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "assets/logos/sopi_keur_logo_512x512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}

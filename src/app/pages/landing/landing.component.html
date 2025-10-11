@@ -1,0 +1,240 @@
+<!-- Header -->
+<header>
+  <div class="header-content">
+    <div class="logo">
+      <img src="../../../assets/logos/sopi_keur_logo_transparent_512.png" alt="Sopi Keur" class="logo-img" />
+    </div>
+    <nav>
+      <a href="#spc">SPC</a>
+      <a href="#catalogue">CATALOGUE</a>
+      <a href="#simulateur">SIMULATEUR</a>
+      <a href="#services">SERVICES</a>
+      <a href="#contact">CONTACT</a>
+      <a
+        href="https://wa.me/221774293757"
+        class="btn-whatsapp"
+        target="_blank"
+        rel="noopener"
+        aria-label="Nous contacter sur WhatsApp"
+      >
+        <img src="assets/whatsapp.svg" alt="" class="icon-whatsapp" />
+      </a>
+    </nav>
+  </div>
+</header>
+
+<!-- Hero Section -->
+<section class="hero" id="home">
+  <div class="hero-content">
+    <div>
+      <h1>SOPI KEUR</h1>
+      <p class="subtitle">Habillez vos espaces, durablement.</p>
+      <p class="hero-description">
+        Découvrez nos revêtements SPC étanches à pose click et nos panels acoustiques.
+        Des solutions modernes et durables pour transformer vos intérieurs au Sénégal.
+      </p>
+      <div class="hero-ctas">
+        <a href="#simulateur" class="btn-primary">
+          <i data-lucide="calculator"></i> Simuler mon projet
+        </a>
+        <a href="#catalogue" class="btn-secondary">
+          <i data-lucide="palette"></i> Voir les couleurs
+        </a>
+      </div>
+    </div>
+    <!-- landing.component.html -->
+    <div class="hero-image">
+      <div class="ba" role="region" aria-label="Comparateur avant/après">
+        <!-- Image AVANT -->
+        <div class="img before"></div>
+
+        <!-- Image APRÈS (révélée par la glissière) -->
+        <div class="img after"
+             [style.clipPath]="'inset(0 0 0 ' + positionPct + '%)'">
+        </div>
+
+        <!-- Slider -->
+        <input
+          type="range"
+          class="ba-slider"
+          min="0" max="100"
+          [value]="positionPct"
+          (input)="positionPct = +($any($event.target).value)"
+          aria-label="Faire glisser pour comparer"
+        />
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- USP Cards -->
+<div class="usp-section">
+  <div class="usp-grid">
+    <div class="usp-card">
+      <div class="usp-icon"><i data-lucide="droplets" style="color:white;"></i></div>
+      <h3 class="usp-title">100% Étanche</h3>
+      <p class="usp-description">Résistant à l'eau, idéal pour cuisines, salles de bain et espaces humides.</p>
+    </div>
+    <div class="usp-card">
+      <div class="usp-icon"><i data-lucide="zap" style="color:white;"></i></div>
+      <h3 class="usp-title">Pose Click Rapide</h3>
+      <p class="usp-description">Installation facile sans colle, système de clipsage innovant pour un gain de temps.</p>
+    </div>
+    <div class="usp-card">
+      <div class="usp-icon"><i data-lucide="volume-2" style="color:white;"></i></div>
+      <h3 class="usp-title">Isolation Acoustique</h3>
+      <p class="usp-description">Panels muraux pour réduire le bruit et améliorer le confort sonore.</p>
+    </div>
+  </div>
+</div>
+
+<!-- SPC Explanation -->
+<section class="section" id="spc">
+  <div class="spc-explanation">
+    <div class="spc-content">
+      <h3>Qu'est-ce que le SPC ?</h3>
+      <p>
+        Le <strong>Stone Plastic Composite</strong> (SPC) est un revêtement de sol nouvelle génération,
+        composé d'un cœur rigide en pierre et polymère. Cette technologie offre une résistance exceptionnelle
+        aux chocs, à l'usure et à l'humidité.
+      </p>
+      <p>
+        Contrairement aux sols stratifiés traditionnels, le SPC peut être installé dans toutes les pièces,
+        y compris les zones humides. Sa stabilité dimensionnelle et sa facilité d'entretien en font
+        le choix idéal pour les projets résidentiels et commerciaux.
+      </p>
+      <a href="#catalogue" class="btn-primary">
+        Explorer les teintes <i data-lucide="arrow-right"></i>
+      </a>
+    </div>
+    <div class="spc-image">
+      <img src="assets/spc-coupe.png" alt="Coupe d'une lame SPC" class="spc-illu" loading="lazy" />
+    </div>
+  </div>
+</section>
+
+<!-- Colors Slider -->
+<section class="section" id="catalogue">
+  <div class="section-header">
+    <h2 class="section-title">Couleurs phares</h2>
+    <p class="section-subtitle">Découvrez notre sélection de teintes tendances</p>
+  </div>
+  <div class="colors-slider">
+    <div class="colors-track" id="colorsTrack">
+      <div class="color-card">
+        <div class="color-sample" style="background: linear-gradient(135deg, #D4A574 0%, #C9985E 100%);">
+          <div class="color-badge" style="background:#D4A574;"></div>
+        </div>
+        <div class="color-info">
+          <div class="color-name">Chêne Naturel</div>
+          <div class="color-specs"><span>2.2 m²/boîte</span><span>Épaisseur 5mm</span></div>
+          <div class="color-price">12.500 FCFA/m²</div>
+          <button class="btn-add"><i data-lucide="plus"></i> Simuler</button>
+        </div>
+      </div>
+      <div class="color-card">
+        <div class="color-sample" style="background: linear-gradient(135deg, #8B7355 0%, #6D5C4D 100%);">
+          <div class="color-badge" style="background:#8B7355;"></div>
+        </div>
+        <div class="color-info">
+          <div class="color-name">Noyer Sombre</div>
+          <div class="color-specs"><span>2.2 m²/boîte</span><span>Épaisseur 5mm</span></div>
+          <div class="color-price">13.200 FCFA/m²</div>
+          <button class="btn-add"><i data-lucide="plus"></i> Simuler</button>
+        </div>
+      </div>
+      <div class="color-card">
+        <div class="color-sample" style="background: linear-gradient(135deg, #E8E4DC 0%, #D5D1C8 100%);">
+          <div class="color-badge" style="background:#E8E4DC;"></div>
+        </div>
+        <div class="color-info">
+          <div class="color-name">Marbre Blanc</div>
+          <div class="color-specs"><span>2.2 m²/boîte</span><span>Épaisseur 5mm</span></div>
+          <div class="color-price">14.800 FCFA/m²</div>
+          <button class="btn-add"><i data-lucide="plus"></i> Simuler</button>
+        </div>
+      </div>
+      <div class="color-card">
+        <div class="color-sample" style="background: linear-gradient(135deg, #5A5A5A 0%, #3D3D3D 100%);">
+          <div class="color-badge" style="background:#5A5A5A;"></div>
+        </div>
+        <div class="color-info">
+          <div class="color-name">Ardoise Graphite</div>
+          <div class="color-specs"><span>2.2 m²/boîte</span><span>Épaisseur 5mm</span></div>
+          <div class="color-price">13.900 FCFA/m²</div>
+          <button class="btn-add"><i data-lucide="plus"></i> Simuler</button>
+        </div>
+      </div>
+      <div class="color-card">
+        <div class="color-sample" style="background: linear-gradient(135deg, #C8B8A8 0%, #B5A393 100%);">
+          <div class="color-badge" style="background:#C8B8A8;"></div>
+        </div>
+        <div class="color-info">
+          <div class="color-name">Travertin Beige</div>
+          <div class="color-specs"><span>2.2 m²/boîte</span><span>Épaisseur 5mm</span></div>
+          <div class="color-price">12.800 FCFA/m²</div>
+          <button class="btn-add"><i data-lucide="plus"></i> Simuler</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Pro CTA -->
+<section class="section" id="services">
+  <div class="pro-cta">
+    <h3>Professionnel du bâtiment ?</h3>
+    <p>Bénéficiez d'un accompagnement sur-mesure, tarifs dégressifs et service de pose</p>
+    <a href="#contact" class="btn-primary">
+      <i data-lucide="phone-call"></i> Être rappelé
+    </a>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer id="contact">
+  <div class="footer-content">
+    <div class="footer-column">
+      <h4>À propos</h4>
+      <ul>
+        <li><a href="#">Notre histoire</a></li>
+        <li><a href="#">Nos valeurs</a></li>
+        <li><a href="#">Engagement qualité</a></li>
+      </ul>
+    </div>
+    <div class="footer-column">
+      <h4>Produits</h4>
+      <ul>
+        <li><a href="#">SPC Sol</a></li>
+        <li><a href="#">Wall Panels</a></li>
+        <li><a href="#">Accessoires</a></li>
+        <li><a href="#">Échantillons</a></li>
+      </ul>
+    </div>
+    <div class="footer-column">
+      <h4>Aide</h4>
+      <ul>
+        <li><a href="#">Guide d'installation</a></li>
+        <li><a href="#">Entretien</a></li>
+        <li><a href="#">FAQ</a></li>
+        <li><a href="#">Garanties</a></li>
+      </ul>
+    </div>
+    <div class="footer-column">
+      <h4>Contact</h4>
+      <ul>
+        <li><a href="tel:+221">+221 680 63 15</a></li>
+        <li><a href="mailto:contact@sopikeur.com">mail</a></li>
+        <li><a href="#">Dakar, Sénégal</a></li>
+        <li><a href="#">Saly, Sénégal</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2025 Sopi Keur. Tous droits réservés. |
+      <a href="#" style="color:#6B7280;">CGV</a> |
+      <a href="#" style="color:#6B7280;">Mentions légales</a>
+    </p>
+  </div>
+</footer>

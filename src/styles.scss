@@ -1,0 +1,6 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root { --font-sans: "Financier Display", Perpetua }
+html, body { height: 100%; font-family: var(--font-sans); }
