@@ -1,0 +1,65 @@
+@use 'styles/tokens' as *;
+@use 'styles/mixins' as mixins;
+
+.color-card {
+  min-width: 280px;
+  background: $color-surface;
+  overflow: hidden;
+  cursor: pointer;
+  @include mixins.card-hover;
+}
+
+.color-card__sample {
+  width: 100%;
+  height: 200px;
+  position: relative;
+}
+
+.color-card__badge {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  width: 48px;
+  height: 48px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.color-card__body {
+  padding: 1.5rem;
+}
+
+.color-card__name {
+  font-weight: 700;
+  font-size: 1.125rem;
+  margin-bottom: 0.5rem;
+}
+
+.color-card__specs {
+  display: flex;
+  justify-content: space-between;
+  color: $color-text-muted;
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+}
+
+.color-card__price {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: $color-accent;
+  margin-bottom: 1rem;
+}
+
+.color-card__cta {
+  width: 100%;
+  justify-content: center;
+  background: #f3f4f6;
+  color: $color-text-primary;
+  border: none;
+  box-shadow: none;
+  border-radius: 0;
+}
+
+.color-card__cta:hover {
+  background: $color-accent;
+  color: #fff;
+}

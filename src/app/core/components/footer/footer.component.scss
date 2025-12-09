@@ -1,0 +1,75 @@
+@use 'styles/tokens' as *;
+@use 'styles/mixins' as mixins;
+
+.footer {
+  background: $color-bg-dark;
+  color: $color-surface;
+  @include mixins.section-spacing;
+  padding-bottom: 2rem;
+}
+
+.footer__content {
+  @include mixins.container;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 3rem;
+  margin-bottom: 3rem;
+}
+
+.footer__column {
+  h4 {
+    margin-bottom: 1.5rem;
+    color: lighten($color-accent, 20%);
+    font-weight: 700;
+  }
+
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+
+    li {
+      margin-bottom: 0.75rem;
+
+      a {
+        color: rgba(255, 255, 255, 0.7);
+        text-decoration: none;
+        transition: color 0.2s ease;
+
+        &:hover {
+          color: lighten($color-accent, 22%);
+        }
+      }
+    }
+  }
+}
+
+.footer__bottom {
+  @include mixins.container;
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+  padding-top: 2rem;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.7);
+
+  a {
+    color: rgba(255, 255, 255, 0.7);
+    text-decoration: none;
+    transition: color 0.2s ease;
+
+    &:hover {
+      color: lighten($color-accent, 22%);
+    }
+  }
+}
+
+@media (max-width: 900px) {
+  .footer__content {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .footer__content {
+    grid-template-columns: 1fr;
+  }
+}

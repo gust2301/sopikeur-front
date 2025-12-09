@@ -1,0 +1,155 @@
+@use 'styles/tokens' as *;
+@use 'styles/mixins' as mixins;
+
+.header {
+  position: sticky;
+  top: 0;
+  background: $color-bg-cream;
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid $color-border;
+  z-index: 100;
+  padding: 1rem 0;
+}
+
+.header__inner {
+  @include mixins.container;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+.header__brand {
+  display: flex;
+  align-items: center;
+  height: 3rem;
+
+  img {
+    height: 3rem;
+    width: auto;
+    object-fit: contain;
+    display: block;
+  }
+}
+
+.header__nav {
+  display: flex;
+  gap: 2rem;
+  align-items: center;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+
+  a {
+    color: $color-text-muted;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s ease;
+
+    &:hover {
+      color: $color-accent;
+    }
+  }
+}
+
+.nav-whatsapp {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 44px;
+  width: 44px;
+  padding: 0;
+  text-decoration: none;
+  transition: transform 0.15s ease, background-color 0.15s ease;
+}
+
+.nav-whatsapp:hover {
+  background-color: rgba(0, 0, 0, 0.06);
+  transform: translateY(-1px);
+}
+
+.icon-whatsapp {
+  width: 28px;
+  height: 28px;
+  display: block;
+}
+
+nav a + .nav-whatsapp {
+  margin-left: 0.5rem;
+}
+
+.header__menu {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.35rem;
+  height: 2.75rem;
+  width: 2.75rem;
+  background: transparent;
+  border: 1px solid $color-border;
+  border-radius: $radius-md;
+  padding: 0.55rem;
+  cursor: pointer;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+
+  span {
+    display: block;
+    height: 2px;
+    width: 100%;
+    background: $color-text-primary;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    transform-origin: center;
+  }
+
+  &.header__menu--open {
+    background: rgba(0, 0, 0, 0.03);
+
+    span:nth-child(1) {
+      transform: translateY(6px) rotate(45deg);
+    }
+    span:nth-child(2) {
+      opacity: 0;
+    }
+    span:nth-child(3) {
+      transform: translateY(-6px) rotate(-45deg);
+    }
+  }
+}
+
+@media (max-width: 900px) {
+  .header__menu {
+    display: inline-flex;
+  }
+
+  .header__nav {
+    position: absolute;
+    top: calc(100% + 0.5rem);
+    left: 0;
+    right: 0;
+    @include mixins.container;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 1.5rem;
+    border-radius: $radius-md;
+    background: $color-surface;
+    box-shadow: $shadow-card;
+    transform: translateY(-5%);
+    opacity: 0;
+    pointer-events: none;
+    gap: 1rem;
+
+    &.header__nav--open {
+      transform: translateY(0);
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    a {
+      width: 100%;
+      padding: 0.5rem 0;
+    }
+
+    .nav-whatsapp {
+      align-self: stretch;
+      justify-content: flex-start;
+    }
+  }
+}

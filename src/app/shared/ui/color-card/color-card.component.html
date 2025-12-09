@@ -1,0 +1,16 @@
+<div class="color-card">
+  <div class="color-card__sample" [style.background]="gradient">
+    <div class="color-card__badge" [style.background]="badgeColor"></div>
+  </div>
+  <div class="color-card__body">
+    <div class="color-card__name">{{ name }}</div>
+    <div class="color-card__specs">
+      <span *ngFor="let spec of specs">{{ spec }}</span>
+    </div>
+    <div class="color-card__price">{{ price }}</div>
+    <app-button variant="add" class="color-card__cta">
+      <i data-lucide="plus"></i>
+      {{ ctaLabel }}
+    </app-button>
+  </div>
+</div>

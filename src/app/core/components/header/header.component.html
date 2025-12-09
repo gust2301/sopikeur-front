@@ -1,0 +1,28 @@
+<header class="header">
+  <div class="header__inner">
+    <a href="#home" class="header__brand" aria-label="Retour à l'accueil" (click)="closeNav()">
+      <img src="assets/logos/sopi_keur_logo_transparent_512.png" alt="Sopi Keur" />
+    </a>
+
+    <button type="button" class="header__menu" [class.header__menu--open]="navOpen()" aria-label="Ouvrir le menu"
+            (click)="toggleNav()">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+
+    <nav class="header__nav" [class.header__nav--open]="navOpen()">
+      <a *ngFor="let link of navLinks" [href]="link.href" (click)="closeNav()">{{ link.label }}</a>
+      <a
+        href="https://wa.me/221774293757"
+        class="nav-whatsapp"
+        target="_blank"
+        rel="noopener"
+        aria-label="Nous contacter sur WhatsApp"
+        (click)="closeNav()"
+      >
+        <img src="assets/whatsapp.svg" alt="" class="icon-whatsapp" />
+      </a>
+    </nav>
+  </div>
+</header>

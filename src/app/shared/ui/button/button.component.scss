@@ -1,0 +1,66 @@
+@use 'styles/tokens' as *;
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem 2rem;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: all 0.2s;
+  border: none;
+  cursor: pointer;
+  color: $color-text-primary;
+}
+
+.btn-primary {
+  background: $color-accent;
+  color: #fff;
+  border: none;
+}
+
+.btn-primary:visited {
+  color: #fff;
+}
+
+.btn-primary:hover,
+.btn-primary:focus-visible {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 24px rgba(131, 122, 108, 0.45);
+  color: #fff;
+}
+
+.btn-secondary {
+  background: transparent;
+  color: #fff;
+  border: 2px solid #fff;
+}
+
+.btn-secondary:visited {
+  color: #fff;
+}
+
+.btn-secondary:hover,
+.btn-secondary:focus-visible {
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+}
+
+.btn-add {
+  width: 100%;
+  background: #f3f4f6;
+  color: $color-text-primary;
+  padding: 0.75rem;
+  text-align: center;
+  font-weight: 600;
+  transition: all 0.2s;
+  border: none;
+  cursor: pointer;
+  justify-content: center;
+}
+
+.btn-add:hover {
+  background: $color-accent;
+  color: #fff;
+}

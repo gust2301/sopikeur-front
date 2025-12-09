@@ -1,0 +1,7 @@
+<a *ngIf="href" [href]="href" [attr.target]="target" class="btn" [ngClass]="'btn-' + variant"
+   [attr.aria-label]="ariaLabel">
+  <ng-content></ng-content>
+</a>
+<button *ngIf="!href" type="button" class="btn" [ngClass]="'btn-' + variant" [attr.aria-label]="ariaLabel">
+  <ng-content></ng-content>
+</button>

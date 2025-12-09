@@ -1,6 +1,13 @@
 import { Routes } from '@angular/router';
+import { MainLayoutComponent } from './core/layout/main-layout.component';
 
 export const routes: Routes = [
-  { path: '', loadComponent: () => import('./pages/landing/landing.component').then(m => m.LandingComponent) },
+  {
+    path: '',
+    component: MainLayoutComponent,
+    children: [
+      { path: '', loadComponent: () => import('./pages/landing/landing.component').then(m => m.LandingComponent) },
+    ]
+  },
   { path: '**', redirectTo: '' },
 ];

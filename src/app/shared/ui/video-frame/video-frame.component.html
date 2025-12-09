@@ -1,0 +1,9 @@
+<div class="video-frame" role="group" [attr.aria-label]="ariaLabel">
+  <div class="video-frame__inner">
+    <iframe *ngIf="videoUrl" [src]="videoUrl" title="Vidéo Sopi Keur" loading="lazy" allowfullscreen></iframe>
+    <div *ngIf="!videoUrl" class="video-frame__placeholder">
+      <div class="video-frame__badge">Vidéo</div>
+      <p>Présentation vidéo disponible bientôt</p>
+    </div>
+  </div>
+</div>

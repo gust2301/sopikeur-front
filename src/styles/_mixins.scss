@@ -1,0 +1,30 @@
+@use 'sass:math';
+@use 'styles/tokens' as *;
+
+@mixin container {
+  max-width: $container-max-width;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+@mixin section-spacing {
+  padding: $section-padding 0;
+
+  @media (max-width: 768px) {
+    padding: $section-padding-mobile 0;
+  }
+}
+
+@mixin card-hover {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: $shadow-card;
+
+  &:hover {
+    transform: translateY(-8px);
+    box-shadow: $shadow-card-strong;
+  }
+}
+
+@mixin gradient-accent {
+  background: accent-gradient();
+}

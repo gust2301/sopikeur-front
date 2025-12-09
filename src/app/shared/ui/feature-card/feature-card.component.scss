@@ -1,0 +1,35 @@
+@use 'styles/tokens' as *;
+@use 'styles/mixins' as mixins;
+
+.feature-card {
+  background: $color-surface;
+  padding: 2rem;
+  @include mixins.card-hover;
+
+  &__icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    @include mixins.gradient-accent;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1rem;
+
+    i {
+      color: $color-surface;
+    }
+  }
+
+  h3 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin: 0 0 0.5rem;
+  }
+
+  p {
+    color: $color-text-muted;
+    line-height: 1.6;
+    margin: 0;
+  }
+}

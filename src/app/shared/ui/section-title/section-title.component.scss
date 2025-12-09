@@ -1,0 +1,33 @@
+@use 'styles/tokens' as *;
+
+.section-title {
+  text-align: center;
+  margin-bottom: 3rem;
+
+  h2 {
+    font-size: 2.5rem;
+    font-weight: 800;
+    margin: 0 0 1rem;
+    letter-spacing: -0.02em;
+  }
+
+  &__subtitle {
+    color: $color-text-muted;
+    font-size: 1.125rem;
+    margin: 0;
+  }
+}
+
+.section-title--left {
+  text-align: left;
+}
+
+@media (max-width: 768px) {
+  .section-title {
+    margin-bottom: 2rem;
+
+    h2 {
+      font-size: 2rem;
+    }
+  }
+}
