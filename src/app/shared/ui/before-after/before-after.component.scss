@@ -1,0 +1,52 @@
+@use 'styles/tokens' as *;
+
+.ba {
+  position: relative;
+  width: 100%;
+  height: clamp(260px, 45vh, 520px);
+  border-radius: $radius-xl;
+  overflow: hidden;
+  box-shadow: $shadow-strong;
+  background: $color-hero;
+  touch-action: none;
+  user-select: none;
+}
+
+.img {
+  position: absolute;
+  inset: 0;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+}
+
+.handle {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 0;
+  transform: translateX(-50%);
+  cursor: col-resize;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .bar {
+    position: absolute;
+    height: 100%;
+    width: 3px;
+    background: rgba(#fff, 0.9);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.25);
+  }
+
+  .knob {
+    position: relative;
+    z-index: 2;
+    width: 22px;
+    height: 22px;
+    border-radius: 999px;
+    background: #fff;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+    border: 2px solid rgba(0, 0, 0, 0.05);
+  }
+}
