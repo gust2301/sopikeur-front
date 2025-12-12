@@ -1,0 +1,13 @@
+<article class="color-card">
+  <div class="color-card__visual" [style.background]="gradient">
+    <span class="color-card__badge" [style.background]="badgeColor"></span>
+  </div>
+  <div class="color-card__body">
+    <div class="color-card__header">
+      <h3>{{ name }}</h3>
+      <p *ngIf="price" class="color-card__price">{{ price }}</p>
+    </div>
+    <p class="color-card__specs">{{ specs.join(' • ') }}</p>
+    <button class="color-card__action" type="button" (click)="simulate.emit()">Simuler</button>
+  </div>
+</article>
