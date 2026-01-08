@@ -25,9 +25,6 @@
             ],
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
-            "stylePreprocessorOptions": {
-              "includePaths": ["src"]
-            },
             "assets": [
               "src/favicon.ico",
               "src/assets"
@@ -36,11 +33,6 @@
               "src/styles.scss"
             ],
             "scripts": [],
-            "optimization": {
-              "fonts": {
-                "inline": false
-              }
-            },
             "server": "src/main.server.ts",
             "prerender": true,
             "ssr": {
@@ -98,9 +90,6 @@
             ],
             "tsConfig": "tsconfig.spec.json",
             "inlineStyleLanguage": "scss",
-            "stylePreprocessorOptions": {
-              "includePaths": ["src"]
-            },
             "assets": [
               "src/favicon.ico",
               "src/assets"
@@ -113,8 +102,5 @@
         }
       }
     }
-  },
-  "cli": {
-    "analytics": false
   }
 }
