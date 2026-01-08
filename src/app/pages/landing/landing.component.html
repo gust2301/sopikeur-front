@@ -17,7 +17,7 @@
       </p>
       <ul class="hero__highlights">
         <li class="hero__highlight">
-          <span class="hero__dot"></span> Devis sous 48h
+          <span class="hero__dot"></span> Devis sous 24h
         </li>
         <li class="hero__highlight">
           <span class="hero__dot"></span> Logistique & livraison au Sénégal
@@ -67,11 +67,14 @@
 <section class="section colors" id="catalogue">
   <div class="container">
     <div class="section-header">
-      <h2 class="section-title">Couleurs phares</h2>
+      <p class="eyebrow">Couleurs phares</p>
       <p class="section-subtitle">Découvrez notre sélection de teintes tendances</p>
     </div>
     <div class="colors-slider">
-      <div class="colors-track">
+      <button class="slider-arrow left" type="button" (click)="scrollColors('left')" aria-label="Défiler à gauche">
+        ←
+      </button>
+      <div class="colors-track" #colorsTrack>
         <div class="color-card" *ngFor="let color of colors">
           <button
             class="color-sample"
@@ -79,6 +82,7 @@
             (click)="viewProduct(color)"
             [attr.aria-label]="'Voir le détail de ' + color.name"
           >
+            <span class="stock-badge" *ngIf="color.inStock">En stock</span>
             <img [src]="color.image" [alt]="color.name" loading="lazy" />
           </button>
           <div class="color-info">
@@ -86,35 +90,168 @@
             <div class="color-specs">
               <span *ngFor="let spec of color.specs">{{ spec }}</span>
             </div>
-            <div class="color-price">{{ color.price }}</div>
-            <button class="btn-add" type="button" (click)="viewProduct(color)">Devis</button>
+            <div class="color-price">{{ color.price }} {{ color.unit }}</div>
+            <a class="btn-add" [href]="getWhatsappLink(color)" target="_blank" rel="noopener">Devis</a>
           </div>
         </div>
       </div>
+      <button class="slider-arrow right" type="button" (click)="scrollColors('right')" aria-label="Défiler à droite">
+        →
+      </button>
     </div>
   </div>
 </section>
 
-<section class="section acoustic" id="services">
-  <div class="container acoustic-grid">
-    <div class="acoustic-text">
-      <p class="eyebrow">Panneaux acoustiques</p>
-      <h2>Textures bois, confort sonore</h2>
-      <p>
-        Nos panneaux rainurés absorbent les sons et réchauffent visuellement vos murs. Formats modulables, essence chêne
-        ou noyer, finition huilée.
-      </p>
-      <ul>
-        <li *ngFor="let item of acousticPoints">{{ item }}</li>
-      </ul>
-      <div class="acoustic-ctas">
-        <a href="#contact" class="btn btn-primary">Demander un devis</a>
+<section class="section panels" id="panneaux">
+  <div class="container">
+    <div class="section-header">
+      <p class="eyebrow">Catalogue Panneaux acoustiques</p>
+      <p class="section-subtitle">Deux finitions bois pour habiller les murs et absorber le son</p>
+    </div>
+    <div class="panels-slider">
+      <button class="slider-arrow left" type="button" (click)="scrollPanels('left')" aria-label="Défiler à gauche">
+        ←
+      </button>
+      <div class="panels-track" #panelsTrack>
+        <article class="panel-card" *ngFor="let panel of acousticPanels">
+          <button
+            class="panel-media"
+            type="button"
+            (click)="viewProduct(panel)"
+            [attr.aria-label]="'Voir le détail de ' + panel.name"
+          >
+            <span class="stock-badge" *ngIf="panel.inStock">En stock</span>
+            <img [src]="panel.image" [alt]="panel.name" loading="lazy" class="panel-image" />
+          </button>
+          <div class="panel-info">
+            <div>
+              <p class="panel-sku">{{ panel.sku }}</p>
+              <h3 class="panel-name">{{ panel.name }}</h3>
+              <p class="panel-description">{{ panel.shortDescription }}</p>
+              <div class="panel-specs">
+                <span *ngFor="let spec of panel.specs">{{ spec }}</span>
+              </div>
+            </div>
+            <div class="panel-footer">
+              <div class="panel-price">{{ panel.price }} {{ panel.unit }}</div>
+              <div class="panel-actions">
+                <a class="btn btn-primary" [href]="getWhatsappLink(panel)" target="_blank" rel="noopener">Devis</a>
+              </div>
+            </div>
+          </div>
+        </article>
       </div>
+      <button class="slider-arrow right" type="button" (click)="scrollPanels('right')" aria-label="Défiler à droite">
+        →
+      </button>
     </div>
-    <div class="acoustic-visual" aria-hidden="true">
-      <div class="panel-tile"></div>
-      <div class="panel-tile alt"></div>
+  </div>
+</section>
+
+<section class="section packs" id="packs">
+  <div class="container">
+    <div class="packs-header">
+      <p class="eyebrow">Packs SPC & Devis</p>
+      <h2>Un budget clair, un devis rapide</h2>
+      <p class="packs-subtitle">Deux formats essentiels pour estimer rapidement votre projet et passer sur WhatsApp.</p>
     </div>
+    <div class="packs-grid">
+      <article class="pack-card">
+        <header>
+          <h3>Pack 25 m²</h3>
+          <p class="pack-total">Total <span>~ 650 000 CFA</span></p>
+        </header>
+        <ul class="pack-includes">
+          <li>SPC haute résistance (pose click)</li>
+          <li>Sous-couche acoustique</li>
+          <li>Plinthes + profils de finition</li>
+          <li>Colle & consommables inclus</li>
+        </ul>
+        <div class="pack-actions">
+          <a
+            class="btn btn-primary"
+            href="https://wa.me/221774293757?text=Bonjour%20Sopi%20Keur%2C%20je%20souhaite%20un%20devis%20pour%20le%20Pack%2025%20m%C2%B2."
+            target="_blank"
+            rel="noopener"
+          >
+            Demander devis
+          </a>
+          <details class="pack-detail">
+            <summary>Voir détail</summary>
+            <p>Surface idéale pour 1 pièce + couloir. Personnalisation possible selon teinte et finitions.</p>
+          </details>
+        </div>
+      </article>
+      <article class="pack-card">
+        <header>
+          <h3>Pack 50 m²</h3>
+          <p class="pack-total">Total <span>~ 1 200 000 CFA</span></p>
+        </header>
+        <ul class="pack-includes">
+          <li>SPC étanche grand passage</li>
+          <li>Sous-couche premium</li>
+          <li>Plinthes + profils de transition</li>
+          <li>Colle & consommables inclus</li>
+        </ul>
+        <div class="pack-actions">
+          <a
+            class="btn btn-primary"
+            href="https://wa.me/221774293757?text=Bonjour%20Sopi%20Keur%2C%20je%20souhaite%20un%20devis%20pour%20le%20Pack%2050%20m%C2%B2."
+            target="_blank"
+            rel="noopener"
+          >
+            Demander devis
+          </a>
+          <details class="pack-detail">
+            <summary>Voir détail</summary>
+            <p>Convient aux salons + chambres. Ajustements au m² et options acoustiques sur demande.</p>
+          </details>
+        </div>
+      </article>
+    </div>
+    <div class="budget-compare">
+      <div>
+        <h4>Comparatif budget (50 m²)</h4>
+        <p>SPC pack 50 m² ~1,20M vs Carrelage premium 50 m² ~1,30M (consommables + ragréage).</p>
+      </div>
+      <ul>
+        <li>Pose rapide</li>
+        <li>Chantier plus propre</li>
+        <li>Réversible</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="section services" id="services">
+  <div class="container">
+    <div class="services-header">
+      <p class="eyebrow">Services & accompagnement</p>
+      <h2>On s’occupe de tout, avant et après la pose</h2>
+    </div>
+    <div class="services-grid">
+      <article class="service-card">
+        <span class="service-icon">⏱️</span>
+        <h3>Devis sous 24h</h3>
+        <p>Chiffrage rapide et clair, sans surprise.</p>
+      </article>
+      <article class="service-card">
+        <span class="service-icon">🚚</span>
+        <h3>Logistique & livraison Sénégal (Dakar/Saly)</h3>
+        <p>Organisation du transport jusqu’au chantier.</p>
+      </article>
+      <article class="service-card">
+        <span class="service-icon">🤝🏿</span>
+        <h3>SAV & accompagnement local</h3>
+        <p>Un interlocuteur dédié pour vos questions.</p>
+      </article>
+      <article class="service-card">
+        <span class="service-icon">🛠️</span>
+        <h3>Service pose disponible</h3>
+        <p>Des équipes recommandées si besoin.</p>
+      </article>
+    </div>
+    <p class="services-note">Pros/architectes : tarifs dégressifs sur demande.</p>
   </div>
 </section>
 

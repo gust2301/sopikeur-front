@@ -18,6 +18,7 @@ interface NavLink {
 export class HeaderComponent {
   navLinks: NavLink[] = [
     { label: 'SPC', href: '#spc' },
+    { label: 'Packs', href: '#packs' },
     { label: 'Catalogue', href: '#catalogue' },
     { label: 'Simulateur', href: '#simulateur' },
     { label: 'Services', href: '#services' },

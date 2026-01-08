@@ -1,24 +1,37 @@
 <section class="product-detail" *ngIf="product() as product">
   <div class="container detail-grid">
     <div class="detail-visual">
-      <img [src]="product.image" [alt]="product.name" loading="lazy" />
+      <img [src]="selectedImage() || product.image" [alt]="product.name" loading="lazy" />
+      <div class="detail-thumbs" *ngIf="product.images?.length && product.images.length > 1">
+        <button
+          type="button"
+          class="detail-thumb"
+          *ngFor="let image of product.images"
+          (click)="selectImage(image)"
+          [class.is-active]="image === selectedImage()"
+        >
+          <img [src]="image" [alt]="product.name" loading="lazy" />
+        </button>
+      </div>
     </div>
     <div class="detail-info">
-      <p class="eyebrow">Couleur phare</p>
+      <p class="eyebrow">{{ product.type === 'spc' ? 'Couleur phare' : 'Panneau acoustique' }}</p>
       <h1>{{ product.name }}</h1>
-      <p class="price">{{ product.price }}</p>
+      <p class="price">{{ product.price }} {{ product.unit }}</p>
       <p class="description">{{ product.description }}</p>
 
       <div class="specs">
         <span *ngFor="let spec of product.specs" class="spec">{{ spec }}</span>
       </div>
 
-      <ul class="features">
+      <ul class="features" *ngIf="product.features?.length">
         <li *ngFor="let feature of product.features">{{ feature }}</li>
       </ul>
 
       <div class="actions">
-        <a class="btn btn-primary" (click)="goToQuote()">Demander un devis</a>
+        <a class="btn btn-primary" [href]="getWhatsappLink(product)" target="_blank" rel="noopener">
+          Demander un devis
+        </a>
         <a class="btn btn-secondary" routerLink="/">Retour au catalogue</a>
       </div>
     </div>
@@ -27,7 +40,7 @@
   <div class="container related" *ngIf="relatedProducts.length > 0">
     <div class="related-header">
       <p class="eyebrow">Découvrir</p>
-      <h2>Autres teintes SPC</h2>
+      <h2>{{ product.type === 'spc' ? 'Autres teintes SPC' : 'Autres panneaux acoustiques' }}</h2>
     </div>
     <div class="related-grid">
       <button
@@ -40,7 +53,7 @@
         <img [src]="item.image" [alt]="item.name" loading="lazy" />
         <div class="related-info">
           <span class="name">{{ item.name }}</span>
-          <span class="price">{{ item.price }}</span>
+          <span class="price">{{ item.price }} {{ item.unit }}</span>
         </div>
       </button>
     </div>

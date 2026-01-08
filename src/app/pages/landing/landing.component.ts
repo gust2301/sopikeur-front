@@ -1,7 +1,8 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
-import { CatalogProduct, catalogProducts } from '../../shared/data/catalog';
+import { acousticPanels, CatalogProduct, spcProducts } from '../../shared/data/catalog';
+import { buildWhatsappLink } from '../../shared/utils/whatsapp';
 
 interface UspCard {
   title: string;
@@ -18,6 +19,9 @@ interface UspCard {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LandingComponent {
+  @ViewChild('colorsTrack') colorsTrack?: ElementRef<HTMLDivElement>;
+  @ViewChild('panelsTrack') panelsTrack?: ElementRef<HTMLDivElement>;
+
   readonly uspCards: UspCard[] = [
     {
       title: '100% étanche',
@@ -36,17 +40,35 @@ export class LandingComponent {
     },
   ];
 
-  readonly colors: CatalogProduct[] = catalogProducts;
-
-  readonly acousticPoints = [
-    'Parement mural texturé en bois massif',
-    'Traitement phonique discret',
-    'Fabrication locale à la demande',
-  ];
+  readonly colors: CatalogProduct[] = spcProducts;
+  readonly acousticPanels: CatalogProduct[] = acousticPanels;
 
   constructor(private readonly router: Router) {}
 
   viewProduct(product: CatalogProduct): void {
-    this.router.navigate(['/product-detail', product.id]);
+    this.router.navigate(['/product', product.type, product.id]);
+  }
+
+  scrollColors(direction: 'left' | 'right'): void {
+    this.scrollByCard(this.colorsTrack?.nativeElement, direction);
+  }
+
+  scrollPanels(direction: 'left' | 'right'): void {
+    this.scrollByCard(this.panelsTrack?.nativeElement, direction);
+  }
+
+  getWhatsappLink(product: CatalogProduct): string {
+    return buildWhatsappLink(product.name, product.sku);
+  }
+
+  private scrollByCard(track: HTMLDivElement | undefined, direction: 'left' | 'right'): void {
+    if (!track) {
+      return;
+    }
+    const card = track.querySelector<HTMLElement>('.color-card, .panel-card');
+    const gap = Number.parseFloat(getComputedStyle(track).columnGap || '0');
+    const cardWidth = card?.getBoundingClientRect().width ?? track.clientWidth;
+    const scrollAmount = (cardWidth + gap) * 0.8;
+    track.scrollBy({ left: direction === 'left' ? -scrollAmount : scrollAmount, behavior: 'smooth' });
   }
 }

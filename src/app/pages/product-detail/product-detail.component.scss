@@ -27,6 +27,33 @@
   object-fit: cover;
 }
 
+.detail-thumbs {
+  margin-top: $space-3;
+  display: flex;
+  gap: $space-2;
+  flex-wrap: wrap;
+}
+
+.detail-thumb {
+  padding: 0;
+  border: 2px solid transparent;
+  border-radius: $radius-lg;
+  background: transparent;
+  cursor: pointer;
+}
+
+.detail-thumb img {
+  width: 72px;
+  height: 72px;
+  border-radius: $radius-lg;
+  object-fit: cover;
+  display: block;
+}
+
+.detail-thumb.is-active {
+  border-color: $color-accent;
+}
+
 .detail-info {
   display: grid;
   gap: $space-4;
