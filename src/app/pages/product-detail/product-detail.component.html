@@ -1,0 +1,48 @@
+<section class="product-detail" *ngIf="product() as product">
+  <div class="container detail-grid">
+    <div class="detail-visual">
+      <img [src]="product.image" [alt]="product.name" loading="lazy" />
+    </div>
+    <div class="detail-info">
+      <p class="eyebrow">Couleur phare</p>
+      <h1>{{ product.name }}</h1>
+      <p class="price">{{ product.price }}</p>
+      <p class="description">{{ product.description }}</p>
+
+      <div class="specs">
+        <span *ngFor="let spec of product.specs" class="spec">{{ spec }}</span>
+      </div>
+
+      <ul class="features">
+        <li *ngFor="let feature of product.features">{{ feature }}</li>
+      </ul>
+
+      <div class="actions">
+        <a class="btn btn-primary" (click)="goToQuote()">Demander un devis</a>
+        <a class="btn btn-secondary" routerLink="/">Retour au catalogue</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="container related" *ngIf="relatedProducts.length > 0">
+    <div class="related-header">
+      <p class="eyebrow">Découvrir</p>
+      <h2>Autres teintes SPC</h2>
+    </div>
+    <div class="related-grid">
+      <button
+        type="button"
+        class="related-card"
+        *ngFor="let item of relatedProducts"
+        (click)="navigateTo(item)"
+        [attr.aria-label]="'Voir ' + item.name"
+      >
+        <img [src]="item.image" [alt]="item.name" loading="lazy" />
+        <div class="related-info">
+          <span class="name">{{ item.name }}</span>
+          <span class="price">{{ item.price }}</span>
+        </div>
+      </button>
+    </div>
+  </div>
+</section>

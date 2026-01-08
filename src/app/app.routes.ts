@@ -7,6 +7,11 @@ export const routes: Routes = [
     component: MainLayoutComponent,
     children: [
       { path: '', loadComponent: () => import('./pages/landing/landing.component').then(m => m.LandingComponent) },
+      {
+        path: 'product-detail/:id',
+        loadComponent: () =>
+          import('./pages/product-detail/product-detail.component').then(m => m.ProductDetailComponent),
+      },
     ],
   },
   { path: '**', redirectTo: '' },
