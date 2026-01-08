@@ -73,16 +73,21 @@
     <div class="colors-slider">
       <div class="colors-track">
         <div class="color-card" *ngFor="let color of colors">
-          <div class="color-sample" [style.background]="color.gradient">
-            <div class="color-badge" [style.background]="color.badge"></div>
-          </div>
+          <button
+            class="color-sample"
+            type="button"
+            (click)="viewProduct(color)"
+            [attr.aria-label]="'Voir le détail de ' + color.name"
+          >
+            <img [src]="color.image" [alt]="color.name" loading="lazy" />
+          </button>
           <div class="color-info">
             <div class="color-name">{{ color.name }}</div>
             <div class="color-specs">
               <span *ngFor="let spec of color.specs">{{ spec }}</span>
             </div>
             <div class="color-price">{{ color.price }}</div>
-            <button class="btn-add">Simuler</button>
+            <button class="btn-add" type="button" (click)="viewProduct(color)">Devis</button>
           </div>
         </div>
       </div>
