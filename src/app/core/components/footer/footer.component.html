@@ -1,0 +1,23 @@
+<footer class="footer" id="contact">
+  <div class="container footer__grid">
+    <div class="footer__brand">
+      <img src="assets/logos/sopi_keur_logo_transparent_512.png" alt="Sopi Keur" loading="lazy" />
+      <p>Revêtements SPC et panneaux acoustiques pour des espaces durables et élégants.</p>
+    </div>
+    <div class="footer__columns">
+      <div class="footer__column" *ngFor="let column of columns">
+        <h3>{{ column.title }}</h3>
+        <a class="footer__link" *ngFor="let link of column.links" [href]="link.href">{{ link.label }}</a>
+      </div>
+    </div>
+  </div>
+  <div class="footer__bottom">
+    <div class="container footer__bottom-bar">
+      <p>© 2025 Sopi Keur. Tous droits réservés.</p>
+      <div class="footer__legal">
+        <a href="#">CGV</a>
+        <a href="#">Mentions légales</a>
+      </div>
+    </div>
+  </div>
+</footer>

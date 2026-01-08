@@ -1,0 +1,8 @@
+<div class="ba" role="region" aria-label="Comparateur avant après">
+  <div class="img before" [ngStyle]="beforeStyle"></div>
+  <div class="img after" [ngStyle]="afterStyle" [style.clipPath]="'inset(0 0 0 ' + positionPct + '%)'"></div>
+  <div class="handle" [style.left.%]="positionPct" (pointerdown)="startDrag($event)">
+    <span class="bar" aria-hidden="true"></span>
+    <span class="knob" aria-label="Glisser horizontalement pour comparer"></span>
+  </div>
+</div>

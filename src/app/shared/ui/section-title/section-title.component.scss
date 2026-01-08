@@ -1,0 +1,31 @@
+@use 'styles/tokens' as *;
+
+.section-title {
+  text-align: center;
+  display: grid;
+  gap: $space-3;
+  margin-bottom: $space-8;
+
+  &--left { text-align: left; }
+}
+
+.section-title__eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: $color-accent;
+}
+
+h2 {
+  font-size: clamp(2rem, 2.8vw, 2.75rem);
+  line-height: 1.1;
+  color: $color-hero;
+}
+
+.section-title__subtitle {
+  color: $color-muted;
+  font-size: 1rem;
+  max-width: 680px;
+  margin: 0 auto;
+}
