@@ -1,0 +1,124 @@
+<section class="inspirations" id="inspirations">
+  <div class="container">
+    <div class="inspirations__hero">
+      <p class="eyebrow">Inspirations</p>
+      <h1>Des ambiances qui donnent envie</h1>
+      <p class="inspirations__subtitle">
+        Inspirez-vous de nos réalisations SPC et panneaux pour imaginer votre futur intérieur. La conversion se fait sur
+        devis : dites-nous ce qui vous plaît.
+      </p>
+    </div>
+
+    <div class="inspirations__tabs" role="tablist" aria-label="Filtrer les inspirations">
+      <button
+        *ngFor="let tab of tabs"
+        type="button"
+        class="tab"
+        [class.tab--active]="activeTab === tab.value"
+        [attr.aria-selected]="activeTab === tab.value"
+        (click)="setTab(tab.value)"
+        role="tab"
+      >
+        {{ tab.label }}
+      </button>
+    </div>
+
+    <div class="inspirations__grid" role="list">
+      <article class="inspiration-card" *ngFor="let item of filteredItems" role="listitem">
+        <button
+          type="button"
+          class="inspiration-card__media"
+          (click)="openLightbox(item)"
+          [attr.aria-label]="'Voir ' + item.title"
+        >
+          <img [src]="item.cover" [alt]="item.title" loading="lazy" />
+          <span class="inspiration-card__badge">{{ item.badge }}</span>
+          <span class="inspiration-card__tag" *ngIf="item.category === 'spc'">Avant/Après</span>
+        </button>
+        <div class="inspiration-card__content">
+          <h3>{{ item.title }}</h3>
+          <button type="button" class="btn btn-secondary" (click)="openLightbox(item)">Voir l’inspiration</button>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="section inspirations-cta">
+  <div class="container">
+    <div class="inspirations-cta__card">
+      <div>
+        <p class="eyebrow">Packs sur devis</p>
+        <h2>Packs tout compris & packs mixtes</h2>
+        <p class="inspirations-cta__text">
+          Vous pouvez bénéficier de packs tout compris: SPC + accessoires (plinthes, profils, sous-couche) et packs
+          mixtes SPC + accessoires + panneaux, avec ou sans pose. Contactez-nous pour un devis détaillé.
+        </p>
+      </div>
+      <div class="inspirations-cta__actions">
+        <a class="btn btn-primary" href="/#contact">Demander un devis</a>
+        <a class="btn btn-secondary" [href]="whatsappLink" target="_blank" rel="noopener">WhatsApp</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="lightbox" *ngIf="selectedItem" role="dialog" aria-modal="true" [attr.aria-labelledby]="dialogTitleId">
+  <div class="lightbox__overlay" (click)="closeLightbox()"></div>
+  <div class="lightbox__content" #modalContent tabindex="-1" (keydown)="handleModalKeydown($event)">
+    <button
+      type="button"
+      class="lightbox__close"
+      (click)="closeLightbox()"
+      aria-label="Fermer la fenêtre"
+      #closeButton
+    >
+      ✕
+    </button>
+
+    <div class="lightbox__header">
+      <span class="lightbox__badge">{{ selectedItem.badge }}</span>
+      <h3 [id]="dialogTitleId">{{ selectedItem.title }}</h3>
+    </div>
+
+    <div class="lightbox__media" *ngIf="selectedItem">
+      <ng-container *ngIf="isBeforeAfter; else panelView">
+        <div class="before-after">
+          <img
+            class="before-after__image"
+            [src]="selectedItem.beforeImage"
+            [alt]="selectedItem.title + ' avant'"
+          />
+          <div class="before-after__overlay" [style.width.%]="sliderValue">
+            <img
+              class="before-after__image"
+              [src]="selectedItem.afterImage"
+              [alt]="selectedItem.title + ' après'"
+            />
+          </div>
+          <div class="before-after__labels" aria-hidden="true">
+            <span>Avant</span>
+            <span>Après</span>
+          </div>
+          <input
+            class="before-after__range"
+            type="range"
+            min="0"
+            max="100"
+            [value]="sliderValue"
+            (input)="handleSliderChange($event)"
+            aria-label="Comparer avant et après"
+          />
+        </div>
+      </ng-container>
+      <ng-template #panelView>
+        <img class="lightbox__image" [src]="selectedItem.cover" [alt]="selectedItem.title" />
+      </ng-template>
+    </div>
+
+    <div class="lightbox__footer">
+      <a class="btn btn-primary" href="/#contact">Demander un devis</a>
+      <a class="btn btn-secondary" [href]="whatsappLink" target="_blank" rel="noopener">WhatsApp</a>
+    </div>
+  </div>
+</div>

@@ -286,120 +286,40 @@
   object-fit: contain;
 }
 
-/* Packs */
-.packs {
+/* Packs sur devis */
+.packs-quote {
   background: #fff;
 }
 
-.packs-header {
-  display: grid;
-  gap: $space-2;
-  margin-bottom: $space-6;
-}
-
-.packs-subtitle {
-  color: $color-muted;
-  max-width: 640px;
-}
-
-.packs-grid {
-  display: grid;
-  gap: $space-4;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-}
-
-.pack-card {
-  background: $color-cream;
+.packs-quote__card {
   border-radius: $radius-lg;
-  padding: $space-5;
+  padding: $space-6;
   box-shadow: $shadow-soft;
-  border: 1px solid rgba($color-ink, 0.06);
+  border: 1px solid rgba($color-ink, 0.08);
   display: grid;
-  gap: $space-4;
+  gap: $space-5;
+  background: $color-cream;
 }
 
-.pack-card h3 {
-  margin: 0;
-  font-size: 1.2rem;
-  color: $color-hero;
-}
-
-.pack-total {
-  margin: $space-2 0 0;
-  font-weight: 600;
+.packs-quote__text {
   color: $color-muted;
+  line-height: 1.7;
+  margin-top: $space-3;
+}
 
-  span {
-    display: block;
-    font-size: 1.5rem;
-    color: $color-accent;
+.packs-quote__list {
+  margin: 0 0 $space-4;
+  padding-left: 1.1rem;
+  color: $color-muted;
+  display: grid;
+  gap: $space-2;
+}
+
+@media (min-width: 900px) {
+  .packs-quote__card {
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr);
+    align-items: center;
   }
-}
-
-.pack-includes {
-  margin: 0;
-  padding-left: 1.1rem;
-  color: $color-muted;
-  display: grid;
-  gap: $space-2;
-}
-
-.pack-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: $space-3;
-  align-items: center;
-}
-
-.pack-detail {
-  border-radius: 999px;
-  border: 1px solid rgba($color-ink, 0.1);
-  padding: 0.35rem 0.9rem;
-  background: #fff;
-  color: $color-ink;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-.pack-detail summary {
-  list-style: none;
-}
-
-.pack-detail summary::-webkit-details-marker {
-  display: none;
-}
-
-.pack-detail p {
-  margin: $space-3 0 0;
-  color: $color-muted;
-  font-weight: 400;
-}
-
-.budget-compare {
-  margin-top: $space-6;
-  border-radius: $radius-lg;
-  padding: $space-5;
-  background: rgba($color-accent, 0.08);
-  border: 1px solid rgba($color-accent, 0.2);
-  display: grid;
-  gap: $space-4;
-}
-
-.budget-compare h4 {
-  margin: 0 0 $space-2;
-  font-size: 1.1rem;
-}
-
-.budget-compare p {
-  margin: 0;
-  color: $color-muted;
-}
-
-.budget-compare ul {
-  margin: 0;
-  padding-left: 1.1rem;
-  display: grid;
-  gap: $space-2;
 }
 
 /* Colors */

@@ -1,0 +1,311 @@
+@use 'styles/tokens' as *;
+
+:host {
+  display: block;
+  background: $color-cream;
+  color: $color-ink;
+}
+
+.container {
+  @include container;
+}
+
+.section {
+  padding: $space-12 0;
+}
+
+.eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 800;
+  font-size: 0.85rem;
+  color: $color-accent-2;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  padding: 0.75rem 1.25rem;
+  border-radius: 999px;
+  font-weight: 600;
+  text-decoration: none;
+  border: 1px solid transparent;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease, color 0.15s ease;
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+}
+
+.btn-primary {
+  background: $color-accent;
+  color: #fff;
+}
+
+.btn-secondary {
+  background: #fff;
+  color: $color-ink;
+  border-color: rgba($color-ink, 0.15);
+}
+
+.inspirations {
+  padding: $space-12 0 $space-8;
+}
+
+.inspirations__hero {
+  display: grid;
+  gap: $space-3;
+  max-width: 720px;
+  margin-bottom: $space-8;
+}
+
+.inspirations__subtitle {
+  color: $color-muted;
+  line-height: 1.7;
+}
+
+.inspirations__tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $space-3;
+  margin-bottom: $space-8;
+}
+
+.tab {
+  border: 1px solid rgba($color-ink, 0.15);
+  border-radius: 999px;
+  padding: 0.45rem 1.1rem;
+  background: #fff;
+  font-weight: 600;
+  color: $color-ink;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.tab--active {
+  background: $color-accent;
+  border-color: $color-accent;
+  color: #fff;
+}
+
+.inspirations__grid {
+  display: grid;
+  gap: $space-6;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+}
+
+.inspiration-card {
+  background: #fff;
+  border-radius: $radius-lg;
+  overflow: hidden;
+  box-shadow: $shadow-soft;
+  border: 1px solid rgba($color-ink, 0.06);
+  display: grid;
+  grid-template-rows: 1fr auto;
+}
+
+.inspiration-card__media {
+  position: relative;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  background: transparent;
+  height: 220px;
+}
+
+.inspiration-card__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.inspiration-card__badge {
+  position: absolute;
+  top: $space-3;
+  left: $space-3;
+  background: rgba($color-ink, 0.85);
+  color: #fff;
+  font-size: 0.75rem;
+  padding: 0.3rem 0.75rem;
+  border-radius: 999px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.inspiration-card__tag {
+  position: absolute;
+  bottom: $space-3;
+  right: $space-3;
+  background: rgba($color-accent, 0.95);
+  color: #fff;
+  font-size: 0.75rem;
+  padding: 0.3rem 0.75rem;
+  border-radius: 999px;
+}
+
+.inspiration-card__content {
+  padding: $space-4;
+  display: grid;
+  gap: $space-3;
+}
+
+.inspiration-card__content h3 {
+  margin: 0;
+  font-size: 1.05rem;
+}
+
+.inspirations-cta {
+  padding: $space-12 0;
+}
+
+.inspirations-cta__card {
+  background: #fff;
+  border-radius: $radius-lg;
+  padding: $space-6;
+  display: grid;
+  gap: $space-5;
+  box-shadow: $shadow-soft;
+  border: 1px solid rgba($color-ink, 0.08);
+}
+
+.inspirations-cta__text {
+  color: $color-muted;
+  line-height: 1.7;
+}
+
+.inspirations-cta__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $space-3;
+}
+
+.lightbox {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  z-index: 50;
+}
+
+.lightbox__overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba($color-ink, 0.75);
+}
+
+.lightbox__content {
+  position: relative;
+  background: #fff;
+  border-radius: $radius-lg;
+  padding: $space-6;
+  width: min(920px, 92vw);
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: $shadow-strong;
+  display: grid;
+  gap: $space-4;
+  z-index: 1;
+}
+
+.lightbox__close {
+  position: absolute;
+  top: $space-4;
+  right: $space-4;
+  border: none;
+  background: rgba($color-ink, 0.1);
+  width: 2.2rem;
+  height: 2.2rem;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 1.1rem;
+}
+
+.lightbox__header {
+  display: flex;
+  flex-direction: column;
+  gap: $space-2;
+}
+
+.lightbox__badge {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: $color-muted;
+}
+
+.lightbox__media {
+  display: grid;
+  gap: $space-3;
+}
+
+.lightbox__image {
+  width: 100%;
+  border-radius: $radius-lg;
+  max-height: 60vh;
+  object-fit: cover;
+}
+
+.lightbox__footer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $space-3;
+}
+
+.before-after {
+  position: relative;
+  border-radius: $radius-lg;
+  overflow: hidden;
+  background: $color-cream;
+  min-height: 300px;
+}
+
+.before-after__image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.before-after__overlay {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-right: 2px solid rgba($color-ink, 0.4);
+}
+
+.before-after__labels {
+  position: absolute;
+  top: $space-3;
+  left: $space-3;
+  right: $space-3;
+  display: flex;
+  justify-content: space-between;
+  color: #fff;
+  font-size: 0.85rem;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+}
+
+.before-after__range {
+  position: absolute;
+  bottom: $space-3;
+  left: $space-3;
+  right: $space-3;
+}
+
+@media (min-width: 768px) {
+  .inspirations-cta__card {
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+  }
+}
+
+@media (max-width: 640px) {
+  .lightbox__content {
+    padding: $space-5 $space-4;
+  }
+}
