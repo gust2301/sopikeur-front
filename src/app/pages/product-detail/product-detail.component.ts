@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, computed, ElementRef, NgZone, signal, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CatalogProduct, catalogProducts } from '../../shared/data/catalog';
@@ -13,14 +13,25 @@ import { buildWhatsappLink } from '../../shared/utils/whatsapp';
   imports: [CommonModule, RouterModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ProductDetailComponent {
+export class ProductDetailComponent implements AfterViewInit {
+  private static readonly placeholderImage =
+    'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="900" viewBox="0 0 1200 900"><rect width="1200" height="900" fill="%23f4f0e7"/><rect x="120" y="160" width="960" height="580" rx="32" fill="%23ffffff" stroke="%23e6dfd2" stroke-width="6"/><path d="M340 610l150-190 130 160 190-240 190 270H340z" fill="%23e6dfd2"/><circle cx="480" cy="360" r="60" fill="%23e6dfd2"/><text x="600" y="520" font-family="Arial, sans-serif" font-size="42" fill="%23908978" text-anchor="middle">Aucune image</text></svg>';
   private readonly productSignal = signal<CatalogProduct | undefined>(undefined);
-  private readonly selectedImageSignal = signal<string | undefined>(undefined);
+  private readonly galleryImagesSignal = signal<string[]>([]);
+  private readonly selectedIndexSignal = signal(0);
+  private touchStartX: number | null = null;
 
   readonly product = computed(() => this.productSignal());
-  readonly selectedImage = computed(() => this.selectedImageSignal());
+  readonly galleryImages = computed(() => this.galleryImagesSignal());
+  readonly selectedImage = computed(() => this.galleryImagesSignal()[this.selectedIndexSignal()] ?? undefined);
 
-  constructor(private readonly route: ActivatedRoute, private readonly router: Router) {
+  @ViewChild('hero', { static: false }) private readonly heroEl?: ElementRef<HTMLElement>;
+
+  constructor(
+    private readonly route: ActivatedRoute,
+    private readonly router: Router,
+    private readonly zone: NgZone,
+  ) {
     this.route.paramMap.pipe(takeUntilDestroyed()).subscribe(params => {
       const productId = params.get('id');
       const type = params.get('type');
@@ -32,8 +43,13 @@ export class ProductDetailComponent {
       }
 
       this.productSignal.set(foundProduct);
-      this.selectedImageSignal.set(foundProduct.images?.[0] ?? foundProduct.image);
+      void this.updateGallery(foundProduct);
+      this.scrollToHero();
     });
+  }
+
+  ngAfterViewInit(): void {
+    this.scrollToHero();
   }
 
   get relatedProducts(): CatalogProduct[] {
@@ -46,11 +62,143 @@ export class ProductDetailComponent {
     this.router.navigate(['/product', product.type, product.id]);
   }
 
+  getRelatedImage(product: CatalogProduct): string {
+    if (product.type === 'spc') {
+      return this.normalizeAssetPath(`/assets/spc/${product.sku}_lame.png`);
+    }
+    return this.normalizeAssetPath(product.image);
+  }
+
   selectImage(image: string): void {
-    this.selectedImageSignal.set(image);
+    const index = this.galleryImagesSignal().indexOf(image);
+    if (index >= 0) {
+      this.selectedIndexSignal.set(index);
+    }
+  }
+
+  nextImage(): void {
+    const images = this.galleryImagesSignal();
+    if (images.length <= 1) {
+      return;
+    }
+    this.selectedIndexSignal.set((this.selectedIndexSignal() + 1) % images.length);
+  }
+
+  previousImage(): void {
+    const images = this.galleryImagesSignal();
+    if (images.length <= 1) {
+      return;
+    }
+    this.selectedIndexSignal.set((this.selectedIndexSignal() - 1 + images.length) % images.length);
+  }
+
+  onTouchStart(event: TouchEvent): void {
+    if (this.galleryImagesSignal().length <= 1) {
+      return;
+    }
+    this.touchStartX = event.changedTouches[0]?.clientX ?? null;
+  }
+
+  onTouchEnd(event: TouchEvent): void {
+    if (this.touchStartX === null || this.galleryImagesSignal().length <= 1) {
+      this.touchStartX = null;
+      return;
+    }
+    const endX = event.changedTouches[0]?.clientX ?? this.touchStartX;
+    const deltaX = endX - this.touchStartX;
+    this.touchStartX = null;
+    if (Math.abs(deltaX) < 40) {
+      return;
+    }
+    if (deltaX < 0) {
+      this.nextImage();
+    } else {
+      this.previousImage();
+    }
   }
 
   getWhatsappLink(product: CatalogProduct): string {
     return buildWhatsappLink(product.name, product.sku);
+  }
+
+  private async updateGallery(product: CatalogProduct): Promise<void> {
+    const candidates = this.buildCandidateImages(product);
+    if (candidates.length === 0) {
+      this.galleryImagesSignal.set([ProductDetailComponent.placeholderImage]);
+      this.selectedIndexSignal.set(0);
+      return;
+    }
+
+    await this.zone.runOutsideAngular(async () => {
+      const galleryImages = await this.filterExistingImages(candidates);
+      const images = galleryImages.length > 0 ? galleryImages : [ProductDetailComponent.placeholderImage];
+      this.zone.run(() => {
+        this.galleryImagesSignal.set(images);
+        this.selectedIndexSignal.set(0);
+      });
+    });
+  }
+
+  private buildCandidateImages(product: CatalogProduct): string[] {
+    const sku = product.sku;
+    const candidates =
+      product.type === 'spc'
+        ? [
+            `/assets/spc/${sku}_lame.png`,
+            `/assets/spc/${sku}.png`,
+            `/assets/spc/${sku}_home.png`,
+          ]
+        : [
+            `/assets/panels/${sku}.png`,
+            `/assets/panels/bed_${sku}.png`,
+            `/assets/panels/wall_${sku}.png`,
+          ];
+    const fallbackImages = [...(product.images ?? []), product.image]
+      .filter(Boolean)
+      .map(image => this.normalizeAssetPath(image));
+    return Array.from(new Set([...candidates, ...fallbackImages]));
+  }
+
+  private async filterExistingImages(images: string[]): Promise<string[]> {
+    if (typeof Image === 'undefined') {
+      return images;
+    }
+    const checks = await Promise.all(
+      images.map(
+        image =>
+          new Promise<boolean>(resolve => {
+            const probe = new Image();
+            probe.onload = () => resolve(true);
+            probe.onerror = () => resolve(false);
+            probe.src = image;
+          }),
+      ),
+    );
+    return images.filter((_, index) => checks[index]);
+  }
+
+  private scrollToHero(): void {
+    if (typeof window === 'undefined') {
+      return;
+    }
+    const hero = this.heroEl?.nativeElement;
+    if (hero) {
+      setTimeout(() => {
+        if (typeof hero.scrollIntoView === 'function') {
+          hero.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }, 0);
+      return;
+    }
+    setTimeout(() => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }, 0);
+  }
+
+  normalizeAssetPath(image: string): string {
+    if (image.startsWith('data:') || image.startsWith('http://') || image.startsWith('https://')) {
+      return image;
+    }
+    return image.startsWith('/') ? image : `/${image}`;
   }
 }

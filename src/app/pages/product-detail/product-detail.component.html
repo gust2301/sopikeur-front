@@ -1,21 +1,42 @@
-<section class="product-detail" *ngIf="product() as product">
+<section class="product-detail" *ngIf="product() as product" #hero>
   <div class="container detail-grid">
     <div class="detail-visual">
-      <img [src]="selectedImage() || product.image" [alt]="product.name" loading="lazy" />
-      <div class="detail-thumbs" *ngIf="product.images?.length && product.images.length > 1">
+      <div class="detail-carousel" (touchstart)="onTouchStart($event)" (touchend)="onTouchEnd($event)">
+        <img [src]="selectedImage() || normalizeAssetPath(product.image)" [alt]="product.name" loading="lazy" />
+        <button
+          type="button"
+          class="carousel-arrow prev"
+          (click)="previousImage()"
+          *ngIf="galleryImages().length > 1"
+          aria-label="Image précédente"
+        >
+          ‹
+        </button>
+        <button
+          type="button"
+          class="carousel-arrow next"
+          (click)="nextImage()"
+          *ngIf="galleryImages().length > 1"
+          aria-label="Image suivante"
+        >
+          ›
+        </button>
+      </div>
+      <div class="detail-thumbs" *ngIf="galleryImages().length > 1">
         <button
           type="button"
           class="detail-thumb"
-          *ngFor="let image of product.images"
+          *ngFor="let image of galleryImages(); let index = index"
           (click)="selectImage(image)"
           [class.is-active]="image === selectedImage()"
+          [attr.aria-label]="'Afficher l’image ' + (index + 1)"
         >
           <img [src]="image" [alt]="product.name" loading="lazy" />
         </button>
       </div>
     </div>
     <div class="detail-info">
-      <p class="eyebrow">{{ product.type === 'spc' ? 'Couleur phare' : 'Panneau acoustique' }}</p>
+      <p class="eyebrow">{{ product.type === 'spc' ? 'SPC' : 'Panneau acoustique' }}</p>
       <h1>{{ product.name }}</h1>
       <p class="price">{{ product.price }} {{ product.unit }}</p>
       <p class="description">{{ product.description }}</p>
@@ -32,12 +53,18 @@
         <a class="btn btn-primary" [href]="getWhatsappLink(product)" target="_blank" rel="noopener">
           Demander un devis
         </a>
-        <a class="btn btn-secondary" routerLink="/">Retour au catalogue</a>
+        <a
+          class="btn btn-secondary"
+          routerLink="/"
+          [fragment]="product.type === 'spc' ? 'catalogue' : 'panneaux'"
+        >
+          Retour au catalogue
+        </a>
       </div>
     </div>
   </div>
 
-  <div class="container related" *ngIf="relatedProducts.length > 0">
+  <div class="container related" *ngIf="relatedProducts.length > 0" [class.is-panels]="product.type === 'acoustic'">
     <div class="related-header">
       <p class="eyebrow">Découvrir</p>
       <h2>{{ product.type === 'spc' ? 'Autres teintes SPC' : 'Autres panneaux acoustiques' }}</h2>
@@ -50,7 +77,7 @@
         (click)="navigateTo(item)"
         [attr.aria-label]="'Voir ' + item.name"
       >
-        <img [src]="item.image" [alt]="item.name" loading="lazy" />
+        <img [src]="getRelatedImage(item)" [alt]="item.name" loading="lazy" />
         <div class="related-info">
           <span class="name">{{ item.name }}</span>
           <span class="price">{{ item.price }} {{ item.unit }}</span>

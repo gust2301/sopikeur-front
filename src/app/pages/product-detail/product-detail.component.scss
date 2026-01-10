@@ -12,6 +12,43 @@
   align-items: center;
 }
 
+.eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 800;
+  font-size: 0.85rem;
+  color: $color-accent-2;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  padding: 0.75rem 1.25rem;
+  border-radius: 999px;
+  font-weight: 600;
+  text-decoration: none;
+  border: 1px solid transparent;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease, color 0.15s ease;
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+}
+
+.btn-primary {
+  background: $color-accent;
+  color: #fff;
+}
+
+.btn-secondary {
+  background: #fff;
+  color: $color-ink;
+  border-color: rgba($color-ink, 0.15);
+}
+
 .detail-visual {
   background: #f7f4ee;
   border-radius: $radius-lg;
@@ -19,12 +56,57 @@
   border: 1px solid rgba($color-ink, 0.06);
 }
 
-.detail-visual img {
+.detail-carousel {
+  position: relative;
+}
+
+.detail-carousel img {
   width: 100%;
-  height: auto;
+  height: 420px;
   display: block;
   border-radius: $radius-lg;
   object-fit: cover;
+}
+
+@media (max-width: 768px) {
+  .detail-carousel img {
+    height: 320px;
+  }
+}
+
+.carousel-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 48px;
+  height: 48px;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  background: #fff;
+  box-shadow: $shadow-soft;
+  color: $color-ink;
+  font-size: 1.75rem;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease, color 0.15s ease;
+}
+
+.carousel-arrow:hover {
+  transform: translateY(-50%) translateY(-2px);
+  box-shadow: $shadow-strong;
+  background: $color-accent;
+  color: #fff;
+}
+
+.carousel-arrow.prev {
+  left: $space-3;
+}
+
+.carousel-arrow.next {
+  right: $space-3;
 }
 
 .detail-thumbs {
@@ -124,9 +206,17 @@
 
 .related-card img {
   width: 100%;
-  height: 160px;
+  height: auto;
+  aspect-ratio: 4 / 3;
   object-fit: cover;
   border-radius: $radius-lg;
+}
+
+@media (min-width: 1024px) {
+  .related.is-panels .related-card img {
+    width: 350px;
+    height: 260px;
+  }
 }
 
 .related-info {
