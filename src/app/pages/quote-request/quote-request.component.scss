@@ -1,0 +1,167 @@
+@use 'styles/tokens' as *;
+
+.quote-page {
+  padding: $space-12 0;
+  background: #f7f4ee;
+}
+
+.quote-hero {
+  display: grid;
+  gap: $space-3;
+  max-width: 720px;
+  margin-bottom: $space-6;
+}
+
+.eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 800;
+  font-size: 0.85rem;
+  color: $color-accent-2;
+}
+
+.quote-subtitle {
+  color: $color-muted;
+  line-height: 1.7;
+  margin: 0;
+}
+
+.intent-pill {
+  justify-self: flex-start;
+  padding: 0.35rem 0.9rem;
+  border-radius: 999px;
+  background: rgba($color-accent, 0.15);
+  color: $color-accent;
+  font-weight: 700;
+}
+
+.intent-help {
+  margin: 0;
+  color: $color-muted;
+}
+
+.quote-card {
+  background: #fff;
+  border-radius: $radius-xl;
+  padding: $space-8;
+  box-shadow: $shadow-soft;
+  border: 1px solid rgba($color-ink, 0.06);
+  display: grid;
+  gap: $space-6;
+}
+
+.form-grid {
+  display: grid;
+  gap: $space-4;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+
+.field {
+  display: grid;
+  gap: $space-2;
+  font-weight: 600;
+}
+
+.field input,
+.field select,
+.field textarea {
+  width: 100%;
+  border-radius: 12px;
+  border: 1px solid $color-border;
+  padding: $space-3;
+  font: inherit;
+  background: #fff;
+}
+
+.field small {
+  color: #d55b5b;
+  font-weight: 500;
+}
+
+.form-section {
+  display: grid;
+  gap: $space-4;
+}
+
+.section-title {
+  font-weight: 700;
+}
+
+.product-grid {
+  display: grid;
+  gap: $space-3;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+}
+
+.product-option {
+  display: flex;
+  align-items: center;
+  gap: $space-2;
+  padding: $space-3;
+  border-radius: $radius-lg;
+  border: 1px solid rgba($color-ink, 0.08);
+  background: #faf8f3;
+  cursor: pointer;
+}
+
+.product-option input {
+  accent-color: $color-accent;
+}
+
+.product-name {
+  font-weight: 700;
+}
+
+.product-type {
+  margin-left: auto;
+  font-size: 0.8rem;
+  color: $color-muted;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.quantity-list {
+  display: grid;
+  gap: $space-3;
+}
+
+.form-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $space-3;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  padding: 0.75rem 1.4rem;
+  border-radius: 999px;
+  font-weight: 600;
+  text-decoration: none;
+  border: 1px solid transparent;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease, color 0.15s ease;
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+}
+
+.btn-primary {
+  background: $color-accent;
+  color: #fff;
+}
+
+.btn-secondary {
+  background: #fff;
+  color: $color-ink;
+  border-color: rgba($color-ink, 0.15);
+}
+
+@media (max-width: 720px) {
+  .quote-card {
+    padding: $space-6;
+  }
+}

@@ -1,0 +1,92 @@
+<section class="quote-page">
+  <div class="container">
+    <div class="quote-hero">
+      <p class="eyebrow">Demande de devis</p>
+      <h1>Décrivez votre projet</h1>
+      <p class="quote-subtitle">
+        Indiquez vos besoins, les produits souhaités et nous revenons vers vous rapidement avec un devis clair.
+      </p>
+      <div class="intent-pill" *ngIf="intent === 'preorder'">Demande de précommande</div>
+      <p class="intent-help" *ngIf="intent === 'preorder'">
+        Votre précommande permet de réserver les stocks à venir. Nous vous préciserons les délais et modalités.
+      </p>
+    </div>
+
+    <form class="quote-card" [formGroup]="form" (ngSubmit)="submit()">
+      <div class="form-grid">
+        <label class="field">
+          <span>Nom</span>
+          <input type="text" formControlName="name" placeholder="Fatou Ndiaye" />
+          <small *ngIf="form.get('name')?.touched && form.get('name')?.invalid">Champ obligatoire.</small>
+        </label>
+        <label class="field">
+          <span>Téléphone</span>
+          <input type="tel" formControlName="phone" placeholder="+221 77 000 00 00" />
+          <small *ngIf="form.get('phone')?.touched && form.get('phone')?.invalid">Champ obligatoire.</small>
+        </label>
+        <label class="field">
+          <span>Email (optionnel)</span>
+          <input type="email" formControlName="email" placeholder="contact@sopikeur.com" />
+        </label>
+        <label class="field">
+          <span>Type de projet</span>
+          <select formControlName="projectType">
+            <option *ngFor="let type of projectTypes" [value]="type">{{ type }}</option>
+          </select>
+        </label>
+        <label class="field">
+          <span>Ville / Zone</span>
+          <input type="text" formControlName="city" placeholder="Dakar, Saly…" />
+        </label>
+      </div>
+
+      <div class="form-section">
+        <div class="section-title">Produits demandés</div>
+        <div class="product-grid">
+          <label class="product-option" *ngFor="let selection of selections; trackBy: trackByProductId">
+            <input
+              type="checkbox"
+              [checked]="selection.selected"
+              (change)="toggleSelection(selection, $any($event.target).checked)"
+            />
+            <span class="product-name">{{ selection.product.name }}</span>
+            <span class="product-type">{{ selection.product.type === 'spc' ? 'SPC' : 'Panneau' }}</span>
+          </label>
+        </div>
+
+        <div class="quantity-list">
+          <div class="quantity-item" *ngFor="let selection of selections; trackBy: trackByProductId">
+            <ng-container *ngIf="selection.selected">
+              <label class="field">
+                <span>
+                  Quantité pour {{ selection.product.name }}
+                  <strong>
+                    ({{ selection.product.type === 'spc' ? 'm²' : 'pièces' }})
+                  </strong>
+                </span>
+                <input
+                  type="number"
+                  min="0"
+                  inputmode="decimal"
+                  [(ngModel)]="selection.quantity"
+                  [ngModelOptions]="{ standalone: true }"
+                  placeholder="Ex: 25"
+                />
+              </label>
+            </ng-container>
+          </div>
+        </div>
+      </div>
+
+      <label class="field full">
+        <span>Message libre</span>
+        <textarea formControlName="message" rows="4" placeholder="Détails, délais, contraintes…"></textarea>
+      </label>
+
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary">Envoyer la demande</button>
+        <a class="btn btn-secondary" [href]="getWhatsappLink()" target="_blank" rel="noopener">WhatsApp</a>
+      </div>
+    </form>
+  </div>
+</section>

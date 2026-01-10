@@ -62,6 +62,7 @@ export const spcProducts: CatalogProduct[] = [
     specs: ['2,2 m²/boîte', 'Épaisseur 5 mm', 'Pose click'],
     price: '20 000',
     unit: 'FCFA / m²',
+    inStock: false,
     shortDescription: 'Chêne miel lumineux pour ambiances chaleureuses.',
     description:
       'Un chêne miel lumineux et chaleureux, idéal pour créer une ambiance accueillante et naturelle.',
@@ -78,6 +79,7 @@ export const spcProducts: CatalogProduct[] = [
     specs: ['2,2 m²/boîte', 'Épaisseur 5 mm', 'Pose click'],
     price: '20 000',
     unit: 'FCFA / m²',
+    inStock: false,
     shortDescription: 'Beige sable doux, effet pierre subtil.',
     description:
       'Un beige sable très doux, parfait pour agrandir visuellement les pièces et s’accorder avec tous les styles.',
@@ -94,6 +96,7 @@ export const spcProducts: CatalogProduct[] = [
     specs: ['2,2 m²/boîte', 'Épaisseur 5 mm', 'Pose click'],
     price: '20 000',
     unit: 'FCFA / m²',
+    inStock: false,
     shortDescription: 'Blanc chêne très clair, moderne et lumineux.',
     description:
       'Un blanc chêne très clair, moderne et épuré, idéal pour maximiser la lumière et un rendu contemporain.',

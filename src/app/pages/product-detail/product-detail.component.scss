@@ -146,6 +146,22 @@
   color: $color-accent;
 }
 
+.stock-pill {
+  align-self: flex-start;
+  padding: 0.35rem 0.85rem;
+  border-radius: 999px;
+  background: #2f9d57;
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.85rem;
+  box-shadow: $shadow-soft;
+}
+
+.stock-pill--preorder {
+  background: #f0a63b;
+  color: #2f1f0b;
+}
+
 .description {
   color: $color-muted;
   line-height: 1.7;

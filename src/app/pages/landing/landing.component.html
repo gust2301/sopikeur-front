@@ -78,10 +78,13 @@
           <button
             class="color-sample"
             type="button"
-            (click)="viewProduct(color)"
-            [attr.aria-label]="'Voir le détail de ' + color.name"
-          >
-            <span class="stock-badge" *ngIf="color.inStock">En stock</span>
+          (click)="viewProduct(color)"
+          [attr.aria-label]="'Voir le détail de ' + color.name"
+        >
+            <span class="stock-badge" *ngIf="color.inStock; else preorderBadge">En stock</span>
+            <ng-template #preorderBadge>
+              <span class="stock-badge stock-badge--preorder">Précommande</span>
+            </ng-template>
             <img [src]="color.image" [alt]="color.name" loading="lazy" />
           </button>
           <div class="color-info">
@@ -90,7 +93,9 @@
               <span *ngFor="let spec of color.specs">{{ spec }}</span>
             </div>
             <div class="color-price">{{ color.price }} {{ color.unit }}</div>
-            <a class="btn-add" [href]="getWhatsappLink(color)" target="_blank" rel="noopener">Devis</a>
+            <button class="btn-add" type="button" (click)="requestQuote(color)">
+              {{ color.inStock ? 'Devis' : 'Précommander' }}
+            </button>
           </div>
         </div>
       </div>
@@ -116,10 +121,13 @@
           <button
             class="panel-media"
             type="button"
-            (click)="viewProduct(panel)"
-            [attr.aria-label]="'Voir le détail de ' + panel.name"
-          >
-            <span class="stock-badge" *ngIf="panel.inStock">En stock</span>
+          (click)="viewProduct(panel)"
+          [attr.aria-label]="'Voir le détail de ' + panel.name"
+        >
+            <span class="stock-badge" *ngIf="panel.inStock; else panelPreorderBadge">En stock</span>
+            <ng-template #panelPreorderBadge>
+              <span class="stock-badge stock-badge--preorder">Précommande</span>
+            </ng-template>
             <img [src]="panel.image" [alt]="panel.name" loading="lazy" class="panel-image" />
           </button>
           <div class="panel-info">
@@ -134,7 +142,9 @@
             <div class="panel-footer">
               <div class="panel-price">{{ panel.price }} {{ panel.unit }}</div>
               <div class="panel-actions">
-                <a class="btn btn-primary" [href]="getWhatsappLink(panel)" target="_blank" rel="noopener">Devis</a>
+                <button class="btn btn-primary" type="button" (click)="requestQuote(panel)">
+                  {{ panel.inStock ? 'Devis' : 'Précommander' }}
+                </button>
               </div>
             </div>
           </div>
@@ -196,8 +206,21 @@
           <li>Packs mixtes SPC + accessoires + panneaux</li>
           <li>Avec ou sans pose</li>
         </ul>
-        <a href="#contact" class="btn btn-primary">Demander un devis</a>
+        <a routerLink="/devis" class="btn btn-primary">Demander un devis</a>
       </div>
+    </div>
+  </div>
+</section>
+
+<section class="section pro-cta" id="simulateur">
+  <div class="container">
+    <div class="pro-card">
+      <h3>Professionnel du bâtiment ?</h3>
+      <p>Bénéficiez d'un accompagnement sur-mesure, tarifs dégressifs et service de pose.</p>
+      <p class="pro-card__note">
+        Pour ces demandes, remplissez le formulaire de contact et indiquez “Pro”.
+      </p>
+      <a href="#contact" class="btn btn-primary">Contacter l’équipe</a>
     </div>
   </div>
 </section>
@@ -207,10 +230,9 @@
     <div>
       <p class="eyebrow">Contact</p>
       <h2>Parlons de votre projet</h2>
-      <p>WhatsApp, appel ou rdv avec un de nos conseillers pour vous présenter nos produits : choisissez le canal le plus simple pour vous.</p>
+      <p>Appel ou rdv avec un de nos conseillers pour vous présenter nos produits : choisissez le canal le plus simple pour vous.</p>
       <div class="contact-actions">
-        <a href="https://wa.me/221774293757" target="_blank" rel="noopener" class="btn btn-primary">WhatsApp</a>
-        <a href="tel:+2216806315" class="btn btn-secondary">+221 680 63 15</a>
+        <a href="tel:+2216806315" class="btn btn-primary">+221 680 63 15</a>
       </div>
     </div>
     <div class="contact-card">
@@ -230,16 +252,6 @@
         </label>
         <button type="button" class="btn btn-primary btn-block">Envoyer</button>
       </form>
-    </div>
-  </div>
-</section>
-
-<section class="section pro-cta" id="simulateur">
-  <div class="container">
-    <div class="pro-card">
-      <h3>Professionnel du bâtiment ?</h3>
-      <p>Bénéficiez d'un accompagnement sur-mesure, tarifs dégressifs et service de pose.</p>
-      <a href="#contact" class="btn btn-primary">Être rappelé</a>
     </div>
   </div>
 </section>

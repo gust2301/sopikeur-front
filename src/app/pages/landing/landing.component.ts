@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, ElementRef, ViewChild } from '@angu
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { acousticPanels, CatalogProduct, spcProducts } from '../../shared/data/catalog';
-import { buildWhatsappLink } from '../../shared/utils/whatsapp';
+import { QuoteNavService } from '../../shared/services/quote-nav.service';
 
 interface UspCard {
   title: string;
@@ -43,7 +43,10 @@ export class LandingComponent {
   readonly colors: CatalogProduct[] = spcProducts;
   readonly acousticPanels: CatalogProduct[] = acousticPanels;
 
-  constructor(private readonly router: Router) {}
+  constructor(
+    private readonly router: Router,
+    private readonly quoteNavService: QuoteNavService,
+  ) {}
 
   viewProduct(product: CatalogProduct): void {
     this.router.navigate(['/product', product.type, product.id]);
@@ -57,8 +60,9 @@ export class LandingComponent {
     this.scrollByCard(this.panelsTrack?.nativeElement, direction);
   }
 
-  getWhatsappLink(product: CatalogProduct): string {
-    return buildWhatsappLink(product.name, product.sku);
+  requestQuote(product: CatalogProduct): void {
+    const intent = product.inStock ? 'quote' : 'preorder';
+    this.quoteNavService.openQuote({ product, intent });
   }
 
   private scrollByCard(track: HTMLDivElement | undefined, direction: 'left' | 'right'): void {

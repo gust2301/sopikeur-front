@@ -17,6 +17,11 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./pages/product-detail/product-detail.component').then(m => m.ProductDetailComponent),
       },
+      {
+        path: 'devis',
+        loadComponent: () =>
+          import('./pages/quote-request/quote-request.component').then(m => m.QuoteRequestComponent),
+      },
     ],
   },
   { path: '**', redirectTo: '' },

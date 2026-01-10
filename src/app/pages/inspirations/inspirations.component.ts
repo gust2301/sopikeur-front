@@ -1,7 +1,6 @@
 import { ChangeDetectionStrategy, Component, ElementRef, HostListener, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
-const WHATSAPP_LINK = 'https://wa.me/221774293757';
+import { RouterModule } from '@angular/router';
 
 type InspirationCategory = 'spc' | 'panneaux';
 type InspirationTab = 'all' | InspirationCategory;
@@ -19,7 +18,7 @@ interface InspirationItem {
 @Component({
   selector: 'app-inspirations',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterModule],
   templateUrl: './inspirations.component.html',
   styleUrl: './inspirations.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -113,7 +112,6 @@ export class InspirationsComponent {
   activeTab: InspirationTab = 'all';
   selectedItem: InspirationItem | null = null;
   sliderValue = 50;
-  whatsappLink = WHATSAPP_LINK;
 
   get filteredItems(): InspirationItem[] {
     if (this.activeTab === 'all') {

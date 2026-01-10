@@ -38,6 +38,9 @@
     <div class="detail-info">
       <p class="eyebrow">{{ product.type === 'spc' ? 'SPC' : 'Panneau acoustique' }}</p>
       <h1>{{ product.name }}</h1>
+      <span class="stock-pill" [class.stock-pill--preorder]="!product.inStock">
+        {{ product.inStock ? 'En stock' : 'Précommande' }}
+      </span>
       <p class="price">{{ product.price }} {{ product.unit }}</p>
       <p class="description">{{ product.description }}</p>
 
@@ -50,9 +53,9 @@
       </ul>
 
       <div class="actions">
-        <a class="btn btn-primary" [href]="getWhatsappLink(product)" target="_blank" rel="noopener">
-          Demander un devis
-        </a>
+        <button class="btn btn-primary" type="button" (click)="requestQuote(product)">
+          {{ product.inStock ? 'Demander un devis' : 'Précommander' }}
+        </button>
         <a
           class="btn btn-secondary"
           routerLink="/"

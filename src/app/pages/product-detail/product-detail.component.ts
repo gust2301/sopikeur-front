@@ -3,7 +3,7 @@ import { AfterViewInit, ChangeDetectionStrategy, Component, computed, ElementRef
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CatalogProduct, catalogProducts } from '../../shared/data/catalog';
-import { buildWhatsappLink } from '../../shared/utils/whatsapp';
+import { QuoteNavService } from '../../shared/services/quote-nav.service';
 
 @Component({
   standalone: true,
@@ -31,6 +31,7 @@ export class ProductDetailComponent implements AfterViewInit {
     private readonly route: ActivatedRoute,
     private readonly router: Router,
     private readonly zone: NgZone,
+    private readonly quoteNavService: QuoteNavService,
   ) {
     this.route.paramMap.pipe(takeUntilDestroyed()).subscribe(params => {
       const productId = params.get('id');
@@ -117,8 +118,9 @@ export class ProductDetailComponent implements AfterViewInit {
     }
   }
 
-  getWhatsappLink(product: CatalogProduct): string {
-    return buildWhatsappLink(product.name, product.sku);
+  requestQuote(product: CatalogProduct): void {
+    const intent = product.inStock ? 'quote' : 'preorder';
+    this.quoteNavService.openQuote({ product, intent });
   }
 
   private async updateGallery(product: CatalogProduct): Promise<void> {
