@@ -74,6 +74,17 @@
   margin-bottom: $space-8;
 }
 
+.inspirations__section {
+  display: grid;
+  gap: $space-5;
+  margin-bottom: $space-8;
+}
+
+.inspirations__section-title {
+  font-size: 1.5rem;
+  margin: 0;
+}
+
 .tab {
   border: 1px solid rgba($color-ink, 0.15);
   border-radius: 999px;
@@ -123,10 +134,17 @@
   display: block;
 }
 
-.inspiration-card__badge {
+.inspiration-card__badges {
   position: absolute;
   top: $space-3;
   left: $space-3;
+  display: flex;
+  flex-wrap: wrap;
+  gap: $space-2;
+}
+
+.inspiration-card__badge {
+  position: static;
   background: rgba($color-ink, 0.85);
   color: #fff;
   font-size: 0.75rem;
@@ -230,6 +248,12 @@
   gap: $space-2;
 }
 
+.lightbox__badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $space-2;
+}
+
 .lightbox__badge {
   font-size: 0.75rem;
   font-weight: 700;
@@ -250,10 +274,98 @@
   object-fit: cover;
 }
 
+.lightbox__products {
+  display: grid;
+  gap: $space-3;
+}
+
+.lightbox__products h4 {
+  margin: 0;
+}
+
+.lightbox__products ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: $space-2;
+}
+
 .lightbox__footer {
   display: flex;
   flex-wrap: wrap;
   gap: $space-3;
+}
+
+.product-link {
+  width: 100%;
+  text-align: left;
+  padding: 0.75rem 1rem;
+  border-radius: $radius-lg;
+  border: 1px solid rgba($color-ink, 0.15);
+  background: #fff;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.product-link:hover {
+  background: rgba($color-ink, 0.04);
+}
+
+.product-sheet {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: grid;
+  place-items: center;
+}
+
+.product-sheet__overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba($color-ink, 0.6);
+}
+
+.product-sheet__panel {
+  position: relative;
+  width: min(420px, 90vw);
+  background: #fff;
+  border-radius: $radius-lg;
+  padding: $space-5;
+  display: grid;
+  gap: $space-4;
+  z-index: 1;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.product-sheet__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: $space-3;
+}
+
+.product-sheet__header h4 {
+  margin: 0;
+}
+
+.product-sheet__panel ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: $space-2;
+}
+
+.product-sheet__close {
+  border: none;
+  background: rgba($color-ink, 0.1);
+  width: 2.2rem;
+  height: 2.2rem;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 1.1rem;
 }
 
 .before-after {
@@ -333,5 +445,17 @@
 
   .lightbox__content {
     padding: $space-5 $space-4;
+  }
+
+  .product-sheet__panel {
+    width: 100%;
+    border-radius: $radius-lg $radius-lg 0 0;
+    position: absolute;
+    bottom: 0;
+    max-height: 70vh;
+  }
+
+  .product-link {
+    font-size: 0.95rem;
   }
 }

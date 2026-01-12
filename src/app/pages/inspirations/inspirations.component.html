@@ -4,8 +4,7 @@
       <p class="eyebrow">Inspirations</p>
       <h1>Des ambiances qui donnent envie</h1>
       <p class="inspirations__subtitle">
-        Inspirez-vous de nos réalisations SPC et panneaux pour imaginer votre futur intérieur. La conversion se fait sur
-        devis : dites-nous ce qui vous plaît.
+        Chaque espace commence par une idée. Parcourez nos inspirations SPC et panneaux, associez librement les matières et créez un intérieur unique, à votre image.
       </p>
     </div>
 
@@ -23,23 +22,52 @@
       </button>
     </div>
 
-    <div class="inspirations__grid" role="list">
-      <article class="inspiration-card" *ngFor="let item of filteredItems" role="listitem">
-        <button
-          type="button"
-          class="inspiration-card__media"
-          (click)="openLightbox(item)"
-          [attr.aria-label]="'Voir ' + item.title"
-        >
-          <img [src]="item.cover" [alt]="item.title" loading="lazy" />
-          <span class="inspiration-card__badge">{{ item.badge }}</span>
-          <span class="inspiration-card__tag" *ngIf="item.category === 'spc'">Avant/Après</span>
-        </button>
-        <div class="inspiration-card__content">
-          <h3>{{ item.title }}</h3>
-          <button type="button" class="btn btn-secondary" (click)="openLightbox(item)">Voir l’inspiration</button>
-        </div>
-      </article>
+    <div class="inspirations__section" *ngIf="filteredNewItems.length > 0">
+      <h2 class="inspirations__section-title">Nouvelles inspirations</h2>
+      <div class="inspirations__grid" role="list">
+        <article class="inspiration-card" *ngFor="let item of filteredNewItems" role="listitem">
+          <button
+            type="button"
+            class="inspiration-card__media"
+            (click)="openLightbox(item)"
+            [attr.aria-label]="'Voir ' + item.title"
+          >
+            <img [src]="getCardImage(item)" [alt]="item.title" loading="lazy" />
+            <div class="inspiration-card__badges">
+              <span class="inspiration-card__badge" *ngFor="let badge of getBadgeLabels(item)">{{ badge }}</span>
+            </div>
+            <span class="inspiration-card__tag" *ngIf="item.type === 'beforeAfter'">Avant/Après</span>
+          </button>
+          <div class="inspiration-card__content">
+            <h3>{{ item.title }}</h3>
+            <button type="button" class="btn btn-secondary" (click)="openLightbox(item)">Voir l’inspiration</button>
+          </div>
+        </article>
+      </div>
+    </div>
+
+    <div class="inspirations__section" *ngIf="filteredLegacyItems.length > 0">
+      <h2 class="inspirations__section-title">Inspirations sélectionnées</h2>
+      <div class="inspirations__grid" role="list">
+        <article class="inspiration-card" *ngFor="let item of filteredLegacyItems" role="listitem">
+          <button
+            type="button"
+            class="inspiration-card__media"
+            (click)="openLightbox(item)"
+            [attr.aria-label]="'Voir ' + item.title"
+          >
+            <img [src]="getCardImage(item)" [alt]="item.title" loading="lazy" />
+            <div class="inspiration-card__badges">
+              <span class="inspiration-card__badge" *ngFor="let badge of getBadgeLabels(item)">{{ badge }}</span>
+            </div>
+            <span class="inspiration-card__tag" *ngIf="item.type === 'beforeAfter'">Avant/Après</span>
+          </button>
+          <div class="inspiration-card__content">
+            <h3>{{ item.title }}</h3>
+            <button type="button" class="btn btn-secondary" (click)="openLightbox(item)">Voir l’inspiration</button>
+          </div>
+        </article>
+      </div>
     </div>
   </div>
 </section>
@@ -76,7 +104,9 @@
     </button>
 
     <div class="lightbox__header">
-      <span class="lightbox__badge">{{ selectedItem.badge }}</span>
+      <div class="lightbox__badges">
+        <span class="lightbox__badge" *ngFor="let badge of getBadgeLabels(selectedItem)">{{ badge }}</span>
+      </div>
       <h3 [id]="dialogTitleId">{{ selectedItem.title }}</h3>
     </div>
 
@@ -85,20 +115,16 @@
         <div class="before-after">
           <img
             class="before-after__image"
-            [src]="selectedItem.beforeImage"
+            [src]="selectedItem.beforeImage || ''"
             [alt]="selectedItem.title + ' avant'"
           />
           <div class="before-after__overlay" [style.width.%]="sliderValue">
             <img
               class="before-after__image"
-              [src]="selectedItem.afterImage"
+              [src]="selectedItem.afterImage || ''"
               [alt]="selectedItem.title + ' après'"
             />
           </div>
-<!--          <div class="before-after__labels" aria-hidden="true">
-            <span>Après</span>
-            <span>Avant</span>
-          </div>-->
           <input
             class="before-after__range"
             type="range"
@@ -111,18 +137,44 @@
         </div>
       </ng-container>
       <ng-template #panelView>
-        <img class="lightbox__image" [src]="selectedItem.cover" [alt]="selectedItem.title" />
+        <img class="lightbox__image" [src]="getDetailImage(selectedItem)" [alt]="selectedItem.title" />
       </ng-template>
     </div>
 
-    <div class="lightbox__footer">
-      <a
-        class="btn btn-primary"
-        *ngIf="selectedItem"
-        [routerLink]="['/product', selectedItem.productType, selectedItem.productId]"
-      >
-        Voir le produit
-      </a>
+    <div class="lightbox__products" *ngIf="hasMultipleProducts">
+      <h4>Produits associés</h4>
+      <ul>
+        <li *ngFor="let productLine of selectedProductLines">
+          <button type="button" class="product-link" (click)="navigateToProduct(productLine.ref)">
+            {{ productLine.label }}
+          </button>
+        </li>
+      </ul>
     </div>
+
+    <div class="lightbox__footer" *ngIf="hasProductLinks">
+      <button type="button" class="btn btn-primary" (click)="handlePrimaryCta()">
+        {{ hasMultipleProducts ? 'Voir les produits' : 'Voir le produit' }}
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="product-sheet" *ngIf="selectedItem && showProductSheet" role="dialog" aria-modal="true">
+  <div class="product-sheet__overlay" (click)="closeProductSheet()"></div>
+  <div class="product-sheet__panel">
+    <div class="product-sheet__header">
+      <h4>Produits associés</h4>
+      <button type="button" class="product-sheet__close" (click)="closeProductSheet()" aria-label="Fermer">
+        ✕
+      </button>
+    </div>
+    <ul>
+      <li *ngFor="let productLine of selectedProductLines">
+        <button type="button" class="product-link" (click)="navigateToProduct(productLine.ref)">
+          {{ productLine.label }}
+        </button>
+      </li>
+    </ul>
   </div>
 </div>
