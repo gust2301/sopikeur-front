@@ -75,7 +75,10 @@
 
 .hero__background {
   position: absolute;
-  inset: 0;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   overflow: hidden;
   z-index: 0;
 }
@@ -337,6 +340,7 @@
   overflow-x: auto;
   scroll-behavior: smooth;
   scrollbar-width: none;
+  -ms-overflow-style: none;
 }
 
 .colors-track::-webkit-scrollbar {
@@ -447,6 +451,7 @@
   overflow-x: auto;
   scroll-behavior: smooth;
   scrollbar-width: none;
+  -ms-overflow-style: none;
 }
 
 .panels-track::-webkit-scrollbar {
@@ -715,5 +720,86 @@
     width: 36px;
     height: 36px;
     display: none;
+  }
+}
+
+@media (max-width: 900px) {
+  .hero {
+    height: auto;
+    min-height: 0;
+    padding: $space-8 0 $space-6;
+  }
+
+  .hero__background {
+    bottom: auto;
+    height: clamp(420px, 60vh, 560px);
+  }
+
+  .hero-content {
+    grid-template-columns: 1fr;
+    padding-top: $space-8;
+  }
+
+  .hero-ctas {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .subtitle {
+    font-size: 1.25rem;
+  }
+
+  .hero-description {
+    font-size: 1.05rem;
+  }
+
+  .usp-grid,
+  .spc-explanation,
+  .services-grid,
+  .contact-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .hero-usp {
+    position: relative !important;
+    left: auto;
+    bottom: auto;
+    transform: none !important;
+    width: 100%;
+    margin-top: $space-6;
+    padding-inline: $space-4;
+  }
+
+  .usp-card {
+    width: 100%;
+  }
+
+  .colors-slider,
+  .panels-slider {
+    padding: 0;
+  }
+}
+
+@media (max-width: 600px) {
+  .hero__overlay {
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0.55) 0%, rgba(0, 0, 0, 0.75) 100%);
+    backdrop-filter: blur(4px);
+  }
+
+  .hero h1 {
+    font-size: 2rem;
+  }
+
+  .hero-description {
+    font-size: 1.05rem;
+  }
+
+  .hero__highlights {
+    font-size: 1rem;
+  }
+
+  .hero__highlight {
+    flex: 1 1 100%;
+    justify-content: flex-start;
   }
 }

@@ -13,6 +13,12 @@
 
 * { box-sizing: border-box; }
 
+html,
+body {
+  width: 100%;
+  overflow-x: hidden;
+}
+
 body {
   margin: 0;
   min-height: 100vh;
@@ -30,6 +36,13 @@ p { margin: 0; }
 
 a { color: inherit; }
 
+img,
+video {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
 .container {
   @include container;
 }
@@ -41,4 +54,8 @@ a { color: inherit; }
   margin: 0;
   font: inherit;
   color: inherit;
+}
+
+.body--locked {
+  overflow: hidden;
 }
