@@ -24,11 +24,11 @@ export class FooterComponent {
     { title: 'Produits', links: [
       { label: 'SPC sol', href: '#catalogue' },
       { label: 'Wall panels', href: '#spc' },
-      { label: 'Accessoires', href: '#services' },
+      { label: 'Accessoires', href: '#catalogue' },
       { label: 'Échantillons', href: '#catalogue' },
     ]},
     { title: 'Aide', links: [
-      { label: 'Guide d’installation', href: '#services' },
+      { label: 'Guide d’installation', href: '#contact' },
       { label: 'Entretien', href: '#spc' },
       { label: 'FAQ', href: '#contact' },
       { label: 'Garanties', href: '#contact' },

@@ -4,16 +4,44 @@
       <img src="assets/logos/sopikeurlogo_white.png" alt="Sopi Keur" loading="lazy" />
     </a>
 
-    <nav class="header__nav" aria-label="Sections principales">
-      <a *ngFor="let link of navLinks" [href]="link.href" class="nav-link">{{ link.label }}</a>
-<!--      <app-link-button
-        class="nav-cta"
-        variant="ghost"
-        href="https://wa.me/221774293757"
-        target="_blank"
+    <div class="nav-desktop">
+      <nav class="header__nav" aria-label="Sections principales">
+        <a *ngFor="let link of navLinks" [href]="link.href" class="nav-link">
+          {{ link.label }}
+        </a>
+      </nav>
+    </div>
+
+    <div class="nav-mobile">
+      <button
+        class="menu-toggle menu-btn button-reset"
+        type="button"
+        aria-label="Ouvrir le menu"
+        aria-controls="mobile-drawer"
+        [attr.aria-expanded]="isMobileMenuOpen"
+        (click)="toggleMenu()"
       >
-        WhatsApp
-      </app-link-button>-->
-    </nav>
+        <span class="menu-toggle__bar"></span>
+        <span class="menu-toggle__bar"></span>
+        <span class="menu-toggle__bar"></span>
+      </button>
+
+      <div class="mobile-menu" [class.is-open]="isMobileMenuOpen">
+        <button class="mobile-menu__overlay" type="button" (click)="closeMenu()" aria-label="Fermer le menu"></button>
+        <aside class="mobile-menu__drawer" id="mobile-drawer" role="dialog" aria-modal="true">
+          <div class="mobile-menu__header">
+            <span class="mobile-menu__title">Navigation</span>
+            <button class="mobile-menu__close button-reset" type="button" aria-label="Fermer le menu" (click)="closeMenu()">
+              ✕
+            </button>
+          </div>
+          <nav class="mobile-menu__nav" aria-label="Navigation mobile">
+            <a *ngFor="let link of navLinks" [href]="link.href" class="mobile-menu__link" (click)="closeMenu()">
+              {{ link.label }}
+            </a>
+          </nav>
+        </aside>
+      </div>
+    </div>
   </div>
 </header>

@@ -307,7 +307,30 @@
   }
 }
 
+@media (max-width: 900px) {
+  .inspirations__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .inspirations__tabs {
+    gap: $space-2;
+  }
+
+  .tab {
+    flex: 1 1 100%;
+    text-align: center;
+  }
+}
+
 @media (max-width: 640px) {
+  .inspirations__hero h1 {
+    font-size: 2rem;
+  }
+
+  .inspirations__subtitle {
+    font-size: 1.05rem;
+  }
+
   .lightbox__content {
     padding: $space-5 $space-4;
   }
