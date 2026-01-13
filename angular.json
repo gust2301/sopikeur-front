@@ -31,9 +31,36 @@
             "assets": [
               "src/favicon.ico",
               "src/assets",
+              "src/_headers",
+              "src/_redirects",
               "src/robots.txt",
               "src/sitemap.xml",
-              "src/site.webmanifest"
+              "src/site.webmanifest",
+              {
+                "glob": "favicon-16x16.png",
+                "input": "src/assets/icons",
+                "output": "/"
+              },
+              {
+                "glob": "favicon-32x32.png",
+                "input": "src/assets/icons",
+                "output": "/"
+              },
+              {
+                "glob": "apple-touch-icon.png",
+                "input": "src/assets/icons",
+                "output": "/"
+              },
+              {
+                "glob": "android-chrome-192x192.png",
+                "input": "src/assets/icons",
+                "output": "/"
+              },
+              {
+                "glob": "android-chrome-512x512.png",
+                "input": "src/assets/icons",
+                "output": "/"
+              }
             ],
             "styles": [
               "src/styles.scss"
@@ -107,9 +134,36 @@
             "assets": [
               "src/favicon.ico",
               "src/assets",
+              "src/_headers",
+              "src/_redirects",
               "src/robots.txt",
               "src/sitemap.xml",
-              "src/site.webmanifest"
+              "src/site.webmanifest",
+              {
+                "glob": "favicon-16x16.png",
+                "input": "src/assets/icons",
+                "output": "/"
+              },
+              {
+                "glob": "favicon-32x32.png",
+                "input": "src/assets/icons",
+                "output": "/"
+              },
+              {
+                "glob": "apple-touch-icon.png",
+                "input": "src/assets/icons",
+                "output": "/"
+              },
+              {
+                "glob": "android-chrome-192x192.png",
+                "input": "src/assets/icons",
+                "output": "/"
+              },
+              {
+                "glob": "android-chrome-512x512.png",
+                "input": "src/assets/icons",
+                "output": "/"
+              }
             ],
             "styles": [
               "src/styles.scss"
