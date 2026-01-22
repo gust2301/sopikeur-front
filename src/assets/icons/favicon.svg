@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="180" height="180" viewBox="0 0 180 180">
+  <defs>
+    <!-- Fond jaune légèrement "3D" -->
+    <radialGradient id="bgGrad" cx="35%" cy="30%" r="80%">
+      <stop offset="0%" stop-color="#FFE08A"/>
+      <stop offset="55%" stop-color="#FFC94A"/>
+      <stop offset="100%" stop-color="#F2B62E"/>
+    </radialGradient>
+
+    <!-- Dégradé du logo (effet matière) -->
+    <linearGradient id="logoGrad" x1="30%" y1="20%" x2="70%" y2="90%">
+      <stop offset="0%" stop-color="#F8FAFC"/>
+      <stop offset="45%" stop-color="#E9EEF3"/>
+      <stop offset="100%" stop-color="#C9D1DA"/>
+    </linearGradient>
+
+    <!-- Ombre portée douce -->
+    <filter id="softShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="6" stdDeviation="6" flood-color="#000000" flood-opacity="0.25"/>
+    </filter>
+
+    <!-- Petit reflet (highlight) -->
+    <linearGradient id="shine" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.75"/>
+      <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Cercle fond -->
+  <circle cx="90" cy="90" r="90" fill="url(#bgGrad)"/>
+
+  <!-- Groupe logo (taille + centrage) -->
+  <g transform="translate(0 2.5) translate(90 87.5) scale(1.75) translate(-90 -87.5)">
+    <!-- Ombre / relief -->
+    <path
+      d="M 119.0 126.5 L 111.0 126.5 L 108.5 124.0 L 107.0 101.5 L 96.5 102.0 L 96.5 124.0 L 94.0 126.5 L 86.0 126.5 L 83.5 124.0 L 83.0 101.5 L 72.5 102.0 L 72.5 124.0 L 70.0 126.5 L 62.0 126.5 L 59.5 124.0 L 59.5 86.0 L 64.0 81.5 L 84.5 67.0 L 62.0 66.5 L 59.5 64.0 L 59.5 53.0 L 62.0 50.5 L 119.0 51.5 L 121.5 54.0 L 121.5 64.0 L 119.0 66.5 L 97.5 67.0 L 121.5 86.0 L 121.5 124.0 L 119.0 126.5 Z M 101.5 87.0 L 91.0 79.5 L 79.5 87.0 L 101.5 87.0 Z"
+      fill="url(#logoGrad)"
+      fill-rule="evenodd"
+      filter="url(#softShadow)"
+    />
+
+    <!-- Reflet : même forme, légèrement décalée vers le haut -->
+    <path
+      d="M 119.0 126.5 L 111.0 126.5 L 108.5 124.0 L 107.0 101.5 L 96.5 102.0 L 96.5 124.0 L 94.0 126.5 L 86.0 126.5 L 83.5 124.0 L 83.0 101.5 L 72.5 102.0 L 72.5 124.0 L 70.0 126.5 L 62.0 126.5 L 59.5 124.0 L 59.5 86.0 L 64.0 81.5 L 84.5 67.0 L 62.0 66.5 L 59.5 64.0 L 59.5 53.0 L 62.0 50.5 L 119.0 51.5 L 121.5 54.0 L 121.5 64.0 L 119.0 66.5 L 97.5 67.0 L 121.5 86.0 L 121.5 124.0 L 119.0 126.5 Z M 101.5 87.0 L 91.0 79.5 L 79.5 87.0 L 101.5 87.0 Z"
+      fill="url(#shine)"
+      fill-rule="evenodd"
+      transform="translate(0,-3)"
+      opacity="0.55"
+    />
+  </g>
+</svg>

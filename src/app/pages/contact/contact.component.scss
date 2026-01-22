@@ -1,0 +1,124 @@
+@use 'styles/tokens' as *;
+
+:host {
+  display: block;
+  background: $color-cream;
+  color: $color-ink;
+}
+
+.container {
+  @include container;
+}
+
+.contact-page {
+  padding: $space-10 0 $space-12;
+}
+
+.contact-hero {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: $space-8;
+  align-items: start;
+}
+
+.eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 800;
+  font-size: 0.85rem;
+  color: $color-accent-2;
+}
+
+.section-title {
+  margin: 0;
+  color: $color-accent-2;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+}
+
+.section-subtitle {
+  margin: $space-3 0 0;
+  color: $color-muted;
+  font-size: 1rem;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: $space-2;
+  padding: 0.6rem 1.4rem;
+  border-radius: 999px;
+  font-weight: 700;
+  border: 1px solid transparent;
+  cursor: pointer;
+  text-decoration: none;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.btn:hover {
+  transform: translateY(-1px);
+  box-shadow: $shadow-strong;
+}
+
+.btn-primary {
+  background: $color-accent;
+  color: #fff;
+}
+
+.btn-block {
+  width: 100%;
+}
+
+.contact-actions {
+  display: flex;
+  gap: $space-3;
+  flex-wrap: wrap;
+  margin-top: $space-4;
+}
+
+.contact-card {
+  background: #fff;
+  border-radius: $radius-xl;
+  padding: $space-5;
+  box-shadow: $shadow-soft;
+  border: 1px solid rgba($color-ink, 0.05);
+  display: grid;
+  gap: $space-4;
+}
+
+.contact-form {
+  display: grid;
+  gap: $space-4;
+}
+
+.contact-form label {
+  display: grid;
+  gap: $space-2;
+  color: $color-muted;
+}
+
+.contact-form input,
+.contact-form textarea {
+  width: 100%;
+  border-radius: 12px;
+  border: 1px solid $color-border;
+  padding: $space-3;
+  font: inherit;
+  background: #fff;
+}
+
+.contact-form textarea {
+  resize: vertical;
+  min-height: 120px;
+}
+
+@media (max-width: 900px) {
+  .contact-page {
+    padding: $space-8 0 $space-10;
+  }
+
+  .contact-hero {
+    grid-template-columns: 1fr;
+  }
+}

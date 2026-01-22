@@ -1,16 +1,19 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, Renderer2, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 import { DOCUMENT } from '@angular/common';
 
 interface NavLink {
   label: string;
-  href: string;
+  path: string;
+  fragment?: string;
+  exact?: boolean;
 }
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterModule],
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -20,11 +23,11 @@ export class HeaderComponent implements OnDestroy {
   private renderer = inject(Renderer2);
   isMobileMenuOpen = false;
   navLinks: NavLink[] = [
-    { label: 'Accueil', href: '/#home' },
-    { label: 'SPC', href: '/#spc' },
-    { label: 'Panneaux', href: '/#panneaux' },
-    { label: 'Inspirations', href: '/inspirations' },
-    { label: 'Contact', href: '/#contact' },
+    { label: 'Accueil', path: '/', fragment: 'home', exact: true },
+    { label: 'SPC', path: '/spc' },
+    { label: 'Panneaux', path: '/panneaux' },
+    { label: 'Inspirations', path: '/inspirations' },
+    { label: 'Contact', path: '/contact' },
   ];
 
   toggleMenu(): void {

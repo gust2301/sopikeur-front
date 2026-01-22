@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>https://sopikeur.sn/</loc></url>
-  <url><loc>https://sopikeur.sn/#spc</loc></url>
-  <url><loc>https://sopikeur.sn/#panneaux</loc></url>
+  <url><loc>https://sopikeur.sn/spc</loc></url>
+  <url><loc>https://sopikeur.sn/panneaux</loc></url>
   <url><loc>https://sopikeur.sn/inspirations</loc></url>
-  <url><loc>https://sopikeur.sn/#contact</loc></url>
+  <url><loc>https://sopikeur.sn/contact</loc></url>
 </urlset>

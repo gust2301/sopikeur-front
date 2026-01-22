@@ -1,0 +1,139 @@
+<section class="products-page">
+  <div class="container">
+    <ng-container *ngIf="vm$ | async as vm">
+      <header class="products-hero">
+        <div>
+          <p class="eyebrow">Catalogue</p>
+          <h1 class="section-title">{{ vm.title }}</h1>
+          <p class="section-subtitle">{{ vm.subtitle }}</p>
+        </div>
+        <div class="results-meta">
+          <span>{{ vm.total }} résultat{{ vm.total > 1 ? 's' : '' }}</span>
+          <span>Page {{ vm.page }} / {{ vm.pages.length }}</span>
+        </div>
+      </header>
+
+      <div class="filters-mobile">
+        <details class="filters-mobile__details">
+          <summary>Filtres & recherche</summary>
+          <div class="filters-mobile__panel">
+            <ng-container *ngTemplateOutlet="filtersTemplate"></ng-container>
+          </div>
+        </details>
+      </div>
+
+      <div class="products-layout">
+        <aside class="filters-desktop">
+          <ng-container *ngTemplateOutlet="filtersTemplate"></ng-container>
+        </aside>
+
+        <section class="products-content">
+          <div class="products-grid" [class.is-panels]="vm.type === 'acoustic'">
+            <article
+              class="product-card"
+              *ngFor="let product of vm.products; trackBy: trackById"
+              [class.is-panel]="product.type === 'acoustic'"
+            >
+              <a
+                class="product-media"
+                [routerLink]="['/product', product.type, product.id]"
+                [attr.aria-label]="'Voir le détail de ' + product.name"
+              >
+                <span
+                  class="stock-badge"
+                  [class.stock-badge--preorder]="isPreorder(product)"
+                  [class.stock-badge--out]="isOutOfStock(product)"
+                >
+                  {{ getStockLabel(product) }}
+                </span>
+                <img [src]="product.image" [alt]="product.name" loading="lazy" />
+              </a>
+              <div class="product-info">
+                <div>
+                  <p class="product-sku">{{ product.sku }}</p>
+                  <h3 class="product-name">{{ product.name }}</h3>
+                  <p class="product-description">{{ product.shortDescription }}</p>
+                  <div class="product-specs">
+                    <span *ngFor="let spec of product.specs">{{ spec }}</span>
+                  </div>
+                </div>
+                <div class="product-footer">
+                  <div class="product-price">{{ product.price }} {{ product.unit }}</div>
+                  <div class="product-actions">
+                    <button class="btn btn-primary" type="button" (click)="requestQuote(product)">
+                      {{ isPreorder(product) ? 'Précommander' : 'Demander un devis' }}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </article>
+          </div>
+
+          <div class="empty-state" *ngIf="!vm.loading && vm.products.length === 0">
+            <p>Aucun produit ne correspond à vos critères.</p>
+          </div>
+
+          <div class="pagination" *ngIf="vm.pages.length > 1">
+            <button class="pagination-btn" type="button" [disabled]="vm.page === 1" (click)="goToPage(vm.page - 1)">
+              Précédent
+            </button>
+            <button
+              class="pagination-number"
+              type="button"
+              *ngFor="let page of vm.pages; trackBy: trackByPage"
+              [class.is-active]="page === vm.page"
+              (click)="goToPage(page)"
+            >
+              {{ page }}
+            </button>
+            <button
+              class="pagination-btn"
+              type="button"
+              [disabled]="vm.page === vm.pages.length"
+              (click)="goToPage(vm.page + 1)"
+            >
+              Suivant
+            </button>
+          </div>
+        </section>
+      </div>
+    </ng-container>
+  </div>
+</section>
+
+<ng-template #filtersTemplate>
+  <div class="filters-card">
+    <div class="filter-group">
+      <label>
+        <span>Recherche</span>
+        <input
+          type="search"
+          placeholder="Nom, SKU, référence"
+          [ngModel]="searchText"
+          (ngModelChange)="onSearchChange($event)"
+        />
+      </label>
+    </div>
+    <div class="filter-group">
+      <span class="filter-label">Stock</span>
+      <div class="filter-options">
+        <button
+          type="button"
+          *ngFor="let option of stockFilters"
+          [class.is-active]="option.value === stockSelection"
+          (click)="onStockChange(option.value)"
+        >
+          {{ option.label }}
+        </button>
+      </div>
+    </div>
+    <div class="filter-group">
+      <label>
+        <span>Résultats par page</span>
+        <select [ngModel]="pageSize" (ngModelChange)="onPageSizeChange($event)">
+          <option *ngFor="let size of pageSizeOptions" [ngValue]="size">{{ size }}</option>
+        </select>
+      </label>
+    </div>
+  </div>
+</ng-template>
