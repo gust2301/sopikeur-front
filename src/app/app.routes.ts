@@ -13,6 +13,20 @@ export const routes: Routes = [
           import('./pages/inspirations/inspirations.component').then(m => m.InspirationsComponent),
       },
       {
+        path: 'spc',
+        loadComponent: () => import('./pages/products/products.component').then(m => m.ProductsComponent),
+        data: { type: 'SPC' },
+      },
+      {
+        path: 'panneaux',
+        loadComponent: () => import('./pages/products/products.component').then(m => m.ProductsComponent),
+        data: { type: 'PANEL' },
+      },
+      {
+        path: 'contact',
+        loadComponent: () => import('./pages/contact/contact.component').then(m => m.ContactComponent),
+      },
+      {
         path: 'product/:type/:id',
         loadComponent: () =>
           import('./pages/product-detail/product-detail.component').then(m => m.ProductDetailComponent),

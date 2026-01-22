@@ -17,13 +17,13 @@ interface FooterColumn {
 export class FooterComponent {
   columns: FooterColumn[] = [
     { title: 'À propos', links: [
-      { label: 'Notre histoire', href: '#' },
+      { label: 'Notre équipe', href: '#' },
       { label: 'Nos valeurs', href: '#' },
       { label: 'Engagement qualité', href: '#' },
     ]},
     { title: 'Produits', links: [
-      { label: 'SPC sol', href: '#catalogue' },
-      { label: 'Wall panels', href: '#spc' },
+      { label: 'SPC sol', href: '/spc' },
+      { label: 'Wall panels', href: '/panneaux' },
       { label: 'Accessoires', href: '#catalogue' },
       { label: 'Échantillons', href: '#catalogue' },
     ]},
@@ -34,8 +34,8 @@ export class FooterComponent {
       { label: 'Garanties', href: '#contact' },
     ]},
     { title: 'Contact', links: [
-      { label: '+221 680 63 15', href: 'tel:+2216806315' },
-      { label: 'contact@sopikeur.com', href: 'mailto:contact@sopikeur.com' },
+      { label: '+221 77 429 37 57', href: 'tel:+221774293757' },
+      { label: 'contact@sopikeur.sn', href: 'mailto:contact@sopikeur.sn' },
       { label: 'Dakar, Sénégal', href: '#contact' },
       { label: 'Saly, Sénégal', href: '#contact' },
     ]},

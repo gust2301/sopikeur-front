@@ -16,17 +16,17 @@
       <div class="form-grid">
         <label class="field">
           <span>Nom</span>
-          <input type="text" formControlName="name" placeholder="Fatou Ndiaye" />
+          <input type="text" formControlName="name" />
           <small *ngIf="form.get('name')?.touched && form.get('name')?.invalid">Champ obligatoire.</small>
         </label>
         <label class="field">
           <span>Téléphone</span>
-          <input type="tel" formControlName="phone" placeholder="+221 77 000 00 00" />
+          <input type="tel" formControlName="phone" />
           <small *ngIf="form.get('phone')?.touched && form.get('phone')?.invalid">Champ obligatoire.</small>
         </label>
         <label class="field">
           <span>Email (optionnel)</span>
-          <input type="email" formControlName="email" placeholder="contact@sopikeur.com" />
+          <input type="email" formControlName="email" />
         </label>
         <label class="field">
           <span>Type de projet</span>

@@ -79,7 +79,7 @@ export class QuoteRequestComponent implements AfterViewInit {
     }
     const subject = this.intent === 'preorder' ? 'Demande de précommande' : 'Demande de devis';
     const message = this.buildMessage();
-    const mailto = `mailto:contact@sopikeur.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(message)}`;
+    const mailto = `mailto:contact@sopikeur.sn?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(message)}`;
     window.location.href = mailto;
   }
 

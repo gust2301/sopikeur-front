@@ -64,6 +64,21 @@
   &:focus-visible {
     color: $color-ink;
   }
+
+  &.is-active {
+    color: $color-ink;
+
+    &::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: -6px;
+      height: 2px;
+      background: $color-accent;
+      border-radius: 999px;
+    }
+  }
 }
 
 
@@ -171,6 +186,12 @@
   min-height: 44px;
   display: flex;
   align-items: center;
+
+  &.is-active {
+    border-color: rgba($color-accent, 0.5);
+    background: rgba($color-accent, 0.12);
+    color: $color-accent-2;
+  }
 }
 
 
