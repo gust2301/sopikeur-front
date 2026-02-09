@@ -159,7 +159,7 @@ export class ProductsComponent {
       case 'IN_STOCK':
         return 'En stock';
       case 'PREORDER':
-        return 'Précommande';
+        return 'PRÉCOMMANDE';
       default:
         return 'Rupture';
     }

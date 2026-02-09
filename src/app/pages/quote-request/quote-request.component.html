@@ -1,8 +1,8 @@
 <section class="quote-page">
   <div class="container">
     <div class="quote-hero">
-      <p class="eyebrow">Demande de devis</p>
-      <h1>Décrivez votre projet</h1>
+      <p class="section-title">DEMANDE DE DEVIS</p>
+      <h1 class="section-title">DÉCRIVEZ VOTRE PROJET</h1>
       <p class="quote-subtitle">
         Indiquez vos besoins, les produits souhaités et nous revenons vers vous rapidement avec un devis clair.
       </p>
@@ -41,7 +41,7 @@
       </div>
 
       <div class="form-section">
-        <div class="section-title">Produits demandés</div>
+        <div class="form-section-title">Produits demandés</div>
         <div class="product-grid">
           <label class="product-option" *ngFor="let selection of selections; trackBy: trackByProductId">
             <input
@@ -78,6 +78,24 @@
         </div>
       </div>
 
+      <div class="form-section">
+        <div class="form-section-title">Packs sur devis</div>
+        <p class="section-hint">Ajoutez un pack pour bénéficier d’une solution complète.</p>
+        <div class="product-grid">
+          <label class="product-option pack-option" *ngFor="let pack of packSelections">
+            <input
+              type="checkbox"
+              [checked]="pack.selected"
+              (change)="togglePackSelection(pack, $any($event.target).checked)"
+            />
+            <div class="pack-text">
+              <span class="product-name">{{ pack.label }}</span>
+              <span class="pack-description">{{ pack.description }}</span>
+            </div>
+          </label>
+        </div>
+      </div>
+
       <label class="field full">
         <span>Message libre</span>
         <textarea formControlName="message" rows="4" placeholder="Détails, délais, contraintes…"></textarea>
@@ -87,6 +105,8 @@
         <button type="submit" class="btn btn-primary">Envoyer la demande</button>
         <a class="btn btn-secondary" [href]="getWhatsappLink()" target="_blank" rel="noopener">WhatsApp</a>
       </div>
+      <p class="form-feedback form-feedback--success" *ngIf="submitState === 'success'">Message envoyé</p>
+      <p class="form-feedback form-feedback--error" *ngIf="submitState === 'error'">Impossible d’envoyer. Essayez WhatsApp.</p>
     </form>
   </div>
 </section>

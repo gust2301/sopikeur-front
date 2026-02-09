@@ -12,6 +12,13 @@ interface QuoteProductSelection {
   quantity: string;
 }
 
+interface PackSelection {
+  id: string;
+  label: string;
+  description: string;
+  selected: boolean;
+}
+
 @Component({
   selector: 'app-quote-request',
   standalone: true,
@@ -21,12 +28,33 @@ interface QuoteProductSelection {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class QuoteRequestComponent implements AfterViewInit {
+  submitState: 'idle' | 'success' | 'error' = 'idle';
   readonly projectTypes = ['Appartement', 'Villa', 'Bureau', 'Commerce', 'Autre'];
   readonly selections: QuoteProductSelection[] = catalogProducts.map(product => ({
     product,
     selected: false,
     quantity: '',
   }));
+  readonly packSelections: PackSelection[] = [
+    {
+      id: 'spc-accessoires',
+      label: 'SPC + accessoires',
+      description: 'Plinthes, profils et sous-couche.',
+      selected: false,
+    },
+    {
+      id: 'mixte-spc-panneaux',
+      label: 'Pack mixte SPC + panneaux acoustiques',
+      description: 'Solution complète pour sol et mur.',
+      selected: false,
+    },
+    {
+      id: 'pose',
+      label: 'Pose avec équipe SOPI KER',
+      description: 'Installation professionnelle sur demande.',
+      selected: false,
+    },
+  ];
 
   intent: QuoteIntent = 'quote';
 
@@ -72,14 +100,20 @@ export class QuoteRequestComponent implements AfterViewInit {
     }
   }
 
+  togglePackSelection(selection: PackSelection, checked: boolean): void {
+    selection.selected = checked;
+  }
+
   submit(): void {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
+      this.submitState = 'error';
       return;
     }
     const subject = this.intent === 'preorder' ? 'Demande de précommande' : 'Demande de devis';
     const message = this.buildMessage();
     const mailto = `mailto:contact@sopikeur.sn?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(message)}`;
+    this.submitState = 'success';
     window.location.href = mailto;
   }
 
@@ -100,6 +134,9 @@ export class QuoteRequestComponent implements AfterViewInit {
         const quantity = selection.quantity ? `${selection.quantity} ${unitLabel}` : 'Quantité à confirmer';
         return `- ${selection.product.name} (${selection.product.sku}) : ${quantity}`;
       });
+    const packLines = this.packSelections
+      .filter(selection => selection.selected)
+      .map(selection => `- ${selection.label}`);
 
     return [
       'Bonjour,',
@@ -111,6 +148,8 @@ export class QuoteRequestComponent implements AfterViewInit {
       `Ville / Zone: ${value.city || 'Non précisée'}`,
       'Produits demandés:',
       productLines.length > 0 ? productLines.join('\n') : '- À définir',
+      'Packs sur devis:',
+      packLines.length > 0 ? packLines.join('\n') : '- Aucun',
       value.message ? `Message: ${value.message}` : 'Message: -',
     ].join('\n');
   }

@@ -1,6 +1,6 @@
 {
-  "name": "Sopi Keur",
-  "short_name": "Sopi Keur",
+  "name": "Sopi Kër (Sopi Keur)",
+  "short_name": "Sopi Kër",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
@@ -8,7 +8,9 @@
   "theme_color": "#111827",
   "icons": [
     { "src": "/assets/icons/android-chrome-192x192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
-    { "src": "/assets/icons/android-chrome-512x512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" }
+    { "src": "/assets/icons/android-chrome-512x512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/assets/icons/maskable_icon_192x192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/assets/icons/maskable_icon_512x512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" }
   ]
 }
 

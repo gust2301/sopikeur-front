@@ -8,48 +8,70 @@
   </div>
   <div class="container hero-content">
     <div class="hero-copy">
-      <p class="eyebrow">Revêtements SPC & panneaux acoustiques</p>
-      <!--<h1>SOPI KEUR</h1>-->
-      <p class="subtitle">Habillez vos espaces, durablement.</p>
-      <p class="hero-description">
-        Découvrez nos revêtements SPC étanches à pose click et nos panels acoustiques. Des solutions modernes et
-        durables pour transformer vos intérieurs au Sénégal.
-      </p>
+      <p class="eyebrow">REVÊTEMENTS & DESIGN INTÉRIEUR — SÉNÉGAL.</p>
+      <!--<h1>SOPI KER</h1>-->
+      <p class="subtitle">Sols SPC + panneaux muraux design. Simple, propre, durable.</p>
+<!--      <p class="hero-description">
+        Pose rapide. Résiste à l’eau. Un mur qui décore et réduit l’écho.
+      </p>-->
       <div class="hero-ctas">
-        <a routerLink="/contact" class="btn btn-primary">Nous contacter</a>
-      </div>
+        <a routerLink="/spc" class="btn btn-primary">Nos sols SPC</a>
+        <a routerLink="/panneaux" class="btn btn-primary">Nos panneaux accoustiques</a>
+      </div><!--
       <ul class="hero__highlights">
+        <li class="hero__highlight">
+          <span class="hero__dot"></span> Échantillons dispo
+        </li>
         <li class="hero__highlight">
           <span class="hero__dot"></span> Devis sous 24h
         </li>
         <li class="hero__highlight">
-          <span class="hero__dot"></span> Logistique & livraison au Sénégal
-        </li>
-        <li class="hero__highlight">
-          <span class="hero__dot"></span> SAV & accompagnement local
-        </li>
-        <li class="hero__highlight">
           <span class="hero__dot"></span> Service pose disponible
         </li>
-      </ul>
+      </ul>-->
     </div>
   </div>
-  <div class="container hero-usp">
-    <div class="usp-grid">
-      <div class="usp-card" *ngFor="let usp of uspCards">
-        <div class="usp-icon">{{ usp.icon }}</div>
-        <h3>{{ usp.title }}</h3>
-        <p>{{ usp.description }}</p>
+  <div class="container hero-kpis" aria-label="Chiffres clés SopiKër">
+    <div class="kpi-panel">
+      <div class="kpi-grid">
+        <div class="kpi-item">
+          <div class="kpi-value">0 colle</div>
+          <div class="kpi-label">Pose click rapide (SPC)</div>
+          <p class="kpi-desc">Chantier propre, installation rapide, prête à l’usage.</p>
+        </div>
+
+        <div class="kpi-item">
+          <div class="kpi-value">0,5&nbsp;mm*</div>
+          <div class="kpi-label">Couche d’usure (SPC)</div>
+          <p class="kpi-desc">Haute résistance aux rayures et au fort passage.</p>
+        </div>
+
+        <div class="kpi-item">
+          <div class="kpi-value">−30 à −60%</div>
+          <div class="kpi-label">Réverbération*</div>
+          <p class="kpi-desc">Moins d’écho, voix plus claires, confort immédiat.</p>
+        </div>
+
+        <div class="kpi-item">
+          <div class="kpi-value">24h</div>
+          <div class="kpi-label">Devis + plan 3D</div>
+          <p class="kpi-desc">Conseil, estimation, simulation et plan de pose.</p>
+        </div>
       </div>
+
+      <p class="kpi-disclaimer">
+        *Selon gamme/fiche technique. Résultats variables selon surface couverte, configuration de la pièce et références produit.
+      </p>
     </div>
   </div>
+
 </section>
 
 <section class="section spc" id="spc">
   <div class="container">
     <div class="spc-explanation">
       <div class="spc-content">
-        <h2 class="section-title">Qu'est-ce que le SPC ?</h2>
+        <h2 class="section-heading">QU’EST-CE QUE LE SPC ?</h2>
         <p>
           Le <strong>Stone Plastic Composite</strong> (SPC) est un revêtement de sol nouvelle génération, composé d'un cœur
           rigide en pierre et polymère. Cette technologie offre une résistance exceptionnelle aux chocs, à l'usure et à
@@ -71,33 +93,33 @@
 <section class="section colors" id="catalogue">
   <div class="container">
     <div class="section-header">
-      <p class="eyebrow">Couleurs phares</p>
+      <h2 class="section-heading">COULEURS PHARES</h2>
       <p class="section-subtitle">Découvrez notre sélection de teintes tendances</p>
     </div>
-    <div class="colors-slider">
+    <div class="catalog-slider">
       <button class="slider-arrow left" type="button" (click)="scrollColors('left')" aria-label="Défiler à gauche">
         ←
       </button>
-      <div class="colors-track" #colorsTrack>
-        <div class="color-card" *ngFor="let color of colors">
+      <div class="catalog-track" #colorsTrack>
+        <div class="catalog-card" *ngFor="let color of colors">
           <button
-            class="color-sample"
+            class="catalog-media"
             type="button"
           (click)="viewProduct(color)"
           [attr.aria-label]="'Voir le détail de ' + color.name"
         >
             <span class="stock-badge" *ngIf="color.inStock; else preorderBadge">En stock</span>
             <ng-template #preorderBadge>
-              <span class="stock-badge stock-badge--preorder">Précommande</span>
+              <span class="stock-badge stock-badge--preorder">PRÉCOMMANDE</span>
             </ng-template>
-            <img [src]="color.image" [alt]="color.name" loading="lazy" />
+            <img [src]="color.image" [alt]="color.name" loading="lazy" class="catalog-image" />
           </button>
-          <div class="color-info">
-            <div class="color-name">{{ color.name }}</div>
-            <div class="color-specs">
+          <div class="catalog-info">
+            <div class="catalog-name">{{ color.name }}</div>
+            <div class="catalog-specs">
               <span *ngFor="let spec of color.specs">{{ spec }}</span>
             </div>
-            <div class="color-price">{{ color.price }} {{ color.unit }}</div>
+            <div class="catalog-price">{{ color.price }} {{ color.unit }}</div>
             <button class="btn-add" type="button" (click)="requestQuote(color)">
               {{ color.inStock ? 'Devis' : 'Précommander' }}
             </button>
@@ -114,79 +136,42 @@
 <section class="section panels" id="panneaux">
   <div class="container">
     <div class="section-header">
-      <p class="eyebrow">Catalogue Panneaux acoustiques</p>
-      <p class="section-subtitle">Deux finitions bois pour habiller les murs et absorber le son</p>
+      <h2 class="section-heading">CATALOGUE PANNEAUX ACOUSTIQUES</h2>
+      <p class="section-subtitle">Découvrez nos panneaux pour habiller les murs et absorber le son</p>
     </div>
-    <div class="panels-slider">
+    <div class="catalog-slider">
       <button class="slider-arrow left" type="button" (click)="scrollPanels('left')" aria-label="Défiler à gauche">
         ←
       </button>
-      <div class="panels-track" #panelsTrack>
-        <article class="panel-card" *ngFor="let panel of acousticPanels">
+      <div class="catalog-track" #panelsTrack>
+        <article class="catalog-card" *ngFor="let panel of acousticPanels">
           <button
-            class="panel-media"
+            class="catalog-media"
             type="button"
           (click)="viewProduct(panel)"
           [attr.aria-label]="'Voir le détail de ' + panel.name"
         >
             <span class="stock-badge" *ngIf="panel.inStock; else panelPreorderBadge">En stock</span>
             <ng-template #panelPreorderBadge>
-              <span class="stock-badge stock-badge--preorder">Précommande</span>
+              <span class="stock-badge stock-badge--preorder">PRÉCOMMANDE</span>
             </ng-template>
-            <img [src]="panel.image" [alt]="panel.name" loading="lazy" class="panel-image" />
+            <img [src]="panel.image" [alt]="panel.name" loading="lazy" class="catalog-image catalog-image--contain" />
           </button>
-          <div class="panel-info">
-            <div>
-              <p class="panel-sku">{{ panel.sku }}</p>
-              <h3 class="panel-name">{{ panel.name }}</h3>
-              <p class="panel-description">{{ panel.shortDescription }}</p>
-              <div class="panel-specs">
-                <span *ngFor="let spec of panel.specs">{{ spec }}</span>
-              </div>
+          <div class="catalog-info">
+            <div class="catalog-name">{{ panel.name }}</div>
+            <div class="catalog-specs">
+              <span *ngFor="let spec of panel.specs">{{ spec }}</span>
             </div>
-            <div class="panel-footer">
-              <div class="panel-price">{{ panel.price }} {{ panel.unit }}</div>
-              <div class="panel-actions">
-                <button class="btn btn-primary" type="button" (click)="requestQuote(panel)">
-                  {{ panel.inStock ? 'Devis' : 'Précommander' }}
-                </button>
-              </div>
-            </div>
+            <div class="catalog-price">{{ panel.price }} {{ panel.unit }}</div>
+            <button class="btn-add" type="button" (click)="requestQuote(panel)">
+              {{ panel.inStock ? 'Devis' : 'Précommander' }}
+            </button>
           </div>
         </article>
       </div>
       <button class="slider-arrow right" type="button" (click)="scrollPanels('right')" aria-label="Défiler à droite">
         →
       </button>
-    </div>
-  </div>
-</section>
-
-<section class="section packs-quote">
-  <div class="container">
-    <div class="packs-quote__card">
-      <div>
-        <h2 class="section-title">Packs sur devis</h2>
-        <p class="packs-quote__text section-subtitle">Solutions complètes, prêtes à poser.</p>
-        <ul class="packs-quote__list">
-          <li>SPC + accessoires (plinthes, profils, sous-couche)</li>
-          <li>Pack mixte : SPC + panneaux acoustiques</li>
-          <li>Pose possible sur demande</li>
-        </ul>
-        <details class="packs-quote__details">
-          <summary>Voir le détail</summary>
-          <p>Inclus au choix :</p>
-          <ul>
-            <li>SPC + accessoires (plinthes, profils, sous-couche)</li>
-            <li>Pack mixte : SPC + panneaux acoustiques</li>
-            <li>Pose possible sur demande</li>
-          </ul>
-          <p class="packs-quote__mention">Devis personnalisé sous 24h</p>
-        </details>
-      </div>
-      <div>
-        <a routerLink="/devis" class="btn btn-primary">Demander un devis</a>
-      </div>
     </div>
   </div>
 </section>

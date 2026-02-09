@@ -36,10 +36,10 @@
       </div>
     </div>
     <div class="detail-info">
-      <p class="eyebrow">{{ product.type === 'spc' ? 'SPC' : 'Panneau acoustique' }}</p>
+      <p class="section-title">{{ product.type === 'spc' ? 'SPC' : 'PANNEAU ACOUSTIQUE' }}</p>
       <h1>{{ product.name }}</h1>
       <span class="stock-pill" [class.stock-pill--preorder]="!product.inStock">
-        {{ product.inStock ? 'En stock' : 'Précommande' }}
+        {{ product.inStock ? 'En stock' : 'PRÉCOMMANDE' }}
       </span>
       <p class="price">{{ product.price }} {{ product.unit }}</p>
       <p class="description">{{ product.description }}</p>
@@ -69,7 +69,7 @@
 
   <div class="container related" *ngIf="relatedProducts.length > 0" [class.is-panels]="product.type === 'acoustic'">
     <div class="related-header">
-      <p class="eyebrow">Découvrir</p>
+      <p class="section-title">DÉCOUVRIR</p>
       <h2>{{ product.type === 'spc' ? 'Autres teintes SPC' : 'Autres panneaux acoustiques' }}</h2>
     </div>
     <div class="related-grid">

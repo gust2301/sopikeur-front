@@ -2,31 +2,65 @@
   <div class="container">
     <div class="contact-hero">
       <div>
-        <p class="eyebrow">Contact</p>
+        <p class="section-title">CONTACT</p>
         <h1 class="section-title">Parlons de votre projet</h1>
         <p class="section-subtitle">
           Appel ou rendez-vous avec un conseiller pour vous présenter nos solutions SPC et panneaux acoustiques.
         </p>
         <div class="contact-actions">
-          <a class="btn btn-primary">+221 77 429 37 57</a>
+          <a class="btn btn-primary" href="tel:+221774293757">+221 77 429 37 57</a>
+          <a
+            class="btn btn-secondary btn-whatsapp"
+            href="https://wa.me/221774293757?text=Bonjour%2C%20je%20souhaite%20obtenir%20des%20informations%20sur%20vos%20solutions%20SPC%20et%20panneaux%20acoustiques."
+            target="_blank"
+            rel="noopener"
+          >
+            <span class="btn-whatsapp__icon" aria-hidden="true">
+              <svg viewBox="0 0 32 32" role="img" focusable="false">
+                <path
+                  fill="currentColor"
+                  d="M16.04 3C8.94 3 3.16 8.78 3.16 15.88c0 2.82.93 5.45 2.5 7.6L4 29l5.72-1.5a12.8 12.8 0 0 0 6.32 1.65h.01c7.1 0 12.88-5.78 12.88-12.88C28.93 8.78 23.15 3 16.04 3zm0 23.34h-.01c-2.07 0-4.09-.56-5.86-1.62l-.42-.25-3.4.9.9-3.3-.27-.44a10.7 10.7 0 0 1-1.63-5.74c0-5.9 4.8-10.7 10.7-10.7 5.91 0 10.71 4.8 10.71 10.7 0 5.91-4.8 10.71-10.71 10.71zm5.86-7.98c-.32-.16-1.9-.94-2.2-1.05-.3-.12-.52-.16-.74.16-.22.32-.85 1.05-1.04 1.27-.2.22-.39.24-.71.08-.32-.16-1.36-.5-2.6-1.59-.96-.86-1.6-1.92-1.79-2.24-.18-.32-.02-.49.14-.65.15-.15.32-.39.48-.58.16-.2.22-.32.32-.54.1-.22.05-.41-.02-.58-.08-.16-.74-1.78-1.02-2.44-.27-.64-.54-.55-.74-.56h-.64c-.22 0-.58.08-.88.39-.3.32-1.15 1.12-1.15 2.74 0 1.62 1.18 3.18 1.34 3.4.16.22 2.33 3.56 5.65 4.98.79.34 1.4.54 1.88.69.79.25 1.5.21 2.07.13.63-.1 1.9-.78 2.17-1.54.27-.76.27-1.41.19-1.54-.08-.13-.3-.2-.62-.36z"
+                />
+              </svg>
+            </span>
+            Écrire sur WhatsApp
+          </a>
         </div>
       </div>
       <div class="contact-card">
         <h4>Envoyer un message</h4>
-        <form class="contact-form">
+        <form class="contact-form" (ngSubmit)="submit()">
+          <fieldset class="contact-segmented">
+            <legend>Vous êtes</legend>
+            <div class="segmented-control" role="radiogroup" aria-label="Type de client">
+              <label class="segmented-control__option">
+                <input type="radio" name="customerType" value="Particulier" [(ngModel)]="customerType" />
+                <span>Particulier</span>
+              </label>
+              <label class="segmented-control__option">
+                <input type="radio" name="customerType" value="Professionnel" [(ngModel)]="customerType" />
+                <span>Professionnel</span>
+              </label>
+            </div>
+          </fieldset>
           <label>
             <span>Nom et prénom</span>
-            <input type="text" name="name"/>
+            <input type="text" name="name" [(ngModel)]="name" required/>
           </label>
           <label>
             <span>Email ou téléphone</span>
-            <input type="text" name="contact"/>
+            <input type="text" name="contact" [(ngModel)]="contact" required/>
           </label>
           <label>
             <span>Votre besoin</span>
-            <textarea name="message" rows="3"></textarea>
+            <textarea name="message" rows="3" [(ngModel)]="message"></textarea>
           </label>
-          <button type="button" class="btn btn-primary btn-block">Envoyer</button>
+          <div class="contact-form__actions">
+          <button type="submit" class="btn btn-primary">Envoyer</button>
+          <a class="btn btn-secondary" [href]="getWhatsappFallbackLink()" target="_blank" rel="noopener">WhatsApp</a>
+        </div>
+        <p class="form-feedback form-feedback--success" *ngIf="submitState === 'success'">Message envoyé</p>
+        <p class="form-feedback form-feedback--error" *ngIf="submitState === 'error'">Impossible d’envoyer. Essayez WhatsApp.</p>
         </form>
       </div>
     </div>

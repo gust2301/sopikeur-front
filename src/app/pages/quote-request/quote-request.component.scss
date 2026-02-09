@@ -12,14 +12,6 @@
   margin-bottom: $space-6;
 }
 
-.eyebrow {
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  font-weight: 800;
-  font-size: 0.85rem;
-  color: $color-accent-2;
-}
-
 .quote-subtitle {
   color: $color-muted;
   line-height: 1.7;
@@ -83,8 +75,15 @@
   gap: $space-4;
 }
 
-.section-title {
+.form-section-title {
   font-weight: 700;
+  text-transform: uppercase;
+}
+
+.section-hint {
+  margin: 0;
+  color: $color-muted;
+  font-size: 0.95rem;
 }
 
 .product-grid {
@@ -98,7 +97,7 @@
   align-items: center;
   gap: $space-2;
   padding: $space-3;
-  border-radius: $radius-lg;
+  border-radius: 0;
   border: 1px solid rgba($color-ink, 0.08);
   background: #faf8f3;
   cursor: pointer;
@@ -110,6 +109,20 @@
 
 .product-name {
   font-weight: 700;
+}
+
+.pack-option {
+  align-items: flex-start;
+}
+
+.pack-text {
+  display: grid;
+  gap: $space-2;
+}
+
+.pack-description {
+  font-size: 0.9rem;
+  color: $color-muted;
 }
 
 .product-type {
@@ -131,37 +144,33 @@
   gap: $space-3;
 }
 
-.btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.4rem;
-  padding: 0.75rem 1.4rem;
-  border-radius: 999px;
-  font-weight: 600;
-  text-decoration: none;
-  border: 1px solid transparent;
-  transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease, color 0.15s ease;
-}
-
-.btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
-}
-
-.btn-primary {
-  background: $color-accent;
-  color: #fff;
-}
-
-.btn-secondary {
-  background: #fff;
-  color: $color-ink;
-  border-color: rgba($color-ink, 0.15);
-}
-
 @media (max-width: 720px) {
   .quote-card {
     padding: $space-6;
+  }
+}
+
+.form-actions .btn {
+  min-width: 210px;
+  min-height: 48px;
+}
+
+.form-feedback {
+  margin: 0;
+  font-weight: 600;
+}
+
+.form-feedback--success {
+  color: #2f9d57;
+}
+
+.form-feedback--error {
+  color: #c94c4c;
+}
+
+@media (max-width: 640px) {
+  .form-actions .btn {
+    width: 100%;
+    min-width: 0;
   }
 }

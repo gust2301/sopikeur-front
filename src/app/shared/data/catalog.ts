@@ -112,7 +112,7 @@ export const acousticPanels: CatalogProduct[] = [
     name: 'M-60240-WAVE1',
     image: 'assets/panels/M-60240-WAVE1.png',
     images: ['assets/panels/M-60240-WAVE1.png'],
-    specs: ['1200×600', 'Épaisseur 21 mm', 'Feutre acoustique noir'],
+    specs: ['2400×600', 'Épaisseur 21 mm', 'Feutre acoustique noir'],
     price: '35 000',
     unit: 'FCFA / pièce',
     inStock: true,
@@ -120,6 +120,22 @@ export const acousticPanels: CatalogProduct[] = [
     description:
       'Panneau mural rainuré au motif wave, idéal pour habiller un espace de vie tout en absorbant les bruits du quotidien.',
     features: ['Pose verticale ou horizontale', 'Finition huilée', 'Réduction sonore ciblée'],
+  },
+  {
+    id: 'hexagon',
+    sku: 'HEXAGON',
+    type: 'acoustic',
+    name: 'HEXAGON',
+    image: 'assets/panels/HEXAGON.png',
+    images: ['assets/panels/HEXAGON.png'],
+    specs: ['600×600', 'Épaisseur 21 mm', 'Feutre acoustique noir'],
+    price: '17 000',
+    unit: 'FCFA / pièce',
+    inStock: true,
+    shortDescription: 'Hexagone clair pour des compositions murales lumineuses.',
+    description:
+      'Panneau hexagonal clair pour composer des murs graphiques tout en améliorant le confort acoustique.',
+    features: ['Finition claire', 'Usage résidentiel & pro', 'Installation rapide'],
   },
   {
     id: 'hexagonb',
@@ -131,7 +147,7 @@ export const acousticPanels: CatalogProduct[] = [
     specs: ['600×600', 'Épaisseur 21 mm', 'Feutre acoustique noir'],
     price: '17 000',
     unit: 'FCFA / pièce',
-    inStock: true,
+    inStock: false,
     shortDescription: 'Motif hexagonal pour créer un mur graphique et chaleureux.',
     description:
       'Panneau mural hexagonal idéal pour composer un mur graphique et limiter la réverbération sonore.',
