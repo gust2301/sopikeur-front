@@ -185,3 +185,20 @@
     min-width: 0;
   }
 }
+
+
+.field-error {
+  color: #c94c4c;
+  font-size: 0.85rem;
+}
+
+.contact-form__eta {
+  margin: 0;
+  color: $color-muted;
+  font-size: 0.9rem;
+}
+
+.contact-form__actions .btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}

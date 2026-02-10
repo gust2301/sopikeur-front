@@ -3,6 +3,7 @@ import { Injectable, PLATFORM_ID, inject } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { Observable, catchError, map, of } from 'rxjs';
 import { CatalogProduct, CatalogProductType, catalogProducts } from '../data/catalog';
+import {apiUrl} from "../utils/api-url";
 
 export type ProductStockStatus = 'IN_STOCK' | 'PREORDER' | 'OUT_OF_STOCK';
 
@@ -29,7 +30,7 @@ interface ProductsApiResponse {
   providedIn: 'root',
 })
 export class ProductsApi {
-  private readonly apiUrl = '/api/v1/products';
+  private readonly apiUrl = apiUrl('/products');
   private readonly platformId = inject(PLATFORM_ID);
 
   constructor(private readonly http: HttpClient) {}

@@ -29,38 +29,51 @@
       </div>
       <div class="contact-card">
         <h4>Envoyer un message</h4>
-        <form class="contact-form" (ngSubmit)="submit()">
+        <form class="contact-form" (ngSubmit)="submit()" novalidate>
           <fieldset class="contact-segmented">
             <legend>Vous êtes</legend>
             <div class="segmented-control" role="radiogroup" aria-label="Type de client">
               <label class="segmented-control__option">
-                <input type="radio" name="customerType" value="Particulier" [(ngModel)]="customerType" />
+                <input type="radio" name="customerType" value="Particulier" [(ngModel)]="customerType" [disabled]="isLoading" />
                 <span>Particulier</span>
               </label>
               <label class="segmented-control__option">
-                <input type="radio" name="customerType" value="Professionnel" [(ngModel)]="customerType" />
+                <input type="radio" name="customerType" value="Professionnel" [(ngModel)]="customerType" [disabled]="isLoading" />
                 <span>Professionnel</span>
               </label>
             </div>
           </fieldset>
           <label>
             <span>Nom et prénom</span>
-            <input type="text" name="name" [(ngModel)]="name" required/>
+            <input type="text" name="name" [(ngModel)]="name" [disabled]="isLoading" />
+            <small class="field-error" *ngIf="canShowError(isNameInvalid())">Le nom est requis (2 caractères minimum).</small>
           </label>
           <label>
-            <span>Email ou téléphone</span>
-            <input type="text" name="contact" [(ngModel)]="contact" required/>
+            <span>Email (optionnel)</span>
+            <input type="email" name="email" [(ngModel)]="email" [disabled]="isLoading" />
+            <small class="field-error" *ngIf="canShowError(isEmailInvalid())">Veuillez saisir un email valide.</small>
           </label>
           <label>
-            <span>Votre besoin</span>
-            <textarea name="message" rows="3" [(ngModel)]="message"></textarea>
+            <span>Téléphone</span>
+            <input type="tel" name="phone" [(ngModel)]="phone" [disabled]="isLoading" />
+            <small class="field-error" *ngIf="canShowError(isPhoneInvalid())">Le téléphone est requis (8 caractères minimum).</small>
           </label>
+          <label>
+            <span>Votre besoin (optionnel)</span>
+            <textarea name="message" rows="3" [(ngModel)]="message" [disabled]="isLoading"></textarea>
+            <small class="field-error" *ngIf="canShowError(isMessageInvalid())">Le message doit contenir au moins 5 caractères.</small>
+          </label>
+          <p class="contact-form__eta">Réponse sous 24h.</p>
           <div class="contact-form__actions">
-          <button type="submit" class="btn btn-primary">Envoyer</button>
-          <a class="btn btn-secondary" [href]="getWhatsappFallbackLink()" target="_blank" rel="noopener">WhatsApp</a>
-        </div>
-        <p class="form-feedback form-feedback--success" *ngIf="submitState === 'success'">Message envoyé</p>
-        <p class="form-feedback form-feedback--error" *ngIf="submitState === 'error'">Impossible d’envoyer. Essayez WhatsApp.</p>
+            <button type="submit" class="btn btn-primary" [disabled]="isLoading">
+              {{ isLoading ? 'Envoi...' : 'Envoyer' }}
+            </button>
+            <a class="btn btn-secondary" [href]="getWhatsappFallbackLink()" target="_blank" rel="noopener">WhatsApp</a>
+          </div>
+          <p class="form-feedback form-feedback--success" *ngIf="submitState === 'success'">Message envoyé.</p>
+          <p class="form-feedback form-feedback--error" *ngIf="submitState === 'error'">
+            Impossible d’envoyer. Vérifiez les champs ou essayez WhatsApp.
+          </p>
         </form>
       </div>
     </div>
