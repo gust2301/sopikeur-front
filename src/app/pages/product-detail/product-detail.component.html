@@ -56,11 +56,7 @@
         <button class="btn btn-primary" type="button" (click)="requestQuote(product)">
           {{ product.inStock ? 'Demander un devis' : 'Précommander' }}
         </button>
-        <a
-          class="btn btn-secondary"
-          routerLink="/"
-          [fragment]="product.type === 'spc' ? 'catalogue' : 'panneaux'"
-        >
+        <a class="btn btn-secondary" [routerLink]="backToCatalogRoute()">
           Retour au catalogue
         </a>
       </div>

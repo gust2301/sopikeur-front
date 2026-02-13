@@ -24,6 +24,7 @@ export class ProductDetailComponent implements AfterViewInit {
   readonly product = computed(() => this.productSignal());
   readonly galleryImages = computed(() => this.galleryImagesSignal());
   readonly selectedImage = computed(() => this.galleryImagesSignal()[this.selectedIndexSignal()] ?? undefined);
+  readonly backToCatalogRoute = computed(() => (this.productSignal()?.type === 'acoustic' ? '/panneaux' : '/spc'));
 
   @ViewChild('hero', { static: false }) private readonly heroEl?: ElementRef<HTMLElement>;
 
