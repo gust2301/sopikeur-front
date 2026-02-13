@@ -22,8 +22,8 @@ export class FooterComponent {
       { label: 'Engagement qualité', href: '#' },
     ]},
     { title: 'Produits', links: [
-      { label: 'SPC sol', href: '/spc' },
-      { label: 'Wall panels', href: '/panneaux' },
+      { label: 'SPC sol', href: '/spc/' },
+      { label: 'Wall panels', href: '/panneaux/' },
       { label: 'Accessoires', href: '#catalogue' },
       { label: 'Échantillons', href: '#catalogue' },
     ]},

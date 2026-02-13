@@ -24,10 +24,10 @@ export class HeaderComponent implements OnDestroy {
   isMobileMenuOpen = false;
   navLinks: NavLink[] = [
     { label: 'Accueil', path: '/', fragment: 'home', exact: true },
-    { label: 'SPC', path: '/spc' },
-    { label: 'Panneaux', path: '/panneaux' },
-    { label: 'Inspirations', path: '/inspirations' },
-    { label: 'Contact', path: '/contact' },
+    { label: 'SPC', path: '/spc/' },
+    { label: 'Panneaux', path: '/panneaux/' },
+    { label: 'Inspirations', path: '/inspirations/' },
+    { label: 'Contact', path: '/contact/' },
   ];
 
   toggleMenu(): void {

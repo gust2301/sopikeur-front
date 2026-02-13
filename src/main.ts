@@ -4,6 +4,7 @@ import { appConfig } from './app/app.config';
 import {provideRouter, RouterOutlet} from '@angular/router';
 import { routes } from './app/app.routes';
 import { Component } from '@angular/core';
+import { SeoCanonicalService } from './app/shared/services/seo-canonical.service';
 
 @Component({
   selector: 'app-root',
@@ -13,7 +14,11 @@ import { Component } from '@angular/core';
   ],
   template: '<router-outlet />'
 })
-export class AppRoot {}
+export class AppRoot {
+  constructor(private readonly seoCanonicalService: SeoCanonicalService) {
+    this.seoCanonicalService.init();
+  }
+}
 
 bootstrapApplication(AppRoot, {
   providers: [
