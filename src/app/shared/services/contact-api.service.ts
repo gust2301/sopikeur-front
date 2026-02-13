@@ -9,6 +9,8 @@ export interface ContactRequest {
   phone: string;
   email?: string;
   message?: string;
+  website?: string;
+  turnstileToken?: string;
 }
 
 export interface ContactApiResponse {

@@ -5,9 +5,20 @@ import { ActivatedRoute, RouterModule } from '@angular/router';
 import { finalize } from 'rxjs';
 import { buildWhatsappLinkFromMessage } from '../../shared/utils/whatsapp';
 import { ContactApiService } from '../../shared/services/contact-api.service';
+import { environment } from '../../../environments/environment';
 
 type SubmitState = 'idle' | 'loading' | 'success' | 'error';
 type CustomerType = 'Particulier' | 'Professionnel';
+
+declare global {
+  interface Window {
+    turnstile?: {
+      render: (container: string | HTMLElement, options: Record<string, unknown>) => string;
+      reset: (widgetId?: string) => void;
+      remove: (widgetId: string) => void;
+    };
+  }
+}
 
 const DEFAULT_CUSTOMER_TYPE: CustomerType = 'Particulier';
 const PRO_CUSTOMER_TYPE: CustomerType = 'Professionnel';
@@ -26,8 +37,13 @@ export class ContactComponent implements OnInit {
   email = '';
   phone = '';
   message = '';
+  website = '';
+  turnstileToken = '';
   submitted = false;
   submitState: SubmitState = 'idle';
+  submitErrorMessage = '';
+  readonly turnstileSiteKey = environment.turnstileSiteKey;
+  private turnstileWidgetId: string | null = null;
 
   constructor(
     private readonly viewportScroller: ViewportScroller,
@@ -39,17 +55,37 @@ export class ContactComponent implements OnInit {
   ngOnInit(): void {
     this.viewportScroller.scrollToPosition([0, 0]);
 
-    if (this.route.snapshot.queryParamMap.get('customerType') === PRO_CUSTOMER_TYPE) {
+    const queryCustomerType = this.route.snapshot.queryParamMap.get('customerType');
+    if (queryCustomerType === PRO_CUSTOMER_TYPE) {
       this.customerType = PRO_CUSTOMER_TYPE;
-      this.cdr.markForCheck();
     }
+
+    if (this.hasTurnstileEnabled()) {
+      this.initTurnstileWidget();
+    }
+
+    this.cdr.markForCheck();
   }
 
   submit(): void {
     this.submitted = true;
+    this.submitErrorMessage = '';
+
+    if (this.website.trim()) {
+      this.submitState = 'error';
+      this.submitErrorMessage = 'Une erreur est survenue.';
+      return;
+    }
 
     if (!this.isFormValid()) {
       this.submitState = 'error';
+      this.submitErrorMessage = 'Veuillez vérifier les champs du formulaire.';
+      return;
+    }
+
+    if (this.hasTurnstileEnabled() && !this.turnstileToken.trim()) {
+      this.submitState = 'error';
+      this.submitErrorMessage = 'Merci de valider la vérification anti-spam.';
       return;
     }
 
@@ -62,8 +98,13 @@ export class ContactComponent implements OnInit {
         email: this.email.trim() || undefined,
         phone: this.phone.trim(),
         message: this.message.trim() || undefined,
+        website: this.website.trim(),
+        turnstileToken: this.hasTurnstileEnabled() ? this.turnstileToken.trim() || undefined : undefined,
       })
-      .pipe(finalize(() => this.submitted = false))
+      .pipe(finalize(() => {
+        this.submitted = false;
+        this.resetTurnstileToken();
+      }))
       .subscribe({
         next: () => {
           this.submitState = 'success';
@@ -72,6 +113,7 @@ export class ContactComponent implements OnInit {
         },
         error: () => {
           this.submitState = 'error';
+          this.submitErrorMessage = 'Impossible d’envoyer. Vérifiez les champs ou essayez WhatsApp.';
           this.cdr.markForCheck();
         },
       });
@@ -138,6 +180,49 @@ export class ContactComponent implements OnInit {
     this.email = '';
     this.phone = '';
     this.message = '';
+    this.website = '';
     this.customerType = DEFAULT_CUSTOMER_TYPE;
+  }
+
+  private hasTurnstileEnabled(): boolean {
+    return this.turnstileSiteKey.trim().length > 0;
+  }
+
+  private initTurnstileWidget(): void {
+    if (typeof window === 'undefined') {
+      return;
+    }
+
+    window.requestAnimationFrame(() => {
+      if (!window.turnstile) {
+        return;
+      }
+
+      this.turnstileWidgetId = window.turnstile.render('#turnstile-widget', {
+        sitekey: this.turnstileSiteKey,
+        callback: (token: string) => {
+          this.turnstileToken = token;
+          this.cdr.markForCheck();
+        },
+        'expired-callback': () => {
+          this.turnstileToken = '';
+          this.cdr.markForCheck();
+        },
+        'error-callback': () => {
+          this.turnstileToken = '';
+          this.cdr.markForCheck();
+        },
+      });
+    });
+  }
+
+  private resetTurnstileToken(): void {
+    this.turnstileToken = '';
+
+    if (typeof window !== 'undefined' && window.turnstile && this.turnstileWidgetId) {
+      window.turnstile.reset(this.turnstileWidgetId);
+    }
+
+    this.cdr.markForCheck();
   }
 }

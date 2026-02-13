@@ -30,6 +30,10 @@
       <div class="contact-card">
         <h4>Envoyer un message</h4>
         <form class="contact-form" (ngSubmit)="submit()" novalidate>
+          <label class="contact-form__honeypot">
+            <span>Site web</span>
+            <input type="text" name="website" [(ngModel)]="website" autocomplete="off" tabindex="-1" [disabled]="isLoading" />
+          </label>
           <fieldset class="contact-segmented">
             <legend>Vous êtes</legend>
             <div class="segmented-control" role="radiogroup" aria-label="Type de client">
@@ -63,6 +67,10 @@
             <textarea name="message" rows="3" [(ngModel)]="message" [disabled]="isLoading"></textarea>
             <small class="field-error" *ngIf="canShowError(isMessageInvalid())">Le message doit contenir au moins 5 caractères.</small>
           </label>
+          <div class="turnstile-block" *ngIf="turnstileSiteKey">
+            <div id="turnstile-widget" class="turnstile-widget"></div>
+            <small class="field-error" *ngIf="submitted && !turnstileToken">Merci de valider la vérification anti-spam.</small>
+          </div>
           <p class="contact-form__eta">Réponse sous 24h.</p>
           <div class="contact-form__actions">
             <button type="submit" class="btn btn-primary" [disabled]="isLoading">
@@ -72,7 +80,7 @@
           </div>
           <p class="form-feedback form-feedback--success" *ngIf="submitState === 'success'">Message envoyé.</p>
           <p class="form-feedback form-feedback--error" *ngIf="submitState === 'error'">
-            Impossible d’envoyer. Vérifiez les champs ou essayez WhatsApp.
+            {{ submitErrorMessage || "Une erreur est survenue." }}
           </p>
         </form>
       </div>
