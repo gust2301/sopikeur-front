@@ -237,7 +237,7 @@
 }
 
 .kpi-value {
-  font-size: clamp(1.8rem, 3vw, 2.4rem);
+  font-size: 1.3rem;
   font-weight: 700;
   letter-spacing: -0.02em;
   color: $color-accent-2;
@@ -253,6 +253,13 @@
   color: rgba(255, 255, 255, 0.72);
   font-size: 0.95rem;
   line-height: 1.4;
+}
+
+
+.kpi-desc a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 2px;
 }
 
 .kpi-disclaimer {

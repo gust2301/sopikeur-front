@@ -1,12 +1,16 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CommonModule, ViewportScroller } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { RouterModule } from '@angular/router';
+import { ActivatedRoute, RouterModule } from '@angular/router';
 import { finalize } from 'rxjs';
 import { buildWhatsappLinkFromMessage } from '../../shared/utils/whatsapp';
 import { ContactApiService } from '../../shared/services/contact-api.service';
 
 type SubmitState = 'idle' | 'loading' | 'success' | 'error';
+type CustomerType = 'Particulier' | 'Professionnel';
+
+const DEFAULT_CUSTOMER_TYPE: CustomerType = 'Particulier';
+const PRO_CUSTOMER_TYPE: CustomerType = 'Professionnel';
 
 @Component({
   selector: 'app-contact',
@@ -17,7 +21,7 @@ type SubmitState = 'idle' | 'loading' | 'success' | 'error';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ContactComponent implements OnInit {
-  customerType: 'Particulier' | 'Professionnel' = 'Particulier';
+  customerType: CustomerType = DEFAULT_CUSTOMER_TYPE;
   name = '';
   email = '';
   phone = '';
@@ -27,12 +31,18 @@ export class ContactComponent implements OnInit {
 
   constructor(
     private readonly viewportScroller: ViewportScroller,
+    private readonly route: ActivatedRoute,
     private readonly contactApiService: ContactApiService,
     private readonly cdr: ChangeDetectorRef,
   ) {}
 
   ngOnInit(): void {
     this.viewportScroller.scrollToPosition([0, 0]);
+
+    if (this.route.snapshot.queryParamMap.get('customerType') === PRO_CUSTOMER_TYPE) {
+      this.customerType = PRO_CUSTOMER_TYPE;
+      this.cdr.markForCheck();
+    }
   }
 
   submit(): void {
@@ -128,6 +138,6 @@ export class ContactComponent implements OnInit {
     this.email = '';
     this.phone = '';
     this.message = '';
-    this.customerType = 'Particulier';
+    this.customerType = DEFAULT_CUSTOMER_TYPE;
   }
 }

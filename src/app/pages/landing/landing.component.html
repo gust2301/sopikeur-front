@@ -9,59 +9,40 @@
   <div class="container hero-content">
     <div class="hero-copy">
       <p class="eyebrow">REVÊTEMENTS & DESIGN INTÉRIEUR — SÉNÉGAL.</p>
-      <!--<h1>SOPI KER</h1>-->
       <p class="subtitle">Sols SPC + panneaux muraux design. Simple, propre, durable.</p>
-<!--      <p class="hero-description">
-        Pose rapide. Résiste à l’eau. Un mur qui décore et réduit l’écho.
-      </p>-->
       <div class="hero-ctas">
         <a routerLink="/spc" class="btn btn-primary">Nos sols SPC</a>
         <a routerLink="/panneaux" class="btn btn-primary">Nos panneaux accoustiques</a>
-      </div><!--
-      <ul class="hero__highlights">
-        <li class="hero__highlight">
-          <span class="hero__dot"></span> Échantillons dispo
-        </li>
-        <li class="hero__highlight">
-          <span class="hero__dot"></span> Devis sous 24h
-        </li>
-        <li class="hero__highlight">
-          <span class="hero__dot"></span> Service pose disponible
-        </li>
-      </ul>-->
+      </div>
     </div>
   </div>
   <div class="container hero-kpis" aria-label="Chiffres clés SopiKër">
     <div class="kpi-panel">
       <div class="kpi-grid">
         <div class="kpi-item">
-          <div class="kpi-value">0 colle</div>
-          <div class="kpi-label">Pose click rapide (SPC)</div>
-          <p class="kpi-desc">Chantier propre, installation rapide, prête à l’usage.</p>
+          <div class="kpi-value">100% étanche</div>
+          <div class="kpi-label">Cuisine / SDB / humidité</div>
+          <p class="kpi-desc">Ne gonfle pas, nettoyage facile.</p>
         </div>
 
         <div class="kpi-item">
-          <div class="kpi-value">0,5&nbsp;mm*</div>
-          <div class="kpi-label">Couche d’usure (SPC)</div>
-          <p class="kpi-desc">Haute résistance aux rayures et au fort passage.</p>
+          <div class="kpi-value">Pose click</div>
+          <div class="kpi-label">Rapide, sans gros travaux</div>
+          <p class="kpi-desc">Chantier propre, prêt vite.</p>
         </div>
 
         <div class="kpi-item">
-          <div class="kpi-value">−30 à −60%</div>
-          <div class="kpi-label">Réverbération*</div>
-          <p class="kpi-desc">Moins d’écho, voix plus claires, confort immédiat.</p>
+          <div class="kpi-value">Pièce calme</div>
+          <div class="kpi-label">Panneaux acoustiques design</div>
+          <p class="kpi-desc">Moins d’écho, meilleur confort.</p>
         </div>
 
         <div class="kpi-item">
           <div class="kpi-value">24h</div>
-          <div class="kpi-label">Devis + plan 3D</div>
-          <p class="kpi-desc">Conseil, estimation, simulation et plan de pose.</p>
+          <div class="kpi-label">Devis + conseils</div>
+          <p class="kpi-desc"><a href="https://wa.me/221774293757?text=Bonjour%2C%20je%20souhaite%20une%20estimation%20rapide." target="_blank" rel="noopener">WhatsApp</a>, estimation rapide.</p>
         </div>
       </div>
-
-      <p class="kpi-disclaimer">
-        *Selon gamme/fiche technique. Résultats variables selon surface couverte, configuration de la pièce et références produit.
-      </p>
     </div>
   </div>
 
@@ -184,7 +165,7 @@
       <p class="pro-card__note">
         Pour ces demandes, remplissez le formulaire de contact et indiquez “Pro”.
       </p>
-      <a routerLink="/contact" class="btn btn-primary">Contacter l’équipe</a>
+      <a [routerLink]="['/contact']" [queryParams]="{ customerType: 'Professionnel' }" class="btn btn-primary">Contacter l’équipe</a>
     </div>
   </div>
 </section>
