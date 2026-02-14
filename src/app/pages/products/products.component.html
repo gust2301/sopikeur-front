@@ -68,6 +68,8 @@
             </article>
           </div>
 
+
+          <p class="error" *ngIf="vm.error">{{ vm.error }}</p>
           <div class="empty-state" *ngIf="!vm.loading && vm.products.length === 0">
             <p>Aucun produit ne correspond à vos critères.</p>
           </div>

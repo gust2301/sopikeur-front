@@ -1,9 +1,11 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpParams, HttpResponse } from '@angular/common/http';
 import { Injectable, PLATFORM_ID, inject } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { Observable, catchError, map, of } from 'rxjs';
 import { CatalogProduct, CatalogProductType, catalogProducts } from '../data/catalog';
-import {apiUrl} from "../utils/api-url";
+import { apiUrl } from '../utils/api-url';
+import { environment } from '../../../environments/environment';
+import { ProductsApiResponse, normalizeApiProductsResponse } from './products-api.mapper';
 
 export type ProductStockStatus = 'IN_STOCK' | 'PREORDER' | 'OUT_OF_STOCK';
 
@@ -18,12 +20,6 @@ export interface ProductQuery {
 export interface ProductPage {
   items: CatalogProduct[];
   total: number;
-}
-
-interface ProductsApiResponse {
-  items?: CatalogProduct[];
-  total?: number;
-  data?: CatalogProduct[];
 }
 
 @Injectable({
@@ -42,10 +38,22 @@ export class ProductsApi {
       return of(this.paginateClient(catalogProducts, query));
     }
 
-    return this.http.get<ProductsApiResponse | CatalogProduct[]>(this.apiUrl, { params }).pipe(
-      map(response => this.normalizeResponse(response, query)),
-      catchError(() => of(this.paginateClient(catalogProducts, query))),
-    );
+    return this.http
+      .get<ProductsApiResponse>(this.apiUrl, { params, observe: 'response' })
+      .pipe(
+        map(response => {
+          if (environment.debugProductsApi) {
+            const raw = response.body;
+            console.log('[ProductsApi] raw resp', raw, {
+              typeOf: typeof raw,
+              isArray: Array.isArray(raw),
+            });
+          }
+
+          return this.normalizeResponse(response, query);
+        }),
+        catchError(() => of(this.paginateClient(catalogProducts, query))),
+      );
   }
 
   private buildParams(query: ProductQuery): HttpParams {
@@ -67,25 +75,30 @@ export class ProductsApi {
     return new HttpParams({ fromObject: params });
   }
 
-  private normalizeResponse(
-    response: ProductsApiResponse | CatalogProduct[],
-    query: ProductQuery,
-  ): ProductPage {
-    if (Array.isArray(response)) {
-      return this.paginateClient(response, query);
+  private normalizeResponse(response: HttpResponse<ProductsApiResponse>, query: ProductQuery): ProductPage {
+    const body = response.body;
+
+    if (!body) {
+      return this.paginateClient(catalogProducts, query);
     }
 
-    const items = response.items ?? response.data ?? [];
+    const normalized = normalizeApiProductsResponse(body, query.type);
 
-    if (Array.isArray(items) && typeof response.total === 'number') {
-      return { items, total: response.total };
+    return {
+      items: normalized.items,
+      total: this.resolveTotal(response, normalized.total),
+    };
+  }
+
+  private resolveTotal(response: HttpResponse<ProductsApiResponse>, fallback: number): number {
+    const headerValue = response.headers.get('x-total-count') ?? response.headers.get('X-Total-Count');
+
+    if (!headerValue) {
+      return fallback;
     }
 
-    if (Array.isArray(items)) {
-      return this.paginateClient(items, query);
-    }
-
-    return this.paginateClient(catalogProducts, query);
+    const parsed = Number(headerValue);
+    return Number.isFinite(parsed) ? parsed : fallback;
   }
 
   private paginateClient(items: CatalogProduct[], query: ProductQuery): ProductPage {

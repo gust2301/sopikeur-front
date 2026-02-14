@@ -19,6 +19,7 @@ import {
 } from 'rxjs';
 import { CatalogProduct, CatalogProductType } from '../../shared/data/catalog';
 import { ProductsApi, ProductPage, ProductStockStatus } from '../../shared/services/products-api.service';
+import { environment } from '../../../environments/environment';
 import { QuoteNavService } from '../../shared/services/quote-nav.service';
 
 const STOCK_FILTERS = [
@@ -94,6 +95,11 @@ export class ProductsComponent {
         })
         .pipe(
           map(result => this.buildViewModel(result, { type, page, pageSize })),
+          tap(vm => {
+            if (environment.debugProductsApi) {
+              console.log('[ProductsComponent] vm', vm);
+            }
+          }),
           startWith(this.buildViewModel({ items: [], total: 0 }, { type, page, pageSize }, true)),
           catchError(() =>
             of(
