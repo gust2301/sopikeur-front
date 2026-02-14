@@ -1,5 +1,6 @@
 export const environment = {
   production: true,
+  debugProductsApi: false,
   siteUrl: 'https://sopikeur.sn',
   apiBaseUrl: 'https://api.sopikeur.sn',
   apiPrefix: '/api/v1',
