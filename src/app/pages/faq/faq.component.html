@@ -1,0 +1,55 @@
+<section class="legal-page">
+  <div class="container legal-page__container">
+    <p class="section-title">FAQ</p>
+    <h1>Questions fréquentes</h1>
+    <div class="faq-list">
+      <details *ngFor="let item of faqs" class="faq-item">
+        <summary>{{ item.question }}</summary>
+
+        <ng-container [ngSwitch]="item.type">
+          <div *ngSwitchCase="'text'" class="text-answer">
+            <p>{{ item.answer }}</p>
+            <div class="faq-links" *ngIf="item.links?.length">
+              <a
+                *ngFor="let link of item.links"
+                class="faq-link"
+                [href]="link.href"
+                [attr.target]="link.external ? '_blank' : null"
+                [attr.rel]="link.external ? 'noopener' : null"
+              >
+                {{ link.label }}
+              </a>
+            </div>
+          </div>
+
+          <div *ngSwitchCase="'comparison'" class="comparison-block">
+            <p>
+              Le SPC se démarque par sa résistance à l’humidité, sa stabilité et sa simplicité de pose.
+              Voici un comparatif rapide avec d’autres revêtements courants.
+            </p>
+
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th scope="col">Critère</th>
+                    <th scope="col" *ngFor="let column of item.comparison.columns">{{ column }}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let row of item.comparison.rows">
+                    <th scope="row">{{ row.critere }}</th>
+                    <td *ngFor="let value of row.values">
+                      <span *ngIf="isNumber(value); else textValue" class="stars">{{ stars(value) }}</span>
+                      <ng-template #textValue>{{ value }}</ng-template>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </ng-container>
+      </details>
+    </div>
+  </div>
+</section>

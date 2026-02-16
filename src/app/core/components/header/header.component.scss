@@ -86,6 +86,27 @@
   margin-left: $space-4;
 }
 
+
+.nav-link--featured {
+  color: $color-accent-2;
+  padding: 0.35rem 0.65rem;
+  border: 1px solid rgba($color-accent, 0.35);
+  background: rgba($color-accent, 0.1);
+
+  &:hover,
+  &:focus-visible {
+    color: $color-accent-2;
+    border-color: rgba($color-accent, 0.6);
+    background: rgba($color-accent, 0.18);
+  }
+
+  &.is-active::after {
+    left: 0.35rem;
+    right: 0.35rem;
+    bottom: -5px;
+  }
+}
+
 .nav-desktop {
   display: flex !important;
 }
@@ -199,6 +220,12 @@
   }
 }
 
+
+.mobile-menu__link--featured {
+  border-color: rgba($color-accent, 0.45);
+  background: rgba($color-accent, 0.14);
+  color: $color-accent-2;
+}
 
 .mobile-menu.is-open {
   pointer-events: auto;

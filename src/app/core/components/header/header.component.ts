@@ -8,6 +8,7 @@ interface NavLink {
   path: string;
   fragment?: string;
   exact?: boolean;
+  featured?: boolean;
 }
 
 @Component({
@@ -27,6 +28,7 @@ export class HeaderComponent implements OnDestroy {
     { label: 'SPC', path: '/spc/' },
     { label: 'Panneaux', path: '/panneaux/' },
     { label: 'Inspirations', path: '/inspirations/' },
+    { label: 'FAQ', path: '/faq/', featured: true },
     { label: 'Contact', path: '/contact/' },
   ];
 

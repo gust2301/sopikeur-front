@@ -45,7 +45,18 @@
       <p class="description">{{ product.description }}</p>
 
       <div class="specs">
-        <span *ngFor="let spec of product.specs" class="spec">{{ spec }}</span>
+        <span *ngFor="let spec of product.specs" class="spec spec--with-guide">
+          {{ spec }}
+          <a
+            *ngIf="spec.toLowerCase().includes('pose click')"
+            class="spec-guide-link"
+            [routerLink]="installationGuideRoute()"
+            aria-label="Ouvrir le guide d’installation"
+          >
+            <span aria-hidden="true">🛠️</span>
+            <span>Guide</span>
+          </a>
+        </span>
       </div>
 
       <ul class="features" *ngIf="product.features?.length">

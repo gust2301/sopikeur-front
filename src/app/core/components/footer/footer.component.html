@@ -6,8 +6,12 @@
     </div>
     <div class="footer__columns">
       <div class="footer__column" *ngFor="let column of columns">
-        <h3>{{ column.title }}</h3>
-        <a class="footer__link" *ngFor="let link of column.links" [href]="link.href">{{ link.label }}</a>
+        <h3 class="footer-heading page-subtitle">{{ column.title }}</h3>
+        <ng-container *ngFor="let item of column.items">
+          <a class="footer__link" *ngIf="item.type === 'href'" [href]="item.href">{{ item.label }}</a>
+          <a class="footer__link" *ngIf="item.type === 'router'" [routerLink]="item.to">{{ item.label }}</a>
+          <span class="footer__text" *ngIf="item.type === 'text'">{{ item.label }}</span>
+        </ng-container>
       </div>
     </div>
   </div>
@@ -15,8 +19,8 @@
     <div class="container footer__bottom-bar">
       <p>© 2025 SopiKër. Tous droits réservés.</p>
       <div class="footer__legal">
-        <a href="#">CGV</a>
-        <a href="#">Mentions légales</a>
+        <a routerLink="/cgv">CGV</a>
+        <a routerLink="/mentions-legales">Mentions légales</a>
       </div>
     </div>
   </div>

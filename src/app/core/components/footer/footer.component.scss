@@ -21,7 +21,10 @@
     width: auto;
   }
 
-  p { color: rgba(#f8f9fb, 0.78); line-height: 1.6; }
+  p {
+    color: rgba(#f8f9fb, 0.78);
+    line-height: 1.6;
+  }
 }
 
 .footer__columns {
@@ -33,24 +36,34 @@
 .footer__column {
   display: grid;
   gap: $space-2;
+}
 
-  h3 {
-    color: lighten($color-accent, 20%);
-    font-size: 1rem;
-    letter-spacing: 0.02em;
-  }
+.footer-heading {
+  color: lighten($color-accent, 20%);
+  margin: 0 0 $space-1;
+}
+
+.footer__link,
+.footer__text {
+  color: rgba(#f8f9fb, 0.75);
+  font-weight: 600;
+  font-size: 0.95rem;
+  line-height: 1.5;
 }
 
 .footer__link {
-  color: rgba(#f8f9fb, 0.75);
   text-decoration: none;
-  font-weight: 600;
-  font-size: 0.95rem;
 
   &:hover,
   &:focus-visible {
     color: #fff;
   }
+}
+
+.footer__text {
+  display: inline-block;
+  text-decoration: none;
+  cursor: default;
 }
 
 .footer__bottom {
@@ -65,7 +78,9 @@
   justify-content: space-between;
   gap: $space-4;
 
-  p { color: rgba(#f8f9fb, 0.7); }
+  p {
+    color: rgba(#f8f9fb, 0.7);
+  }
 }
 
 .footer__legal {
@@ -76,7 +91,10 @@
     color: rgba(#f8f9fb, 0.75);
     text-decoration: none;
 
-    &:hover { color: #fff; }
+    &:hover,
+    &:focus-visible {
+      color: #fff;
+    }
   }
 }
 

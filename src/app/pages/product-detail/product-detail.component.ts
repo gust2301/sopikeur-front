@@ -25,6 +25,9 @@ export class ProductDetailComponent implements AfterViewInit {
   readonly galleryImages = computed(() => this.galleryImagesSignal());
   readonly selectedImage = computed(() => this.galleryImagesSignal()[this.selectedIndexSignal()] ?? undefined);
   readonly backToCatalogRoute = computed(() => (this.productSignal()?.type === 'acoustic' ? '/panneaux/' : '/spc/'));
+  readonly installationGuideRoute = computed(() =>
+    this.productSignal()?.type === 'acoustic' ? '/guide-installation-panneaux/' : '/guide-installation-spc/',
+  );
 
   @ViewChild('hero', { static: false }) private readonly heroEl?: ElementRef<HTMLElement>;
 

@@ -161,6 +161,28 @@
   border: 1px solid rgba($color-ink, 0.06);
 }
 
+.spec--with-guide {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.spec-guide-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-decoration: none;
+  color: $color-accent;
+  border-left: 1px solid rgba($color-ink, 0.18);
+  padding-left: 0.45rem;
+}
+
+.spec-guide-link:hover {
+  text-decoration: underline;
+}
+
 .features {
   padding-left: $space-5;
   display: grid;
@@ -174,6 +196,7 @@
   gap: $space-3;
   align-items: center;
 }
+
 
 .related {
   margin-top: $space-12;
