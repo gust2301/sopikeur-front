@@ -45,7 +45,7 @@ export class FaqComponent {
     {
       type: 'text',
       question: 'Livrez-vous partout au Sénégal ?',
-      answer: 'Oui, Sopi Kër livre à Dakar et dans tout le Sénégal selon votre zone et le volume de commande.',
+      answer: 'Oui, Sopi Kër livre à Saly, Dakar et dans tout le Sénégal selon votre zone et le volume de commande.',
     },
     {
       type: 'text',

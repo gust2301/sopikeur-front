@@ -1,5 +1,5 @@
-import { CommonModule } from '@angular/common';
-import { AfterViewInit, ChangeDetectionStrategy, Component } from '@angular/core';
+import {CommonModule, ViewportScroller} from '@angular/common';
+import {AfterViewInit, ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
 import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { CatalogProduct, catalogProducts } from '../../shared/data/catalog';
@@ -27,7 +27,7 @@ interface PackSelection {
   styleUrl: './quote-request.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class QuoteRequestComponent implements AfterViewInit {
+export class QuoteRequestComponent implements AfterViewInit, OnInit {
   submitState: 'idle' | 'success' | 'error' = 'idle';
   readonly projectTypes = ['Appartement', 'Villa', 'Bureau', 'Commerce', 'Autre'];
   readonly selections: QuoteProductSelection[] = catalogProducts.map(product => ({
@@ -70,6 +70,7 @@ export class QuoteRequestComponent implements AfterViewInit {
   constructor(
     private readonly fb: FormBuilder,
     private readonly route: ActivatedRoute,
+    private readonly viewportScroller: ViewportScroller,
   ) {
     this.route.queryParamMap.subscribe(params => {
       const productId = params.get('productId');
@@ -88,6 +89,10 @@ export class QuoteRequestComponent implements AfterViewInit {
       }
     });
   }
+
+  ngOnInit(): void {
+    this.viewportScroller.scrollToPosition([0, 0]);
+    }
 
   ngAfterViewInit(): void {
     window.scrollTo({ top: 0, behavior: 'smooth' });
