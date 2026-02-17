@@ -45,10 +45,10 @@
       <p class="description">{{ product.description }}</p>
 
       <div class="specs">
-        <span *ngFor="let spec of product.specs" class="spec spec--with-guide">
+        <span *ngFor="let spec of product.specs; let index = index" class="spec spec--with-guide">
           {{ spec }}
           <a
-            *ngIf="spec.toLowerCase().includes('pose click')"
+            *ngIf="spec.toLowerCase().includes('pose click') || (product.type === 'acoustic' && index === 0)"
             class="spec-guide-link"
             [routerLink]="installationGuideRoute()"
             aria-label="Ouvrir le guide d’installation"
