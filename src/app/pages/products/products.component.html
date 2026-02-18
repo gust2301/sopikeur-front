@@ -1,6 +1,11 @@
 <section class="products-page">
   <div class="container">
     <ng-container *ngIf="vm$ | async as vm">
+      <div class="cart-callout" *ngIf="uiMessage() as message">
+        <span>{{ message }}</span>
+        <button type="button" (click)="dismissMessage()">×</button>
+      </div>
+
       <header class="products-hero">
         <div>
           <h1 class="section-title">{{ vm.title }}</h1>
@@ -41,8 +46,7 @@
                 <span
                   class="stock-badge"
                   [class.stock-badge--preorder]="isPreorder(product)"
-                  [class.stock-badge--out]="isOutOfStock(product)"
-                >
+                                  >
                   {{ getStockLabel(product) }}
                 </span>
                 <img [src]="product.image" [alt]="product.name" loading="lazy" />
@@ -59,8 +63,8 @@
                 <div class="product-footer">
                   <div class="product-price">{{ product.price }} {{ product.unit }}</div>
                   <div class="product-actions">
-                    <button class="btn btn-primary" type="button" (click)="requestQuote(product)">
-                      {{ isPreorder(product) ? 'Précommander' : 'Demander un devis' }}
+                    <button class="btn btn-primary" type="button" (click)="handlePrimaryAction(product)" [disabled]="!isPreorder(product) && isInCart(product.id)">
+                      {{ isPreorder(product) ? 'Précommander' : (isInCart(product.id) ? 'Ajouté au panier' : 'Ajouter au panier') }}
                     </button>
                   </div>
                 </div>

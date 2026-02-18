@@ -510,10 +510,12 @@
 
 .btn-add:disabled,
 .btn-add[disabled] {
-  opacity: 0.6;
+  opacity: 0.75;
   cursor: not-allowed;
   transform: none;
   box-shadow: none;
+  background: #8f9888;
+  border-color: #8f9888;
 }
 
 .slider-arrow {
@@ -657,3 +659,18 @@
     justify-content: flex-start;
   }
 }
+
+
+.pro-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  justify-content: center;
+}
+
+.pro-actions .btn {
+  min-width: 220px;
+  justify-content: center;
+  display: inline-flex;
+}
+

@@ -83,7 +83,7 @@
         </p>
       </div>
       <div class="inspirations-cta__actions">
-        <a class="btn btn-primary" routerLink="/devis">Demander un devis</a>
+        <a class="btn btn-primary" [routerLink]="['/contact/']" [queryParams]="{ customerType: 'Professionnel' }">Demander un devis pro</a>
       </div>
     </div>
   </div>

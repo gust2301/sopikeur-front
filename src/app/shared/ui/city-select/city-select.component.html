@@ -1,0 +1,38 @@
+<label class="field city-select">
+  <span>{{ label }}<span *ngIf="required" aria-hidden="true">*</span></span>
+
+  <div class="city-select__control">
+    <input
+      type="text"
+      [value]="value"
+      [placeholder]="placeholder"
+      [disabled]="disabled"
+      role="combobox"
+      aria-autocomplete="list"
+      [attr.aria-expanded]="isOpen"
+      [attr.aria-controls]="listId"
+      [attr.aria-activedescendant]="activeIndex >= 0 ? listId + '-option-' + activeIndex : null"
+      [attr.aria-invalid]="shouldShowError()"
+      (input)="onInput($any($event.target).value)"
+      (focus)="onFocus()"
+      (blur)="onBlur()"
+      (keydown)="onKeydown($event)"
+    />
+
+    <ul *ngIf="isOpen && filteredCities.length > 0" [id]="listId" class="city-select__dropdown" role="listbox">
+      <li
+        *ngFor="let city of filteredCities; let index = index; trackBy: trackByCity"
+        [id]="listId + '-option-' + index"
+        role="option"
+        [attr.aria-selected]="activeIndex === index"
+        [class.active]="activeIndex === index"
+        (mousedown)="$event.preventDefault()"
+        (click)="selectCity(city)"
+      >
+        {{ city }}
+      </li>
+    </ul>
+  </div>
+
+  <small *ngIf="shouldShowError()" class="field-error">Veuillez sélectionner une ville.</small>
+</label>

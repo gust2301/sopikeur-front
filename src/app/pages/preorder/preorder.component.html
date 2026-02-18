@@ -1,0 +1,106 @@
+<section class="preorder-page">
+  <div class="container">
+    <header class="page-header">
+      <h1 class="section-title">Précommande</h1>
+      <p class="page-subtitle">Réservation de stock à venir, nous confirmons délais et modalités.</p>
+    </header>
+
+    <section class="card" *ngIf="selectedProduct as product; else noProduct">
+      <h2>Produit concerné</h2>
+      <article class="product-row">
+        <div>
+          <strong>{{ product.name }}</strong>
+          <p>{{ product.sku }} · {{ product.type === 'spc' ? 'm²' : 'pièces' }}</p>
+        </div>
+      </article>
+
+      <form [formGroup]="form" (ngSubmit)="submitPreorder()" class="form-grid">
+        <label>
+          Nom complet*
+          <input formControlName="fullName" type="text" />
+        </label>
+        <label>
+          Téléphone*
+          <input formControlName="phone" type="tel" />
+        </label>
+        <label>
+          Email
+          <input formControlName="email" type="email" />
+        </label>
+        <app-city-select
+          [label]="'Ville'"
+          [required]="true"
+          [placeholder]="'Ex : Dakar, Saly, Thiès…'"
+          formControlName="city"
+          [cities]="cities"
+          [showError]="shouldShowCityError()"
+        ></app-city-select>
+        <small class="field-error" *ngIf="cityLoadError">Impossible de charger les villes, réessayez.</small>
+        <label>
+          Zone / Quartier
+          <input
+            formControlName="area"
+            type="text"
+            placeholder="Ex : Almadies, Parcelles, Keur Massar…"
+          />
+        </label>
+        <label>
+          Adresse complète
+          <input formControlName="address" type="text" placeholder="Ex : Cité Keur Gorgui, Villa 12" />
+        </label>
+        <label>
+          Notes livraison
+          <input formControlName="notes" type="text" placeholder="Ex : Appeler 30 min avant" />
+        </label>
+        <label class="checkbox-row">
+          <input formControlName="installRequested" type="checkbox" />
+          <span>Je souhaite la pose par l’équipe Sopi Kër (sur devis)</span>
+        </label>
+        <label>
+          Quantité*
+          <input formControlName="quantity" type="number" min="1" step="1" />
+        </label>
+        <label>
+          Message
+          <textarea formControlName="message" rows="3"></textarea>
+        </label>
+
+        <label class="checkbox-row">
+          <input formControlName="acceptsDelay" type="checkbox" />
+          <span>J’accepte les délais estimatifs de disponibilité *</span>
+        </label>
+        <small class="field-error" *ngIf="shouldShowError(form.get('acceptsDelay')) && form.get('acceptsDelay')?.hasError('required')">
+          Vous devez accepter les délais estimatifs pour envoyer la précommande.
+        </small>
+
+        <button class="btn btn-primary" type="submit" [disabled]="status === 'loading'">
+          {{ status === 'loading' ? 'Envoi...' : 'Envoyer la précommande' }}
+        </button>
+      </form>
+
+      <app-feedback-banner
+        *ngIf="status === 'success'"
+        type="success"
+        title="Nous avons bien reçu votre précommande."
+        message="Vous serez contacté sous 48 h pour confirmer les délais et modalités."
+        referenceLabel="N° de précommande"
+        [referenceValue]="responseRef"
+        [actions]="successActions"
+      />
+
+      <app-feedback-banner
+        *ngIf="status === 'error'"
+        type="error"
+        title="Une erreur est survenue."
+        [message]="errorMessage || 'Impossible d’envoyer la précommande pour le moment.'"
+      />
+    </section>
+
+    <ng-template #noProduct>
+      <section class="card empty">
+        <p>Choisissez un produit hors-stock depuis le catalogue pour lancer une précommande.</p>
+        <a class="btn btn-primary" routerLink="/spc">Voir les produits</a>
+      </section>
+    </ng-template>
+  </div>
+</section>

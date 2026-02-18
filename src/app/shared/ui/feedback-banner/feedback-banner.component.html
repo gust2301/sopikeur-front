@@ -1,0 +1,54 @@
+<section
+  #banner
+  class="feedback-banner"
+  [class.is-success]="type === 'success'"
+  [class.is-error]="type === 'error'"
+  [class.is-info]="type === 'info'"
+  [attr.aria-live]="ariaLive"
+  tabindex="-1"
+>
+  <div class="feedback-banner__icon" aria-hidden="true">{{ icon }}</div>
+
+  <div class="feedback-banner__content">
+    <h3 class="feedback-banner__title">{{ title }}</h3>
+    <p class="feedback-banner__message">{{ message }}</p>
+    <p class="feedback-banner__reference" *ngIf="referenceLabel && referenceValue">
+      <strong>{{ referenceLabel }} :</strong>
+      <span>{{ referenceValue }}</span>
+    </p>
+
+    <div class="feedback-banner__actions" *ngIf="actions.length > 0">
+      <ng-container *ngFor="let action of actions">
+        <a
+          *ngIf="action.routerLink"
+          class="feedback-action"
+          [class.feedback-action--ghost]="action.kind === 'ghost'"
+          [routerLink]="action.routerLink"
+        >
+          {{ action.label }}
+        </a>
+
+        <a
+          *ngIf="!action.routerLink && action.href"
+          class="feedback-action"
+          [class.feedback-action--ghost]="action.kind === 'ghost'"
+          [href]="action.href"
+          [attr.target]="action.external ? '_blank' : null"
+          [attr.rel]="action.external ? 'noopener' : null"
+        >
+          {{ action.label }}
+        </a>
+
+        <button
+          *ngIf="!action.routerLink && !action.href"
+          class="feedback-action"
+          [class.feedback-action--ghost]="action.kind === 'ghost'"
+          type="button"
+          (click)="runAction(action)"
+        >
+          {{ action.label }}
+        </button>
+      </ng-container>
+    </div>
+  </div>
+</section>

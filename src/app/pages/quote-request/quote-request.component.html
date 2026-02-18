@@ -6,10 +6,6 @@
       <p class="quote-subtitle">
         Indiquez vos besoins, les produits souhaités et nous revenons vers vous rapidement avec un devis clair.
       </p>
-      <div class="intent-pill" *ngIf="intent === 'preorder'">Demande de précommande</div>
-      <p class="intent-help" *ngIf="intent === 'preorder'">
-        Votre précommande permet de réserver les stocks à venir. Nous vous préciserons les délais et modalités.
-      </p>
     </div>
 
     <form class="quote-card" [formGroup]="form" (ngSubmit)="submit()">
@@ -17,12 +13,12 @@
         <label class="field">
           <span>Nom</span>
           <input type="text" formControlName="name" />
-          <small *ngIf="form.get('name')?.touched && form.get('name')?.invalid">Champ obligatoire.</small>
+          <small *ngIf="shouldShowError(form.get('name')) && form.get('name')?.invalid">Champ obligatoire.</small>
         </label>
         <label class="field">
-          <span>Téléphone</span>
+          <span>Téléphone*</span>
           <input type="tel" formControlName="phone" />
-          <small *ngIf="form.get('phone')?.touched && form.get('phone')?.invalid">Champ obligatoire.</small>
+          <small *ngIf="shouldShowError(form.get('phone')) && form.get('phone')?.invalid">Champ obligatoire.</small>
         </label>
         <label class="field">
           <span>Email (optionnel)</span>
@@ -34,14 +30,36 @@
             <option *ngFor="let type of projectTypes" [value]="type">{{ type }}</option>
           </select>
         </label>
+        <app-city-select
+          class="field"
+          [label]="'Ville'"
+          [required]="true"
+          [placeholder]="'Ex : Dakar, Saly, Thiès…'"
+          formControlName="city"
+          [cities]="cities"
+          [showError]="shouldShowCityError()"
+        ></app-city-select>
+        <small class="field-error" *ngIf="cityLoadError">Impossible de charger les villes, réessayez.</small>
         <label class="field">
-          <span>Ville / Zone</span>
-          <input type="text" formControlName="city" placeholder="Dakar, Saly…" />
+          <span>Zone / Quartier</span>
+          <input
+            type="text"
+            formControlName="area"
+            placeholder="Ex : Almadies, Parcelles, Keur Massar…"
+          />
+        </label>
+        <label class="field">
+          <span>Adresse complète (optionnel)</span>
+          <input type="text" formControlName="address" placeholder="Ex : Cité Keur Gorgui, Villa 12" />
+        </label>
+        <label class="field">
+          <span>Notes livraison (optionnel)</span>
+          <input type="text" formControlName="notes" placeholder="Ex : Appeler 30 min avant" />
         </label>
       </div>
 
       <div class="form-section">
-        <div class="form-section-title">Produits demandés</div>
+        <div class="form-section-title">Produits demandés *</div>
         <div class="product-grid">
           <label class="product-option" *ngFor="let selection of selections; trackBy: trackByProductId">
             <input
@@ -53,6 +71,10 @@
             <span class="product-type">{{ selection.product.type === 'spc' ? 'SPC' : 'Panneau' }}</span>
           </label>
         </div>
+
+        <small class="field-error" *ngIf="isProductsSelectionInvalid()">
+          Sélectionnez au moins un produit pour demander un devis.
+        </small>
 
         <div class="quantity-list">
           <div class="quantity-item" *ngFor="let selection of selections; trackBy: trackByProductId">
@@ -76,6 +98,11 @@
             </ng-container>
           </div>
         </div>
+
+        <label class="field checkbox-row">
+          <input type="checkbox" formControlName="installRequested" />
+          <span>Je souhaite la pose par l’équipe Sopi Kër (sur devis)</span>
+        </label>
       </div>
 
       <div class="form-section">
@@ -102,11 +129,28 @@
       </label>
 
       <div class="form-actions">
-        <button type="submit" class="btn btn-primary">Envoyer la demande</button>
+        <button type="submit" class="btn btn-primary" [disabled]="status === 'loading'">
+          {{ status === 'loading' ? 'Envoi...' : 'Envoyer la demande' }}
+        </button>
         <a class="btn btn-secondary" [href]="getWhatsappLink()" target="_blank" rel="noopener">WhatsApp</a>
       </div>
-      <p class="form-feedback form-feedback--success" *ngIf="submitState === 'success'">Message envoyé</p>
-      <p class="form-feedback form-feedback--error" *ngIf="submitState === 'error'">Impossible d’envoyer. Essayez WhatsApp.</p>
+
+      <app-feedback-banner
+        *ngIf="status === 'success'"
+        type="success"
+        title="Nous avons bien reçu votre demande de devis."
+        message="Vous serez contacté sous 48 h."
+        referenceLabel="Référence"
+        [referenceValue]="responseRef"
+        [actions]="successActions"
+      />
+
+      <app-feedback-banner
+        *ngIf="status === 'error'"
+        type="error"
+        title="Une erreur est survenue."
+        [message]="errorMessage || 'Impossible d’envoyer. Essayez de réessayer.'"
+      />
     </form>
   </div>
 </section>

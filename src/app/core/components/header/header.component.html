@@ -17,9 +17,17 @@
           {{ link.label }}
         </a>
       </nav>
+      <a class="cart-link" routerLink="/panier" aria-label="Panier">
+        <span class="cart-link__icon" aria-hidden="true">🛒</span>
+        <span class="cart-link__count" *ngIf="cartCount() > 0">{{ cartCount() }}</span>
+      </a>
     </div>
 
     <div class="nav-mobile">
+      <a class="cart-link" routerLink="/panier" aria-label="Panier">
+        <span class="cart-link__icon" aria-hidden="true">🛒</span>
+        <span class="cart-link__count" *ngIf="cartCount() > 0">{{ cartCount() }}</span>
+      </a>
       <button
         class="menu-toggle menu-btn button-reset"
         type="button"

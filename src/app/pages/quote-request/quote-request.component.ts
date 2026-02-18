@@ -1,10 +1,15 @@
-import {CommonModule, ViewportScroller} from '@angular/common';
-import {AfterViewInit, ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
-import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { CommonModule, ViewportScroller } from '@angular/common';
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, NgZone, OnInit } from '@angular/core';
+import { AbstractControl, FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, RouterModule } from '@angular/router';
-import { CatalogProduct, catalogProducts } from '../../shared/data/catalog';
-import { QuoteIntent } from '../../shared/services/quote-nav.service';
+import { CatalogProduct } from '../../shared/models/catalog-product.model';
+import { ProductsApi } from '../../shared/services/products-api.service';
+import { FeedbackAction, FeedbackBannerComponent } from '../../shared/ui/feedback-banner/feedback-banner.component';
 import { buildWhatsappLinkFromMessage } from '../../shared/utils/whatsapp';
+import { QuotesApiService } from '../../shared/services/quotes-api.service';
+import { LocationsService } from '../../shared/services/locations.service';
+import { environment } from '../../../environments/environment';
+import { CitySelectComponent } from '../../shared/ui/city-select/city-select.component';
 
 interface QuoteProductSelection {
   product: CatalogProduct;
@@ -22,80 +27,116 @@ interface PackSelection {
 @Component({
   selector: 'app-quote-request',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, RouterModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, RouterModule, FeedbackBannerComponent, CitySelectComponent],
   templateUrl: './quote-request.component.html',
   styleUrl: './quote-request.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class QuoteRequestComponent implements AfterViewInit, OnInit {
-  submitState: 'idle' | 'success' | 'error' = 'idle';
+  status: 'idle' | 'loading' | 'success' | 'error' = 'idle';
+  submitted = false;
+  responseRef?: string;
+  errorMessage?: string;
   readonly projectTypes = ['Appartement', 'Villa', 'Bureau', 'Commerce', 'Autre'];
-  readonly selections: QuoteProductSelection[] = catalogProducts.map(product => ({
-    product,
-    selected: false,
-    quantity: '',
-  }));
+  selections: QuoteProductSelection[] = [];
   readonly packSelections: PackSelection[] = [
     {
-      id: 'spc-accessoires',
+      id: 'ACCESSOIRES',
       label: 'SPC + accessoires',
       description: 'Plinthes, profils et sous-couche.',
       selected: false,
     },
     {
-      id: 'mixte-spc-panneaux',
+      id: 'MIXTE_SPC_PANNEAUX',
       label: 'Pack mixte SPC + panneaux acoustiques',
       description: 'Solution complète pour sol et mur.',
       selected: false,
     },
-    {
-      id: 'pose',
-      label: 'Pose avec équipe SOPI KER',
-      description: 'Installation professionnelle sur demande.',
-      selected: false,
-    },
   ];
 
-  intent: QuoteIntent = 'quote';
 
   readonly form = this.fb.group({
     name: ['', Validators.required],
     phone: ['', Validators.required],
     email: [''],
-    projectType: ['Appartement', Validators.required],
-    city: [''],
+    projectType: ['Appartement'],
+    city: ['', Validators.required],
+    area: [''],
+    address: [''],
+    notes: [''],
+    installRequested: [false],
     message: [''],
+    productsSelection: [0, Validators.min(1)],
   });
 
+  cities: string[] = [];
+  cityLoadError = false;
+
+  get successActions(): FeedbackAction[] {
+    return [
+      { label: 'Nouvelle demande', kind: 'ghost', onClick: () => this.resetAfterSuccess() },
+      { label: 'Retour à l’accueil', routerLink: ['/'] },
+    ];
+  }
   constructor(
     private readonly fb: FormBuilder,
     private readonly route: ActivatedRoute,
     private readonly viewportScroller: ViewportScroller,
-  ) {
-    this.route.queryParamMap.subscribe(params => {
-      const productId = params.get('productId');
-      const qty = params.get('qty');
-      const intent = params.get('intent');
-
-      this.intent = intent === 'preorder' ? 'preorder' : 'quote';
-
-      if (productId) {
-        this.selections.forEach(selection => {
-          if (selection.product.id === productId) {
-            selection.selected = true;
-            selection.quantity = qty ?? selection.quantity;
-          }
-        });
-      }
-    });
-  }
+    private readonly productsApi: ProductsApi,
+    private readonly quotesApi: QuotesApiService,
+    private readonly locationsService: LocationsService,
+    private readonly cdr: ChangeDetectorRef,
+    private readonly ngZone: NgZone,
+  ) {}
 
   ngOnInit(): void {
     this.viewportScroller.scrollToPosition([0, 0]);
-    }
+
+    this.productsApi
+      .getCatalogProducts()
+      .pipe()
+      .subscribe({
+        next: products => {
+          this.ngZone.run(() => {
+            this.selections = products.map(product => ({
+            product,
+            selected: false,
+            quantity: '',
+          }));
+
+          const productId = this.route.snapshot.queryParamMap.get('productId');
+          const qty = this.route.snapshot.queryParamMap.get('qty');
+
+          if (productId) {
+            this.selections.forEach(selection => {
+              if (selection.product.id === productId) {
+                selection.selected = true;
+                selection.quantity = qty ?? selection.quantity;
+              }
+            });
+          }
+
+          this.syncProductsSelectionControl();
+          this.cdr.markForCheck();
+          });
+        },
+      });
+
+    this.locationsService.getCities().subscribe(cities => {
+      this.cities = cities;
+      this.cdr.markForCheck();
+    });
+
+    this.locationsService.hasLoadError$.subscribe(hasError => {
+      this.cityLoadError = hasError;
+      this.cdr.markForCheck();
+    });
+  }
 
   ngAfterViewInit(): void {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (typeof window !== 'undefined') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
   }
 
   toggleSelection(selection: QuoteProductSelection, checked: boolean): void {
@@ -103,23 +144,139 @@ export class QuoteRequestComponent implements AfterViewInit, OnInit {
     if (!checked) {
       selection.quantity = '';
     }
+
+    this.syncProductsSelectionControl();
   }
 
   togglePackSelection(selection: PackSelection, checked: boolean): void {
     selection.selected = checked;
   }
 
+  shouldShowError(control: AbstractControl | null): boolean {
+    if (!control) {
+      return false;
+    }
+
+    return this.submitted || control.touched || control.dirty;
+  }
+
+  shouldShowCityError(): boolean {
+    const control = this.form.get('city');
+    return Boolean(control?.invalid && this.shouldShowError(control));
+  }
+
+  private toOptionalText(value: string | null | undefined): string | undefined {
+    const normalized = (value ?? '').trim();
+    return normalized.length > 0 ? normalized : undefined;
+  }
+
+  private toRequiredText(value: string | null | undefined, fallback: string): string {
+    const normalized = (value ?? '').trim();
+    return normalized.length > 0 ? normalized : fallback;
+  }
+
+  private buildCityZone(city: string | null | undefined, area: string | null | undefined): string | undefined {
+    const zone = [this.toOptionalText(city), this.toOptionalText(area)].filter(Boolean).join(' / ');
+    return zone || undefined;
+  }
+
+  isProductsSelectionInvalid(): boolean {
+    const control = this.form.get('productsSelection');
+    return Boolean(control?.invalid && this.shouldShowError(control));
+  }
+
+  private syncProductsSelectionControl(): void {
+    const selectedCount = this.selections.filter(selection => selection.selected).length;
+    this.form.get('productsSelection')?.setValue(selectedCount);
+    this.form.get('productsSelection')?.updateValueAndValidity({ emitEvent: false });
+  }
+
   submit(): void {
+    this.submitted = true;
+    this.syncProductsSelectionControl();
+    this.form.markAllAsTouched();
+
     if (this.form.invalid) {
-      this.form.markAllAsTouched();
-      this.submitState = 'error';
+      this.status = 'error';
+      this.errorMessage = 'Merci de renseigner les champs obligatoires.';
       return;
     }
-    const subject = this.intent === 'preorder' ? 'Demande de précommande' : 'Demande de devis';
-    const message = this.buildMessage();
-    const mailto = `mailto:contact@sopikeur.sn?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(message)}`;
-    this.submitState = 'success';
-    window.location.href = mailto;
+
+    const value = this.form.getRawValue();
+    const selectedItems = this.selections.filter(selection => selection.selected);
+
+    this.status = 'loading';
+    this.errorMessage = undefined;
+
+    const payload = {
+      customer: {
+        fullName: (value.name ?? '').trim(),
+        phone: (value.phone ?? '').trim(),
+        email: this.toOptionalText(value.email),
+      },
+      projectType: this.toRequiredText(value.projectType, 'Appartement'),
+      delivery: {
+        city: (value.city ?? '').trim(),
+        area: this.toOptionalText(value.area),
+        address: this.toOptionalText(value.address),
+        notes: this.toOptionalText(value.notes),
+      },
+      cityZone: this.buildCityZone(value.city, value.area),
+      installRequested: value.installRequested === true,
+      message: this.toOptionalText(value.message),
+      intent: 'quote',
+      items: selectedItems.map(selection => ({
+        productId: selection.product.id,
+        sku: selection.product.sku,
+        qty: Number(selection.quantity) || 1,
+        unit: selection.product.type === 'spc' ? 'M2' as const : 'PIECE' as const,
+      })),
+      packs: this.packSelections.filter(pack => pack.selected).map(pack => pack.id),
+    };
+
+    if (!environment.production) {
+      console.debug('QuoteCreateRequest payload', payload);
+    }
+
+    this.quotesApi.createQuote(payload).subscribe({
+        next: response => {
+          this.ngZone.run(() => {
+            this.status = 'success';
+            this.responseRef = response?.quoteNumber ?? response?.id;
+            this.form.reset({
+              name: '',
+              phone: '',
+              email: '',
+              projectType: 'Appartement',
+              city: '',
+              area: '',
+              address: '',
+              notes: '',
+              installRequested: false,
+              message: '',
+              productsSelection: 0,
+            });
+            this.submitted = false;
+            this.selections = this.selections.map(selection => ({
+              ...selection,
+              selected: false,
+              quantity: '',
+            }));
+            this.packSelections.forEach(pack => {
+              pack.selected = false;
+            });
+            this.cdr.markForCheck();
+          });
+        },
+        error: error => {
+          this.ngZone.run(() => {
+            const backendMessage = error?.error?.message || error?.error?.detail;
+            this.status = 'error';
+            this.errorMessage = backendMessage || 'Impossible d’envoyer la demande. Merci de réessayer.';
+            this.cdr.markForCheck();
+          });
+        },
+      });
   }
 
   getWhatsappLink(): string {
@@ -128,6 +285,13 @@ export class QuoteRequestComponent implements AfterViewInit, OnInit {
 
   trackByProductId(_: number, item: QuoteProductSelection): string {
     return item.product.id;
+  }
+
+  private resetAfterSuccess(): void {
+    this.status = 'idle';
+    this.responseRef = undefined;
+    this.errorMessage = undefined;
+    this.submitted = false;
   }
 
   private buildMessage(): string {
@@ -139,18 +303,18 @@ export class QuoteRequestComponent implements AfterViewInit, OnInit {
         const quantity = selection.quantity ? `${selection.quantity} ${unitLabel}` : 'Quantité à confirmer';
         return `- ${selection.product.name} (${selection.product.sku}) : ${quantity}`;
       });
-    const packLines = this.packSelections
-      .filter(selection => selection.selected)
-      .map(selection => `- ${selection.label}`);
+    const packLines = this.packSelections.filter(selection => selection.selected).map(selection => `- ${selection.label}`);
 
     return [
       'Bonjour,',
-      `Type de demande: ${this.intent === 'preorder' ? 'Précommande' : 'Devis'}`,
+      'Type de demande: Devis',
       `Nom: ${value.name}`,
       `Téléphone: ${value.phone}`,
       `Email: ${value.email || 'Non précisé'}`,
       `Type de projet: ${value.projectType}`,
-      `Ville / Zone: ${value.city || 'Non précisée'}`,
+      `Ville: ${value.city || 'Non précisée'}`,
+      `Zone / Quartier: ${value.area || 'Non précisée'}`,
+      `Adresse: ${value.address || 'Non précisée'}`,
       'Produits demandés:',
       productLines.length > 0 ? productLines.join('\n') : '- À définir',
       'Packs sur devis:',

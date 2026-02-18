@@ -1,8 +1,9 @@
-import { ChangeDetectionStrategy, Component, ElementRef, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, ViewChild, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
-import { acousticPanels, CatalogProduct, spcProducts } from '../../shared/data/catalog';
-import { QuoteNavService } from '../../shared/services/quote-nav.service';
+import { CatalogProduct } from '../../shared/models/catalog-product.model';
+import { CartService } from '../../shared/services/cart.service';
+import { ProductsApi } from '../../shared/services/products-api.service';
 
 @Component({
   standalone: true,
@@ -16,13 +17,29 @@ export class LandingComponent {
   @ViewChild('colorsTrack') colorsTrack?: ElementRef<HTMLDivElement>;
   @ViewChild('panelsTrack') panelsTrack?: ElementRef<HTMLDivElement>;
 
-  readonly colors: CatalogProduct[] = spcProducts;
-  readonly acousticPanels: CatalogProduct[] = acousticPanels;
+  colors: CatalogProduct[] = [];
+  acousticPanels: CatalogProduct[] = [];
 
-  constructor(
-    private readonly router: Router,
-    private readonly quoteNavService: QuoteNavService,
-  ) {}
+  private readonly router = inject(Router);
+  private readonly cartService = inject(CartService);
+  private readonly productsApi = inject(ProductsApi);
+  private readonly cdr = inject(ChangeDetectorRef);
+
+  constructor() {
+    this.productsApi.getProducts({ type: 'spc', page: 1, size: 20 }).subscribe({
+      next: response => {
+        this.colors = this.sortByAvailability(response.items);
+        this.cdr.markForCheck();
+      },
+    });
+
+    this.productsApi.getProducts({ type: 'acoustic', page: 1, size: 20 }).subscribe({
+      next: response => {
+        this.acousticPanels = this.sortByAvailability(response.items);
+        this.cdr.markForCheck();
+      },
+    });
+  }
 
   viewProduct(product: CatalogProduct): void {
     this.router.navigate(['/product', product.type, product.id]);
@@ -36,9 +53,25 @@ export class LandingComponent {
     this.scrollByCard(this.panelsTrack?.nativeElement, direction);
   }
 
-  requestQuote(product: CatalogProduct): void {
-    const intent = product.inStock ? 'quote' : 'preorder';
-    this.quoteNavService.openQuote({ product, intent });
+  handlePrimaryAction(product: CatalogProduct): void {
+    if (product.inStock) {
+      this.cartService.addProduct(product);
+      return;
+    }
+
+    void this.router.navigate(['/precommande'], { queryParams: { productId: product.id, productType: product.type } });
+  }
+
+  isInCart(productId: string): boolean {
+    return this.cartService.isInCart(productId);
+  }
+
+  openProQuoteForm(): void {
+    void this.router.navigate(['/devis'], { queryParams: { intent: 'quote', customerType: 'Professionnel' } });
+  }
+
+  private sortByAvailability(items: CatalogProduct[]): CatalogProduct[] {
+    return [...items].sort((a, b) => Number(Boolean(b.inStock)) - Number(Boolean(a.inStock)));
   }
 
   private scrollByCard(track: HTMLDivElement | undefined, direction: 'left' | 'right'): void {

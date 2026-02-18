@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, Renderer2, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { CartService } from '../../../shared/services/cart.service';
 import { DOCUMENT } from '@angular/common';
 
 interface NavLink {
@@ -23,6 +24,8 @@ export class HeaderComponent implements OnDestroy {
   private document = inject(DOCUMENT);
   private renderer = inject(Renderer2);
   isMobileMenuOpen = false;
+  private readonly cartService = inject(CartService);
+  readonly cartCount = this.cartService.count;
   navLinks: NavLink[] = [
     { label: 'Accueil', path: '/', fragment: 'home', exact: true },
     { label: 'SPC', path: '/spc/' },

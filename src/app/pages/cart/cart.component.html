@@ -1,0 +1,166 @@
+<section class="cart-page">
+  <div class="container">
+    <header class="page-header">
+      <h1 class="section-title">Panier</h1>
+      <p class="page-subtitle">Validez votre commande stock (paiement à l’étape suivante).</p>
+    </header>
+
+    <section
+      *ngIf="status === 'success'"
+      #successState
+      class="card"
+      tabindex="-1"
+      aria-live="polite"
+    >
+      <app-feedback-banner
+        type="success"
+        title="Commande confirmée"
+        message="Nous avons bien reçu votre commande et allons vous recontacter rapidement pour confirmer les modalités."
+        referenceLabel="N° de commande"
+        [referenceValue]="responseRef"
+        [actions]="successActions"
+      />
+    </section>
+
+    <div class="layout" *ngIf="!isEmpty() && status !== 'success'; else emptyState">
+      <section class="card cart-items">
+        <button
+          class="accordion-toggle"
+          type="button"
+          [attr.aria-expanded]="productsOpen"
+          aria-controls="cart-products-content"
+          (click)="toggleProducts()"
+        >
+          <span class="accordion-title">Produits ({{ totalItems() }})</span>
+          <span class="accordion-meta">Total : {{ currency.format(totalAmountFcfa()) }} FCFA</span>
+          <span class="chevron" [class.chevron-open]="productsOpen">▾</span>
+        </button>
+
+        <div id="cart-products-content" [hidden]="isMobile && !productsOpen">
+          <h2 class="desktop-title">Produits ({{ totalItems() }})</h2>
+          <p class="cart-total">Total produits: <strong>{{ currency.format(totalAmountFcfa()) }} FCFA</strong></p>
+          <article class="item" *ngFor="let item of items()">
+            <div>
+              <h3>{{ getItemTitle(item) }}</h3>
+              <p class="item-meta">{{ getTypeLabel(item) }} • Unité : {{ getUnitLabel(item) }}</p>
+              <p>{{ item.unitPriceLabel }}</p>
+            </div>
+            <div class="qty-actions">
+              <button type="button" (click)="decrement(item.productId, item.quantity)">−</button>
+              <input
+                class="qty-input"
+                type="number"
+                [value]="item.quantity"
+                min="1"
+                [step]="item.unit === 'M2' ? 1 : 1"
+                (input)="onQuantityInput(item.productId, $any($event.target).value)"
+              />
+              <button type="button" (click)="increment(item.productId, item.quantity)">+</button>
+              <button type="button" class="remove" (click)="remove(item.productId)">Supprimer</button>
+            </div>
+          </article>
+
+          <ng-container *ngIf="!isMobile" [ngTemplateOutlet]="recapTemplate"></ng-container>
+        </div>
+      </section>
+
+      <section class="card checkout">
+        <button
+          class="accordion-toggle"
+          type="button"
+          [attr.aria-expanded]="deliveryOpen"
+          aria-controls="cart-delivery-content"
+          (click)="toggleDelivery()"
+        >
+          <span class="accordion-title">Livraison & pose</span>
+          <span class="accordion-meta">À compléter</span>
+          <span class="chevron" [class.chevron-open]="deliveryOpen">▾</span>
+        </button>
+
+        <div id="cart-delivery-content" [hidden]="isMobile && !deliveryOpen">
+          <h2 class="desktop-title">Livraison & pose</h2>
+          <form [formGroup]="form" (ngSubmit)="submitOrder()">
+            <label>
+              Nom complet*
+              <input formControlName="fullName" type="text" />
+            </label>
+            <label>
+              Téléphone*
+              <input formControlName="phone" type="tel" />
+            </label>
+            <label>
+              Email
+              <input formControlName="email" type="email" />
+            </label>
+            <app-city-select
+              [label]="'Ville'"
+              [required]="true"
+              [placeholder]="'Ex : Dakar, Saly, Thiès…'"
+              formControlName="city"
+              [cities]="cities"
+              [showError]="shouldShowCityError()"
+            ></app-city-select>
+            <small class="field-error" *ngIf="cityLoadError">Impossible de charger les villes, réessayez.</small>
+            <label>
+              Zone / Quartier
+              <input
+                formControlName="area"
+                type="text"
+                placeholder="Ex : Almadies, Parcelles, Keur Massar…"
+              />
+            </label>
+            <label class="checkbox-row">
+              <input formControlName="installRequested" type="checkbox" />
+              <span>Je souhaite la pose par l’équipe Sopi Kër ({{ installationLabel }})</span>
+            </label>
+            <label>
+              Adresse complète
+              <input formControlName="address" type="text" placeholder="Ex : Cité Keur Gorgui, Villa 12" />
+            </label>
+            <label>
+              Notes livraison
+              <textarea formControlName="notes" rows="3"></textarea>
+            </label>
+
+            <ng-container *ngIf="isMobile" [ngTemplateOutlet]="recapTemplate"></ng-container>
+
+            <p class="mini-total">Total produits (hors pose &amp; livraison) : <strong>{{ currency.format(totalAmountFcfa()) }} FCFA</strong></p>
+
+            <button class="btn btn-primary" type="submit" [disabled]="status === 'loading'">
+              {{ status === 'loading' ? 'Envoi...' : 'Valider la commande' }}
+            </button>
+          </form>
+
+          <div #feedbackAnchor>
+            <app-feedback-banner
+              *ngIf="status === 'error'"
+              type="error"
+              title="Une erreur est survenue."
+              [message]="errorMessage || 'Impossible d’envoyer la commande, réessayez.'"
+            />
+            <button *ngIf="status === 'error'" class="btn btn-secondary" type="button" (click)="submitOrder()">Réessayer</button>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <ng-template #recapTemplate>
+      <div class="order-summary">
+        <h3>Récapitulatif</h3>
+        <p><span>Sous-total produits</span><strong>{{ currency.format(totalAmountFcfa()) }} FCFA</strong></p>
+        <p><span>Livraison</span><strong>Sur devis</strong></p>
+        <p><span>Pose</span><strong>Non incluse (sur devis)</strong></p>
+        <p class="summary-total"><span>Total (hors pose &amp; livraison)</span><strong>{{ currency.format(totalAmountFcfa()) }} FCFA</strong></p>
+      </div>
+
+      <p class="pose-callout">ℹ️ La pose n’est pas incluse dans le total. Elle est chiffrée sur devis selon la surface et le support.</p>
+    </ng-template>
+
+    <ng-template #emptyState>
+      <section class="card empty" *ngIf="status !== 'success'">
+        <p>Votre panier est vide.</p>
+        <a class="btn btn-primary" routerLink="/spc">Voir les produits</a>
+      </section>
+    </ng-template>
+  </div>
+</section>

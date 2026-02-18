@@ -1,7 +1,8 @@
 import { ChangeDetectionStrategy, Component, ElementRef, HostListener, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
-import { CatalogProduct, catalogProducts } from '../../shared/data/catalog';
+import { CatalogProduct } from '../../shared/models/catalog-product.model';
+import { ProductsApi } from '../../shared/services/products-api.service';
 
 type InspirationTag = 'spc' | 'panels';
 type InspirationTab = 'all' | InspirationTag;
@@ -43,16 +44,7 @@ const NEW_INSPIRATION_IMAGES = [
   '/assets/panels/HEGAGONB_light_home.png',
 ];
 
-const SPC_SKU_TO_ID = new Map(
-  catalogProducts.filter(product => product.type === 'spc').map(product => [product.sku.toUpperCase(), product.id]),
-);
-const PANEL_SKU_TO_ID = new Map(
-  catalogProducts
-    .filter(product => product.type === 'acoustic')
-    .map(product => [product.sku.toUpperCase(), product.id]),
-);
-
-const PANEL_SKUS = Array.from(PANEL_SKU_TO_ID.keys());
+const PANEL_SKUS = ['M-60240-WAVE1', 'HEXAGON', 'HEXAGONB'];
 
 const LEGACY_INSPIRATIONS: InspirationItem[] = [
   {
@@ -165,18 +157,8 @@ const extractPanelCodes = (filename: string): string[] => {
 
 const buildProductRefs = (spcCodes: string[], panelCodes: string[]): ProductRef[] => {
   const refs: ProductRef[] = [];
-  spcCodes.forEach(code => {
-    const id = SPC_SKU_TO_ID.get(code.toUpperCase());
-    if (id) {
-      refs.push({ kind: 'spc', id });
-    }
-  });
-  panelCodes.forEach(code => {
-    const id = PANEL_SKU_TO_ID.get(code.toUpperCase());
-    if (id) {
-      refs.push({ kind: 'panel', id });
-    }
-  });
+  spcCodes.forEach(code => refs.push({ kind: 'spc', id: code.toLowerCase() }));
+  panelCodes.forEach(code => refs.push({ kind: 'panel', id: code.toLowerCase() }));
   return refs;
 };
 
@@ -244,7 +226,15 @@ export class InspirationsComponent {
   sliderValue = 50;
   showProductSheet = false;
 
-  constructor(private readonly router: Router) {}
+  private catalogProducts: CatalogProduct[] = [];
+
+  constructor(private readonly router: Router, private readonly productsApi: ProductsApi) {
+    this.productsApi.getCatalogProducts().subscribe({
+      next: products => {
+        this.catalogProducts = products;
+      },
+    });
+  }
 
   get filteredNewItems(): InspirationItem[] {
     return this.filterItems(this.newItems);
@@ -420,7 +410,7 @@ export class InspirationsComponent {
   }
 
   private findCatalogProduct(ref: ProductRef): CatalogProduct | undefined {
-    return catalogProducts.find(product => {
+    return this.catalogProducts.find(product => {
       if (ref.kind === 'spc') {
         return product.type === 'spc' && product.id === ref.id;
       }

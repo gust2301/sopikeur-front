@@ -1,4 +1,4 @@
-import { CatalogProduct, CatalogProductType } from '../data/catalog';
+import { CatalogProduct, CatalogProductType } from '../models/catalog-product.model';
 
 export type ProductStockStatus = 'IN_STOCK' | 'PREORDER' | 'OUT_OF_STOCK';
 

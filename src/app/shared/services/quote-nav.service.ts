@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { CatalogProduct } from '../data/catalog';
+import { CatalogProduct } from '../models/catalog-product.model';
 
 export type QuoteIntent = 'quote' | 'preorder';
 

@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, DestroyRef, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { ActivatedRoute, RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   BehaviorSubject,
@@ -17,10 +17,9 @@ import {
   of,
   catchError,
 } from 'rxjs';
-import { CatalogProduct, CatalogProductType } from '../../shared/data/catalog';
+import { CatalogProduct, CatalogProductType } from '../../shared/models/catalog-product.model';
 import { ProductsApi, ProductPage, ProductStockStatus } from '../../shared/services/products-api.service';
-import { environment } from '../../../environments/environment';
-import { QuoteNavService } from '../../shared/services/quote-nav.service';
+import { CartService } from '../../shared/services/cart.service';
 
 const STOCK_FILTERS = [
   { value: 'ALL', label: 'Tous' },
@@ -55,7 +54,8 @@ export class ProductsComponent {
   private readonly destroyRef = inject(DestroyRef);
   private readonly route = inject(ActivatedRoute);
   private readonly productsApi = inject(ProductsApi);
-  private readonly quoteNav = inject(QuoteNavService);
+  private readonly router = inject(Router);
+  private readonly cartService = inject(CartService);
 
   readonly stockFilters = STOCK_FILTERS;
   readonly pageSizeOptions = [12, 16];
@@ -77,6 +77,8 @@ export class ProductsComponent {
     shareReplay({ bufferSize: 1, refCount: true }),
   );
 
+  readonly uiMessage = this.cartService.uiMessage;
+
   readonly vm$ = combineLatest({
     type: this.type$,
     query: this.query$,
@@ -95,11 +97,6 @@ export class ProductsComponent {
         })
         .pipe(
           map(result => this.buildViewModel(result, { type, page, pageSize })),
-          tap(vm => {
-            if (environment.debugProductsApi) {
-              console.log('[ProductsComponent] vm', vm);
-            }
-          }),
           startWith(this.buildViewModel({ items: [], total: 0 }, { type, page, pageSize }, true)),
           catchError(() =>
             of(
@@ -153,9 +150,21 @@ export class ProductsComponent {
     return page;
   }
 
-  requestQuote(product: CatalogProduct): void {
-    const intent = product.inStock ? 'quote' : 'preorder';
-    this.quoteNav.openQuote({ product, intent });
+  dismissMessage(): void {
+    this.cartService.clearMessage();
+  }
+
+  isInCart(productId: string): boolean {
+    return this.cartService.isInCart(productId);
+  }
+
+  handlePrimaryAction(product: CatalogProduct): void {
+    if (product.inStock) {
+      this.cartService.addProduct(product);
+      return;
+    }
+
+    void this.router.navigate(['/precommande'], { queryParams: { productId: product.id, productType: product.type } });
   }
 
   getStockLabel(product: CatalogProduct): string {
@@ -167,16 +176,12 @@ export class ProductsComponent {
       case 'PREORDER':
         return 'PRÉCOMMANDE';
       default:
-        return 'Rupture';
+        return 'PRÉCOMMANDE';
     }
   }
 
   isPreorder(product: CatalogProduct): boolean {
     return this.resolveStockStatus(product) === 'PREORDER';
-  }
-
-  isOutOfStock(product: CatalogProduct): boolean {
-    return this.resolveStockStatus(product) === 'OUT_OF_STOCK';
   }
 
   private resetFilters(): void {
@@ -209,7 +214,7 @@ export class ProductsComponent {
         : 'Nos panneaux acoustiques avec recherche rapide et statut de stock.';
 
     return {
-      products: result.items,
+      products: this.sortByAvailability(result.items),
       total: result.total,
       page: safePage,
       pageSize: options.pageSize,
@@ -222,21 +227,26 @@ export class ProductsComponent {
     };
   }
 
+
+  private sortByAvailability(items: CatalogProduct[]): CatalogProduct[] {
+    return [...items].sort((a, b) => Number(Boolean(b.inStock)) - Number(Boolean(a.inStock)));
+  }
+
   private resolveStockStatus(product: CatalogProduct): ProductStockStatus {
     const apiStatus = (product as { stockStatus?: ProductStockStatus }).stockStatus;
 
-    if (apiStatus) {
-      return apiStatus;
+    if (apiStatus === 'IN_STOCK') {
+      return 'IN_STOCK';
+    }
+
+    if (apiStatus === 'PREORDER' || apiStatus === 'OUT_OF_STOCK') {
+      return 'PREORDER';
     }
 
     if (product.inStock === true) {
       return 'IN_STOCK';
     }
 
-    if (product.inStock === false) {
-      return 'PREORDER';
-    }
-
-    return 'OUT_OF_STOCK';
+    return 'PREORDER';
   }
 }

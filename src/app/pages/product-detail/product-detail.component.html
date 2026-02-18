@@ -44,6 +44,11 @@
       <p class="price">{{ product.price }} {{ product.unit }}</p>
       <p class="description">{{ product.description }}</p>
 
+      <div class="cart-callout" *ngIf="uiMessage() as message">
+        <span>{{ message }}</span>
+        <button type="button" (click)="dismissMessage()">×</button>
+      </div>
+
       <div class="specs">
         <span *ngFor="let spec of product.specs; let index = index" class="spec spec--with-guide">
           {{ spec }}
@@ -64,8 +69,8 @@
       </ul>
 
       <div class="actions">
-        <button class="btn btn-primary" type="button" (click)="requestQuote(product)">
-          {{ product.inStock ? 'Demander un devis' : 'Précommander' }}
+        <button class="btn btn-primary" type="button" (click)="handlePrimaryAction(product)" [disabled]="product.inStock && isInCart(product.id)">
+          {{ product.inStock ? (isInCart(product.id) ? 'Ajouté au panier' : 'Ajouter au panier') : 'Précommander' }}
         </button>
         <a class="btn btn-secondary" [routerLink]="backToCatalogRoute()">
           Retour au catalogue

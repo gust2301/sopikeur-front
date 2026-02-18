@@ -70,6 +70,26 @@ export const routes: Routes = [
           import('./pages/product-detail/product-detail.component').then(m => m.ProductDetailComponent),
       },
       {
+        path: 'panier',
+        loadComponent: () => import('./pages/cart/cart.component').then(m => m.CartComponent),
+        data: {
+          seo: {
+            title: 'Panier | Sopi Kër Sénégal',
+            description: 'Validez votre commande de produits en stock avec options de livraison et pose.',
+          },
+        },
+      },
+      {
+        path: 'precommande',
+        loadComponent: () => import('./pages/preorder/preorder.component').then(m => m.PreorderComponent),
+        data: {
+          seo: {
+            title: 'Précommande | Sopi Kër Sénégal',
+            description: 'Réservez vos produits hors-stock et recevez la confirmation des délais et modalités.',
+          },
+        },
+      },
+      {
         path: 'devis',
         loadComponent: () =>
           import('./pages/quote-request/quote-request.component').then(m => m.QuoteRequestComponent),
