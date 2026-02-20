@@ -1,8 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, NgZone, inject } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject } from '@angular/core';
 import { AbstractControl, FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, RouterModule } from '@angular/router';
-import { forkJoin } from 'rxjs';
+import { EMPTY, catchError, finalize, forkJoin, tap } from 'rxjs';
 import { CatalogProduct, CatalogProductType } from '../../shared/models/catalog-product.model';
 import { ProductsApi } from '../../shared/services/products-api.service';
 import { FeedbackAction, FeedbackBannerComponent } from '../../shared/ui/feedback-banner/feedback-banner.component';
@@ -26,7 +26,6 @@ export class PreorderComponent {
   private readonly route = inject(ActivatedRoute);
   private readonly productsApi = inject(ProductsApi);
   private readonly cdr = inject(ChangeDetectorRef);
-  private readonly ngZone = inject(NgZone);
 
   status: 'idle' | 'loading' | 'success' | 'error' = 'idle';
   submitted = false;
@@ -81,20 +80,16 @@ export class PreorderComponent {
     forkJoin([
       this.productsApi.getProductById(preferredType, productId),
       this.productsApi.getProductById(secondaryType, productId),
-    ]).subscribe({
-      next: ([preferred, secondary]) => {
-        this.ngZone.run(() => {
+    ])
+      .pipe(finalize(() => this.cdr.markForCheck()))
+      .subscribe({
+        next: ([preferred, secondary]) => {
           this.selectedProduct = preferred ?? secondary;
-          this.cdr.markForCheck();
-        });
-      },
-      error: () => {
-        this.ngZone.run(() => {
+        },
+        error: () => {
           this.selectedProduct = undefined;
-          this.cdr.markForCheck();
-        });
-      },
-    });
+        },
+      });
   }
 
   get hasSelectedProduct(): boolean {
@@ -176,37 +171,52 @@ export class PreorderComponent {
       console.debug('PreorderCreateRequest payload', payload);
     }
 
-    this.preorderApi.createPreorder(payload).subscribe({
-        next: response => {
-          this.ngZone.run(() => {
-            this.status = 'success';
-            this.responseRef = response?.preorderNumber ?? response?.id;
-            this.form.reset({
-              fullName: '',
-              phone: '',
-              email: '',
-              city: '',
-              area: '',
-              address: '',
-              notes: '',
-              installRequested: false,
-              quantity: 1,
-              message: '',
-              acceptsDelay: false,
-            });
-            this.submitted = false;
-            this.cdr.markForCheck();
-          });
-        },
-        error: error => {
-          this.ngZone.run(() => {
-            const backendMessage = error?.error?.message || error?.error?.detail;
-            this.status = 'error';
-            this.errorMessage = backendMessage || 'Impossible d’envoyer la précommande pour le moment. Merci de réessayer.';
-            this.cdr.markForCheck();
-          });
-        },
-      });
+    this.preorderApi.createPreorder(payload)
+      .pipe(
+        tap(response => {
+          const responseRef = response?.preorderNumber ?? response?.id;
+          this.handleSuccess(responseRef);
+        }),
+        catchError(error => {
+          this.handleError(error, 'Impossible d’envoyer la précommande pour le moment. Merci de réessayer.');
+          return EMPTY;
+        }),
+        finalize(() => this.cdr.markForCheck()),
+      )
+      .subscribe();
+  }
+
+
+  private handleSuccess(reference: string): void {
+    this.status = 'success';
+    this.responseRef = reference;
+    this.resetFormState();
+    this.submitted = false;
+  }
+
+  private handleError(error: any, fallbackMessage: string): void {
+    this.status = 'error';
+    this.errorMessage = this.extractBackendMessage(error) || fallbackMessage;
+  }
+
+  private extractBackendMessage(error: any): string | null {
+    return error?.error?.message || error?.error?.detail || null;
+  }
+
+  private resetFormState(): void {
+    this.form.reset({
+      fullName: '',
+      phone: '',
+      email: '',
+      city: '',
+      area: '',
+      address: '',
+      notes: '',
+      installRequested: false,
+      quantity: 1,
+      message: '',
+      acceptsDelay: false,
+    });
   }
 
   private resetStatus(): void {

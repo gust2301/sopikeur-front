@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, NgZone, OnDestroy, OnInit, ViewChild, computed, inject } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit, ViewChild, computed, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { EMPTY, catchError, finalize, tap } from 'rxjs';
 import { CitySelectComponent } from '../../shared/ui/city-select/city-select.component';
 import { RouterModule } from '@angular/router';
 import { FeedbackBannerComponent, FeedbackAction } from '../../shared/ui/feedback-banner/feedback-banner.component';
@@ -25,7 +26,6 @@ export class CartComponent implements OnInit, OnDestroy {
   private readonly orderApi = inject(OrdersApiService);
   private readonly locationsService = inject(LocationsService);
   private readonly cdr = inject(ChangeDetectorRef);
-  private readonly ngZone = inject(NgZone);
 
   @ViewChild('feedbackAnchor') private readonly feedbackAnchor?: ElementRef<HTMLElement>;
   @ViewChild('successState') private readonly successState?: ElementRef<HTMLElement>;
@@ -204,27 +204,36 @@ export class CartComponent implements OnInit, OnDestroy {
 
     this.orderApi
       .createOrder(payload)
-      .subscribe({
-        next: response => {
-          this.ngZone.run(() => {
-            this.status = 'success';
-            this.responseRef = response?.orderNumber ?? response?.id;
-            this.scrollToFeedback();
-            this.cartService.clear();
-            this.focusSuccessState();
-            this.cdr.markForCheck();
-          });
-        },
-        error: error => {
-          this.ngZone.run(() => {
-            const backendMessage = error?.error?.message || error?.error?.detail;
-            this.status = 'error';
-            this.errorMessage = backendMessage || 'Impossible d’envoyer la commande, réessayez.';
-            this.scrollToFeedback();
-            this.cdr.markForCheck();
-          });
-        },
-      });
+      .pipe(
+        tap(response => {
+          const responseRef = response?.orderNumber ?? response?.id;
+          this.handleSuccess(responseRef);
+        }),
+        catchError(error => {
+          this.handleError(error, 'Impossible d’envoyer la commande, réessayez.');
+          return EMPTY;
+        }),
+        finalize(() => this.cdr.markForCheck()),
+      )
+      .subscribe();
+  }
+
+  private handleSuccess(reference: string): void {
+    this.status = 'success';
+    this.responseRef = reference;
+    this.scrollToFeedback();
+    this.cartService.clear();
+    this.focusSuccessState();
+  }
+
+  private handleError(error: any, fallbackMessage: string): void {
+    this.status = 'error';
+    this.errorMessage = this.extractBackendMessage(error) || fallbackMessage;
+    this.scrollToFeedback();
+  }
+
+  private extractBackendMessage(error: any): string | null {
+    return error?.error?.message || error?.error?.detail || null;
   }
 
   private focusSuccessState(): void {

@@ -1,5 +1,5 @@
 import { CommonModule, ViewportScroller } from '@angular/common';
-import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, NgZone, OnInit } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { CatalogProduct } from '../../shared/models/catalog-product.model';
@@ -10,6 +10,7 @@ import { QuotesApiService } from '../../shared/services/quotes-api.service';
 import { LocationsService } from '../../shared/services/locations.service';
 import { environment } from '../../../environments/environment';
 import { CitySelectComponent } from '../../shared/ui/city-select/city-select.component';
+import { EMPTY, catchError, finalize, tap } from 'rxjs';
 
 interface QuoteProductSelection {
   product: CatalogProduct;
@@ -86,7 +87,6 @@ export class QuoteRequestComponent implements AfterViewInit, OnInit {
     private readonly quotesApi: QuotesApiService,
     private readonly locationsService: LocationsService,
     private readonly cdr: ChangeDetectorRef,
-    private readonly ngZone: NgZone,
   ) {}
 
   ngOnInit(): void {
@@ -94,11 +94,9 @@ export class QuoteRequestComponent implements AfterViewInit, OnInit {
 
     this.productsApi
       .getCatalogProducts()
-      .pipe()
       .subscribe({
         next: products => {
-          this.ngZone.run(() => {
-            this.selections = products.map(product => ({
+          this.selections = products.map(product => ({
             product,
             selected: false,
             quantity: '',
@@ -118,7 +116,6 @@ export class QuoteRequestComponent implements AfterViewInit, OnInit {
 
           this.syncProductsSelectionControl();
           this.cdr.markForCheck();
-          });
         },
       });
 
@@ -238,45 +235,60 @@ export class QuoteRequestComponent implements AfterViewInit, OnInit {
       console.debug('QuoteCreateRequest payload', payload);
     }
 
-    this.quotesApi.createQuote(payload).subscribe({
-        next: response => {
-          this.ngZone.run(() => {
-            this.status = 'success';
-            this.responseRef = response?.quoteNumber ?? response?.id;
-            this.form.reset({
-              name: '',
-              phone: '',
-              email: '',
-              projectType: 'Appartement',
-              city: '',
-              area: '',
-              address: '',
-              notes: '',
-              installRequested: false,
-              message: '',
-              productsSelection: 0,
-            });
-            this.submitted = false;
-            this.selections = this.selections.map(selection => ({
-              ...selection,
-              selected: false,
-              quantity: '',
-            }));
-            this.packSelections.forEach(pack => {
-              pack.selected = false;
-            });
-            this.cdr.markForCheck();
-          });
-        },
-        error: error => {
-          this.ngZone.run(() => {
-            const backendMessage = error?.error?.message || error?.error?.detail;
-            this.status = 'error';
-            this.errorMessage = backendMessage || 'Impossible d’envoyer la demande. Merci de réessayer.';
-            this.cdr.markForCheck();
-          });
-        },
-      });
+    this.quotesApi.createQuote(payload)
+      .pipe(
+        tap(response => {
+          const responseRef = response?.quoteNumber ?? response?.id;
+          this.handleSuccess(responseRef);
+        }),
+        catchError(error => {
+          this.handleError(error, 'Impossible d’envoyer la demande. Merci de réessayer.');
+          return EMPTY;
+        }),
+        finalize(() => this.cdr.markForCheck()),
+      )
+      .subscribe();
+  }
+
+
+  private handleSuccess(reference: string): void {
+    this.status = 'success';
+    this.responseRef = reference;
+    this.resetFormState();
+    this.submitted = false;
+  }
+
+  private handleError(error: any, fallbackMessage: string): void {
+    this.status = 'error';
+    this.errorMessage = this.extractBackendMessage(error) || fallbackMessage;
+  }
+
+  private extractBackendMessage(error: any): string | null {
+    return error?.error?.message || error?.error?.detail || null;
+  }
+
+  private resetFormState(): void {
+    this.form.reset({
+      name: '',
+      phone: '',
+      email: '',
+      projectType: 'Appartement',
+      city: '',
+      area: '',
+      address: '',
+      notes: '',
+      installRequested: false,
+      message: '',
+      productsSelection: 0,
+    });
+    this.selections = this.selections.map(selection => ({
+      ...selection,
+      selected: false,
+      quantity: '',
+    }));
+    this.packSelections.forEach(pack => {
+      pack.selected = false;
+    });
   }
 
   getWhatsappLink(): string {
