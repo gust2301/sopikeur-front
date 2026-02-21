@@ -3,16 +3,17 @@ import { Injectable } from '@angular/core';
 import { Observable, forkJoin, map } from 'rxjs';
 import { CatalogProduct, CatalogProductType } from '../models/catalog-product.model';
 import { apiUrl } from '../utils/api-url';
-import { ProductsApiResponse, normalizeApiProductsResponse } from './products-api.mapper';
+import { ProductDto, ProductsApiResponse, normalizeApiProductsResponse } from './products-api.mapper';
 
 export type ProductStockStatus = 'IN_STOCK' | 'PREORDER' | 'OUT_OF_STOCK';
 
 export interface ProductQuery {
-  type: CatalogProductType;
-  page: number;
-  size: number;
+  type?: CatalogProductType;
+  page?: number;
+  size?: number;
   q?: string;
-  stockStatus?: ProductStockStatus;
+  stock?: ProductStockStatus | 'ALL';
+  featured?: boolean;
 }
 
 export interface ProductPage {
@@ -29,9 +30,15 @@ export class ProductsApi {
   constructor(private readonly http: HttpClient) {}
 
   getProducts(query: ProductQuery): Observable<ProductPage> {
+    const normalizedQuery: Required<Pick<ProductQuery, 'page' | 'size'>> & ProductQuery = {
+      page: query.page ?? 1,
+      size: query.size ?? 12,
+      ...query,
+    };
+
     return this.http
-      .get<ProductsApiResponse>(this.apiUrl, { params: this.buildParams(query), observe: 'response' })
-      .pipe(map(response => this.normalizeResponse(response, query.type)));
+      .get<ProductsApiResponse>(this.apiUrl, { params: this.buildParams(normalizedQuery), observe: 'response' })
+      .pipe(map(response => this.normalizeResponse(response, normalizedQuery.type ?? 'spc')));
   }
 
   getCatalogProducts(): Observable<CatalogProduct[]> {
@@ -42,33 +49,33 @@ export class ProductsApi {
   }
 
   getProductById(type: CatalogProductType, productId: string): Observable<CatalogProduct | undefined> {
-    return this.getProducts({ type, page: 1, size: 100, q: productId }).pipe(
-      map(page => {
-        const needle = this.normalizeValue(productId);
-
-        return page.items.find(item => {
-          const id = this.normalizeValue(item.id);
-          const sku = this.normalizeValue(item.sku);
-          return id === needle || sku === needle;
-        });
-      }),
-    );
+    return this.http
+      .get<ProductDto>(`${this.apiUrl}/${encodeURIComponent(productId)}`)
+      .pipe(
+        map(dto => normalizeApiProductsResponse([dto], type).items[0]),
+      );
   }
 
   private buildParams(query: ProductQuery): HttpParams {
-    const apiType = query.type === 'spc' ? 'SPC' : 'PANEL';
     const params: Record<string, string> = {
-      type: apiType,
-      page: String(query.page),
-      size: String(query.size),
+      page: String(query.page ?? 1),
+      size: String(query.size ?? 12),
     };
+
+    if (query.type) {
+      params.type = query.type === 'spc' ? 'SPC' : 'PANEL';
+    }
 
     if (query.q) {
       params.q = query.q;
     }
 
-    if (query.stockStatus) {
-      params.stockStatus = query.stockStatus;
+    if (query.stock && query.stock !== 'ALL') {
+      params.stock = query.stock;
+    }
+
+    if (typeof query.featured === 'boolean') {
+      params.featured = String(query.featured);
     }
 
     return new HttpParams({ fromObject: params });
@@ -100,7 +107,4 @@ export class ProductsApi {
     return Number.isFinite(parsed) ? parsed : fallback;
   }
 
-  private normalizeValue(value: string): string {
-    return value.trim().toLowerCase();
-  }
 }

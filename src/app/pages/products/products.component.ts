@@ -94,7 +94,7 @@ export class ProductsComponent {
           page,
           size: pageSize,
           q: query || undefined,
-          stockStatus: stock === 'ALL' ? undefined : (stock as ProductStockStatus),
+          stock,
         })
         .pipe(
           map(result => this.buildViewModel(result, { type, page, pageSize })),
