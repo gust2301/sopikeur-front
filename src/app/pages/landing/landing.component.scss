@@ -510,12 +510,8 @@
 
 .btn-add:disabled,
 .btn-add[disabled] {
-  opacity: 0.75;
+  opacity: 0.5;
   cursor: not-allowed;
-  transform: none;
-  box-shadow: none;
-  background: #8f9888;
-  border-color: #8f9888;
 }
 
 .slider-arrow {

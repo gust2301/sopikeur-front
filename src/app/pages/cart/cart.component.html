@@ -2,7 +2,7 @@
   <div class="container">
     <header class="page-header">
       <h1 class="section-title">Panier</h1>
-      <p class="page-subtitle">Validez votre commande stock (paiement à l’étape suivante).</p>
+      <p class="page-subtitle">Validez votre commande (paiement à la livraison).</p>
     </header>
 
     <section
@@ -109,13 +109,13 @@
                 placeholder="Ex : Almadies, Parcelles, Keur Massar…"
               />
             </label>
-            <label class="checkbox-row">
-              <input formControlName="installRequested" type="checkbox" />
-              <span>Je souhaite la pose par l’équipe Sopi Kër ({{ installationLabel }})</span>
-            </label>
             <label>
               Adresse complète
               <input formControlName="address" type="text" placeholder="Ex : Cité Keur Gorgui, Villa 12" />
+            </label>
+            <label class="checkbox-row">
+              <input formControlName="installRequested" type="checkbox" />
+              <span>Je souhaite la pose par l’équipe Sopi Kër ({{ installationLabel }})</span>
             </label>
             <label>
               Notes livraison

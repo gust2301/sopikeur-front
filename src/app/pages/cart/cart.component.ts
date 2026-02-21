@@ -63,7 +63,7 @@ export class CartComponent implements OnInit, OnDestroy {
   cityLoadError = false;
 
   get installationLabel(): string {
-    return this.form.get('installRequested')?.value ? 'Sur devis' : 'Non incluse (sur devis)';
+    return this.form.get('installRequested')?.value ? 'Sur devis' : 'Non incluse';
   }
 
   shouldShowCityError(): boolean {
