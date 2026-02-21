@@ -8,6 +8,7 @@ import { CartService } from '../../shared/services/cart.service';
 import { ProductsApi } from '../../shared/services/products-api.service';
 import { environment } from '../../../environments/environment';
 import { assetUrl } from '../../shared/utils/asset-url';
+import { buildProductDetails, parseDescriptionContent } from './product-details.util';
 
 @Component({
   standalone: true,
@@ -30,9 +31,16 @@ export class ProductDetailComponent implements AfterViewInit {
   readonly galleryImages = computed(() => this.galleryImagesSignal());
   readonly selectedImage = computed(() => this.galleryImagesSignal()[this.selectedIndexSignal()] ?? undefined);
   readonly backToCatalogRoute = computed(() => (this.productSignal()?.type === 'acoustic' ? '/panneaux/' : '/spc/'));
-  readonly installationGuideRoute = computed(() =>
-    this.productSignal()?.type === 'acoustic' ? '/guide-installation-panneaux/' : '/guide-installation-spc/',
+  readonly productDetails = computed(() =>
+    buildProductDetails({
+      type: this.productSignal()?.type,
+      descriptionShort: this.productSignal()?.shortDescription,
+      descriptionLong: this.productSignal()?.descriptionLong ?? this.productSignal()?.description,
+      dimensions: this.productSignal()?.dimensions ?? this.productSignal()?.specs?.join(' • '),
+      features: this.productSignal()?.features,
+    }),
   );
+  readonly descriptionContent = computed(() => parseDescriptionContent(this.productDetails().longDescription));
 
   @ViewChild('hero', { static: false }) private readonly heroEl?: ElementRef<HTMLElement>;
 

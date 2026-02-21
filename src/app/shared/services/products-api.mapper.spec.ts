@@ -11,6 +11,8 @@ describe('normalizeApiProductsResponse', () => {
           name: 'SPC 001',
           descriptionShort: 'Desc courte',
           mainImage: 'https://cdn.example.com/image.png',
+          dimensions: '2,2 m²/boîte • Épaisseur 5 mm',
+          longDescription: 'Description longue',
           price: 20000,
         },
       ],
@@ -21,7 +23,30 @@ describe('normalizeApiProductsResponse', () => {
     expect(result.items.length).toBe(1);
     expect(result.items[0].shortDescription).toBe('Desc courte');
     expect(result.items[0].image).toBe('https://cdn.example.com/image.png');
+    expect(result.items[0].descriptionLong).toBe('Description longue');
+    expect(result.items[0].dimensions).toBe('2,2 m²/boîte • Épaisseur 5 mm');
     expect(result.items[0].type).toBe('spc');
+  });
+
+
+  it('prioritizes backend descriptionLong when available', () => {
+    const result = normalizeApiProductsResponse(
+      [
+        {
+          id: 'spc-2',
+          sku: 'SPC002',
+          type: 'SPC',
+          name: 'SPC 002',
+          descriptionShort: 'Version courte',
+          descriptionLong: 'Description longue backend',
+          longDescription: 'LongDescription legacy',
+        },
+      ],
+      'spc',
+    );
+
+    expect(result.items[0].descriptionLong).toBe('Description longue backend');
+    expect(result.items[0].description).toBe('Description longue backend');
   });
 
   it('supports paginated response format', () => {

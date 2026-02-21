@@ -24,9 +24,12 @@ export interface ProductDto {
   shortDescription?: string;
   descriptionShort?: string;
   description?: string;
+  descriptionLong?: string;
   longDescription?: string;
   features?: string[];
+  dimensions?: string;
 }
+
 
 export interface ProductPageDto {
   items?: ProductDto[];
@@ -61,7 +64,7 @@ function toCatalogProduct(dto: ProductDto, expectedType: CatalogProductType): Ca
   const id = String(dto.slug ?? dto.id ?? sku).trim().toLowerCase();
   const name = String(dto.name ?? dto.title ?? sku).trim();
   const shortDescription = String(dto.shortDescription ?? dto.descriptionShort ?? dto.description ?? '').trim();
-  const description = String(dto.longDescription ?? dto.description ?? shortDescription).trim();
+  const descriptionLong = String(dto.descriptionLong ?? dto.longDescription ?? dto.description ?? shortDescription).trim();
   const image = resolveImage(dto, type);
   const price = dto.price === undefined || dto.price === null ? '—' : String(dto.price);
   const unit = String(dto.unit ?? (type === 'spc' ? 'FCFA / m²' : 'FCFA / pièce'));
@@ -79,7 +82,9 @@ function toCatalogProduct(dto: ProductDto, expectedType: CatalogProductType): Ca
     unit,
     inStock,
     shortDescription,
-    description,
+    description: descriptionLong,
+    descriptionLong,
+    dimensions: String(dto.dimensions ?? '').trim(),
     features: Array.isArray(dto.features) ? dto.features : [],
     ...(dto.stockStatus ? { stockStatus: dto.stockStatus } : {}),
   };

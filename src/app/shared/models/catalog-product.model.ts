@@ -13,5 +13,7 @@ export interface CatalogProduct {
   inStock?: boolean;
   shortDescription: string;
   description: string;
+  descriptionLong?: string;
+  dimensions?: string;
   features?: string[];
 }
