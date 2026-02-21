@@ -167,10 +167,6 @@ export class PreorderComponent {
       ],
     };
 
-    if (!environment.production) {
-      console.debug('PreorderCreateRequest payload', payload);
-    }
-
     this.preorderApi.createPreorder(payload)
       .pipe(
         tap(response => {

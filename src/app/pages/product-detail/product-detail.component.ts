@@ -1,17 +1,20 @@
 import { CommonModule } from '@angular/common';
 import { AfterViewInit, ChangeDetectionStrategy, Component, computed, ElementRef, NgZone, signal, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import { AssetUrlPipe } from '../../shared/pipes/asset-url.pipe';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CatalogProduct, CatalogProductType } from '../../shared/models/catalog-product.model';
 import { CartService } from '../../shared/services/cart.service';
 import { ProductsApi } from '../../shared/services/products-api.service';
+import { environment } from '../../../environments/environment';
+import { assetUrl } from '../../shared/utils/asset-url';
 
 @Component({
   standalone: true,
   selector: 'app-product-detail',
   templateUrl: './product-detail.component.html',
   styleUrl: './product-detail.component.scss',
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, AssetUrlPipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProductDetailComponent implements AfterViewInit {
@@ -80,9 +83,9 @@ export class ProductDetailComponent implements AfterViewInit {
 
   getRelatedImage(product: CatalogProduct): string {
     if (product.type === 'spc') {
-      return this.normalizeAssetPath(`/assets/spc/${product.sku}_lame.png`);
+      return this.toAssetUrl(`spc/${product.sku}_lame.png`);
     }
-    return this.normalizeAssetPath(product.image);
+    return this.toAssetUrl(product.image);
   }
 
   selectImage(image: string): void {
@@ -183,11 +186,19 @@ export class ProductDetailComponent implements AfterViewInit {
     const sku = product.sku;
     const candidates =
       product.type === 'spc'
-        ? [`/assets/spc/${sku}_lame.png`, `/assets/spc/${sku}.png`, `/assets/spc/${sku}_home.png`]
-        : [`/assets/panels/${sku}.png`, `/assets/panels/bed_${sku}.png`, `/assets/panels/wall_${sku}.png`];
+        ? [
+            this.toAssetUrl(`spc/${sku}_lame.png`),
+            this.toAssetUrl(`spc/${sku}.png`),
+            this.toAssetUrl(`spc/${sku}_home.png`),
+          ]
+        : [
+            this.toAssetUrl(`panels/${sku}.png`),
+            this.toAssetUrl(`panels/bed_${sku}.png`),
+            this.toAssetUrl(`panels/wall_${sku}.png`),
+          ];
     const fallbackImages = [...(product.images ?? []), product.image]
       .filter(Boolean)
-      .map(image => this.normalizeAssetPath(image));
+      .map(image => this.toAssetUrl(image));
     return Array.from(new Set([...candidates, ...fallbackImages]));
   }
 
@@ -227,10 +238,10 @@ export class ProductDetailComponent implements AfterViewInit {
     }, 0);
   }
 
-  normalizeAssetPath(image: string): string {
-    if (image.startsWith('data:') || image.startsWith('http://') || image.startsWith('https://')) {
+  toAssetUrl(image: string | null | undefined): string {
+    if (image?.startsWith('data:')) {
       return image;
     }
-    return image.startsWith('/') ? image : `/${image}`;
+    return assetUrl(image, environment.assetBaseUrl);
   }
 }

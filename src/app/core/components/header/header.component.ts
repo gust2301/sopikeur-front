@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { CartService } from '../../../shared/services/cart.service';
 import { DOCUMENT } from '@angular/common';
+import { environment } from '../../../../environments/environment';
+import { assetUrl } from '../../../shared/utils/asset-url';
 
 interface NavLink {
   label: string;
@@ -26,6 +28,8 @@ export class HeaderComponent implements OnDestroy {
   isMobileMenuOpen = false;
   private readonly cartService = inject(CartService);
   readonly cartCount = this.cartService.count;
+  readonly logoUrl = assetUrl('logos/sopi_ker_logo_dark_500w.png', environment.assetBaseUrl);
+
   navLinks: NavLink[] = [
     { label: 'Accueil', path: '/', fragment: 'home', exact: true },
     { label: 'SPC', path: '/spc/' },

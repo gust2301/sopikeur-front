@@ -1,6 +1,8 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
+import { environment } from '../../../../environments/environment';
+import { assetUrl } from '../../../shared/utils/asset-url';
 
 interface FooterBaseItem {
   label: string;
@@ -36,6 +38,8 @@ interface FooterColumn {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FooterComponent {
+  readonly logoUrl = assetUrl('logos/sopi_ker_light_500w.png', environment.assetBaseUrl);
+
   columns: FooterColumn[] = [
     {
       title: 'À propos',

@@ -231,10 +231,6 @@ export class QuoteRequestComponent implements AfterViewInit, OnInit {
       packs: this.packSelections.filter(pack => pack.selected).map(pack => pack.id),
     };
 
-    if (!environment.production) {
-      console.debug('QuoteCreateRequest payload', payload);
-    }
-
     this.quotesApi.createQuote(payload)
       .pipe(
         tap(response => {

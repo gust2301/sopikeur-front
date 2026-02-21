@@ -1,4 +1,6 @@
 import { CatalogProduct, CatalogProductType } from '../models/catalog-product.model';
+import { environment } from '../../../environments/environment';
+import { assetUrl } from '../utils/asset-url';
 
 export type ProductStockStatus = 'IN_STOCK' | 'PREORDER' | 'OUT_OF_STOCK';
 
@@ -68,7 +70,10 @@ function toCatalogProduct(dto: ProductDto, expectedType: CatalogProductType): Ca
     type,
     name,
     image,
-    images: Array.isArray(dto.images) && dto.images.length > 0 ? dto.images : [image],
+    images:
+      Array.isArray(dto.images) && dto.images.length > 0
+        ? dto.images.map(mediaPath => assetUrl(mediaPath, environment.assetBaseUrl))
+        : [image],
     specs: Array.isArray(dto.specs) ? dto.specs : [],
     price,
     unit,
@@ -102,10 +107,12 @@ function resolveImage(dto: ProductDto, type: CatalogProductType): string {
   const candidate = dto.mainImage ?? dto.coverUrl ?? dto.image;
 
   if (candidate && candidate.trim()) {
-    return candidate;
+    return assetUrl(candidate, environment.assetBaseUrl);
   }
 
-  return type === 'spc' ? 'assets/spc/SPC006.png' : 'assets/panels/M-60240-WAVE1.png';
+  return type === 'spc'
+    ? assetUrl('spc/SPC006.png', environment.assetBaseUrl)
+    : assetUrl('panels/M-60240-WAVE1.png', environment.assetBaseUrl);
 }
 
 function resolveInStock(dto: ProductDto): boolean | undefined {

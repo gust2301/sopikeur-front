@@ -2,7 +2,7 @@
   <div class="hero__background" aria-hidden="true">
     <video class="hero__video" autoplay muted loop playsinline>
       <!--<source src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4" type="video/mp4" />-->
-      <source src="assets/home-video.mp4" type="video/mp4" />
+      <source [src]="'home-video.mp4' | assetUrl" type="video/mp4" />
     </video>
     <div class="hero__overlay"></div>
   </div>
@@ -73,7 +73,7 @@
         <a href="#catalogue" class="btn btn-primary">Explorer les teintes</a>
       </div>
       <div class="spc-image" aria-hidden="true">
-        <img src="assets/what-is-spc.png" alt="Coupe d'une lame SPC" class="spc-illu" loading="lazy" />
+        <img [src]="'what-is-spc.png' | assetUrl" alt="Coupe d'une lame SPC" class="spc-illu" loading="lazy" />
       </div>
     </div>
   </div>
@@ -101,7 +101,7 @@
             <ng-template #preorderBadge>
               <span class="stock-badge stock-badge--preorder">PRÉCOMMANDE</span>
             </ng-template>
-            <img [src]="color.image" [alt]="color.name" loading="lazy" class="catalog-image" />
+            <img [src]="color.image | assetUrl" [alt]="color.name" loading="lazy" class="catalog-image" />
           </button>
           <div class="catalog-info">
             <div class="catalog-name">{{ color.name }}</div>
@@ -144,7 +144,7 @@
             <ng-template #panelPreorderBadge>
               <span class="stock-badge stock-badge--preorder">PRÉCOMMANDE</span>
             </ng-template>
-            <img [src]="panel.image" [alt]="panel.name" loading="lazy" class="catalog-image catalog-image--contain" />
+            <img [src]="panel.image | assetUrl" [alt]="panel.name" loading="lazy" class="catalog-image catalog-image--contain" />
           </button>
           <div class="catalog-info">
             <div class="catalog-name">{{ panel.name }}</div>

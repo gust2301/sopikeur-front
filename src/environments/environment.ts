@@ -3,5 +3,6 @@ export const environment = {
   siteUrl: '',
   apiBaseUrl: '',
   apiPrefix: '/api/v1',
+  assetBaseUrl: '/assets',
   turnstileSiteKey: '',
 };

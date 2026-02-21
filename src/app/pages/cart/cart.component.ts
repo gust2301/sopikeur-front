@@ -195,10 +195,6 @@ export class CartComponent implements OnInit, OnDestroy {
       payload.cityZone = undefined;
     }
 
-    if (!environment.production) {
-      console.debug('OrderCreateRequest payload', payload);
-    }
-
     this.status = 'loading';
     this.errorMessage = undefined;
 

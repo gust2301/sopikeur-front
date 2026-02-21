@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, ViewChild, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
+import { AssetUrlPipe } from '../../shared/pipes/asset-url.pipe';
 import { CatalogProduct } from '../../shared/models/catalog-product.model';
 import { CartService } from '../../shared/services/cart.service';
 import { ProductsApi } from '../../shared/services/products-api.service';
@@ -10,7 +11,7 @@ import { ProductsApi } from '../../shared/services/products-api.service';
   selector: 'app-landing',
   templateUrl: './landing.component.html',
   styleUrl: './landing.component.scss',
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, AssetUrlPipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LandingComponent {

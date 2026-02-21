@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, DestroyRef, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import { AssetUrlPipe } from '../../shared/pipes/asset-url.pipe';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   BehaviorSubject,
@@ -45,7 +46,7 @@ interface ProductsViewModel {
 @Component({
   selector: 'app-products',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule],
+  imports: [CommonModule, FormsModule, RouterModule, AssetUrlPipe],
   templateUrl: './products.component.html',
   styleUrl: './products.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

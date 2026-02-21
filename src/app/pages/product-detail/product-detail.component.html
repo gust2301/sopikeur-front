@@ -2,7 +2,7 @@
   <div class="container detail-grid">
     <div class="detail-visual">
       <div class="detail-carousel" (touchstart)="onTouchStart($event)" (touchend)="onTouchEnd($event)">
-        <img [src]="selectedImage() || normalizeAssetPath(product.image)" [alt]="product.name" loading="lazy" />
+        <img [src]="selectedImage() || toAssetUrl(product.image)" [alt]="product.name" loading="lazy" decoding="async" />
         <button
           type="button"
           class="carousel-arrow prev"
@@ -31,7 +31,7 @@
           [class.is-active]="image === selectedImage()"
           [attr.aria-label]="'Afficher l’image ' + (index + 1)"
         >
-          <img [src]="image" [alt]="product.name" loading="lazy" />
+          <img [src]="image | assetUrl" [alt]="product.name" loading="lazy" decoding="async" />
         </button>
       </div>
     </div>
@@ -92,7 +92,7 @@
         (click)="navigateTo(item)"
         [attr.aria-label]="'Voir ' + item.name"
       >
-        <img [src]="getRelatedImage(item)" [alt]="item.name" loading="lazy" />
+        <img [src]="getRelatedImage(item) | assetUrl" [alt]="item.name" loading="lazy" decoding="async" />
         <div class="related-info">
           <span class="name">{{ item.name }}</span>
           <span class="price">{{ item.price }} {{ item.unit }}</span>
