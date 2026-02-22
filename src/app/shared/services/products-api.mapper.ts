@@ -1,4 +1,6 @@
-import { CatalogProduct, CatalogProductType } from '../data/catalog';
+import { CatalogProduct, CatalogProductType } from '../models/catalog-product.model';
+import { environment } from '../../../environments/environment';
+import { assetUrl } from '../utils/asset-url';
 
 export type ProductStockStatus = 'IN_STOCK' | 'PREORDER' | 'OUT_OF_STOCK';
 
@@ -22,14 +24,20 @@ export interface ProductDto {
   shortDescription?: string;
   descriptionShort?: string;
   description?: string;
+  descriptionLong?: string;
   longDescription?: string;
   features?: string[];
+  dimensions?: string;
 }
+
 
 export interface ProductPageDto {
   items?: ProductDto[];
+  products?: ProductDto[];
   total?: number;
   data?: ProductDto[];
+  page?: number;
+  size?: number;
 }
 
 export type ProductsApiResponse = ProductPageDto | ProductDto[];
@@ -43,7 +51,7 @@ export function normalizeApiProductsResponse(
     return { items, total: items.length };
   }
 
-  const rawItems = body.items ?? body.data ?? [];
+  const rawItems = body.products ?? body.items ?? body.data ?? [];
   const items = Array.isArray(rawItems) ? rawItems.map(item => toCatalogProduct(item, expectedType)) : [];
   const total = typeof body.total === 'number' ? body.total : items.length;
 
@@ -53,10 +61,10 @@ export function normalizeApiProductsResponse(
 function toCatalogProduct(dto: ProductDto, expectedType: CatalogProductType): CatalogProduct {
   const type = normalizeType(dto.type ?? dto.productType, expectedType);
   const sku = String(dto.sku ?? dto.name ?? dto.id ?? dto.slug ?? 'UNKNOWN').trim();
-  const id = String(dto.id ?? dto.slug ?? sku).trim().toLowerCase();
+  const id = String(dto.slug ?? dto.id ?? sku).trim().toLowerCase();
   const name = String(dto.name ?? dto.title ?? sku).trim();
   const shortDescription = String(dto.shortDescription ?? dto.descriptionShort ?? dto.description ?? '').trim();
-  const description = String(dto.longDescription ?? dto.description ?? shortDescription).trim();
+  const descriptionLong = String(dto.descriptionLong ?? dto.longDescription ?? dto.description ?? shortDescription).trim();
   const image = resolveImage(dto, type);
   const price = dto.price === undefined || dto.price === null ? '—' : String(dto.price);
   const unit = String(dto.unit ?? (type === 'spc' ? 'FCFA / m²' : 'FCFA / pièce'));
@@ -68,13 +76,15 @@ function toCatalogProduct(dto: ProductDto, expectedType: CatalogProductType): Ca
     type,
     name,
     image,
-    images: Array.isArray(dto.images) && dto.images.length > 0 ? dto.images : [image],
+    images: resolveImages(dto.images, image),
     specs: Array.isArray(dto.specs) ? dto.specs : [],
     price,
     unit,
     inStock,
     shortDescription,
-    description,
+    description: descriptionLong,
+    descriptionLong,
+    dimensions: String(dto.dimensions ?? '').trim(),
     features: Array.isArray(dto.features) ? dto.features : [],
     ...(dto.stockStatus ? { stockStatus: dto.stockStatus } : {}),
   };
@@ -99,13 +109,37 @@ function normalizeType(rawType: string | undefined, fallback: CatalogProductType
 }
 
 function resolveImage(dto: ProductDto, type: CatalogProductType): string {
-  const candidate = dto.mainImage ?? dto.coverUrl ?? dto.image;
+  const candidate = toCleanString(dto.mainImage) ?? toCleanString(dto.coverUrl) ?? toCleanString(dto.image);
 
-  if (candidate && candidate.trim()) {
-    return candidate;
+  if (candidate) {
+    return assetUrl(candidate, environment.assetBaseUrl);
   }
 
-  return type === 'spc' ? 'assets/spc/SPC006.png' : 'assets/panels/M-60240-WAVE1.png';
+  return type === 'spc'
+    ? assetUrl('spc/SPC006.png', environment.assetBaseUrl)
+    : assetUrl('panels/M-60240-WAVE1.png', environment.assetBaseUrl);
+}
+
+function resolveImages(images: Array<string | null | undefined> | undefined, fallbackImage: string): string[] {
+  if (!Array.isArray(images) || images.length === 0) {
+    return [fallbackImage];
+  }
+
+  const normalized = images
+    .map(toCleanString)
+    .filter((path): path is string => Boolean(path))
+    .map(path => assetUrl(path, environment.assetBaseUrl));
+
+  return normalized.length > 0 ? normalized : [fallbackImage];
+}
+
+function toCleanString(value: unknown): string | undefined {
+  if (typeof value !== 'string') {
+    return undefined;
+  }
+
+  const trimmed = value.trim();
+  return trimmed.length > 0 ? trimmed : undefined;
 }
 
 function resolveInStock(dto: ProductDto): boolean | undefined {

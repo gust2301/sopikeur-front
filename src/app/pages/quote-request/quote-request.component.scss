@@ -54,7 +54,27 @@
   font-weight: 600;
 }
 
-.field input,
+
+.checkbox-row {
+  display: inline-flex;
+  align-items: center;
+  gap: $space-2;
+  font-weight: 600;
+}
+
+.checkbox-row input[type='checkbox'] {
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  flex: 0 0 auto;
+  accent-color: $color-accent;
+}
+
+.checkbox-row span {
+  line-height: 1.4;
+}
+
+.field input:not([type='checkbox']),
 .field select,
 .field textarea {
   width: 100%;
@@ -173,4 +193,14 @@
     width: 100%;
     min-width: 0;
   }
+
+  .checkbox-row {
+    align-items: center;
+  }
 }
+
+.field-error {
+  color: #d55b5b;
+  font-weight: 500;
+}
+

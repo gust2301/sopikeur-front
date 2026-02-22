@@ -1,0 +1,80 @@
+.legal-page {
+  padding: clamp(3rem, 6vw, 5rem) 0;
+
+  &__container {
+    display: grid;
+    gap: 1rem;
+  }
+
+  h1 {
+    font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+    line-height: 1.15;
+    margin: 0;
+  }
+
+  h2 {
+    margin-top: 1rem;
+    line-height: 1.25;
+  }
+
+  p,
+  li {
+    line-height: 1.7;
+    max-width: 78ch;
+  }
+}
+
+.steps {
+  margin: 0.25rem 0 0;
+  padding-left: 1.2rem;
+  max-width: 78ch;
+  display: grid;
+  gap: 0.6rem;
+
+  li {
+    margin: 0;
+  }
+
+  strong {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 0.1rem;
+  }
+
+  span {
+    display: block;
+    opacity: 0.9;
+  }
+}
+
+.callout {
+  max-width: 78ch;
+  margin-top: 0.75rem;
+  padding: 0.85rem 1rem;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  background: #fff;
+  border-radius: 10px;
+
+  a {
+    font-weight: 600;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+}
+
+.guide-figure {
+  margin: 1rem 0;
+  background: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  padding: 1rem;
+
+  img {
+    width: 100%;
+  }
+
+  figcaption {
+    margin-top: 0.6rem;
+    font-size: 0.95rem;
+    color: rgba(0, 0, 0, 0.75);
+  }
+}

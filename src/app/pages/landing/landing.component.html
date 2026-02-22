@@ -2,7 +2,7 @@
   <div class="hero__background" aria-hidden="true">
     <video class="hero__video" autoplay muted loop playsinline>
       <!--<source src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4" type="video/mp4" />-->
-      <source src="assets/home-video.mp4" type="video/mp4" />
+      <source [src]="'home-video.mp4' | assetUrl" type="video/mp4" />
     </video>
     <div class="hero__overlay"></div>
   </div>
@@ -27,8 +27,8 @@
 
         <div class="kpi-item">
           <div class="kpi-value">Beau &amp; calme</div>
-          <div class="kpi-label">Panneaux acoustiques design</div>
-          <p class="kpi-desc">Décore le mur et réduit l’écho.</p>
+          <div class="kpi-label">Panneaux acoustiques</div>
+          <p class="kpi-desc">Décore, améliore l’écho, et structure ton mur (TV, déco, rangements légers.</p>
         </div>
 
         <div class="kpi-item">
@@ -73,7 +73,7 @@
         <a href="#catalogue" class="btn btn-primary">Explorer les teintes</a>
       </div>
       <div class="spc-image" aria-hidden="true">
-        <img src="assets/what-is-spc.png" alt="Coupe d'une lame SPC" class="spc-illu" loading="lazy" />
+        <img [src]="'what-is-spc.png' | assetUrl" alt="Coupe d'une lame SPC" class="spc-illu" loading="lazy" />
       </div>
     </div>
   </div>
@@ -101,7 +101,7 @@
             <ng-template #preorderBadge>
               <span class="stock-badge stock-badge--preorder">PRÉCOMMANDE</span>
             </ng-template>
-            <img [src]="color.image" [alt]="color.name" loading="lazy" class="catalog-image" />
+            <img [src]="color.image | assetUrl" [alt]="color.name" loading="lazy" class="catalog-image" />
           </button>
           <div class="catalog-info">
             <div class="catalog-name">{{ color.name }}</div>
@@ -109,8 +109,8 @@
               <span *ngFor="let spec of color.specs">{{ spec }}</span>
             </div>
             <div class="catalog-price">{{ color.price }} {{ color.unit }}</div>
-            <button class="btn-add" type="button" (click)="requestQuote(color)">
-              {{ color.inStock ? 'Devis' : 'Précommander' }}
+            <button class="btn-add" type="button" (click)="handlePrimaryAction(color)" [disabled]="color.inStock && isInCart(color.id)">
+              {{ color.inStock ? (isInCart(color.id) ? 'Ajouté au panier' : 'Ajouter au panier') : 'Précommander' }}
             </button>
           </div>
         </div>
@@ -144,7 +144,7 @@
             <ng-template #panelPreorderBadge>
               <span class="stock-badge stock-badge--preorder">PRÉCOMMANDE</span>
             </ng-template>
-            <img [src]="panel.image" [alt]="panel.name" loading="lazy" class="catalog-image catalog-image--contain" />
+            <img [src]="panel.image | assetUrl" [alt]="panel.name" loading="lazy" class="catalog-image catalog-image--contain" />
           </button>
           <div class="catalog-info">
             <div class="catalog-name">{{ panel.name }}</div>
@@ -152,8 +152,8 @@
               <span *ngFor="let spec of panel.specs">{{ spec }}</span>
             </div>
             <div class="catalog-price">{{ panel.price }} {{ panel.unit }}</div>
-            <button class="btn-add" type="button" (click)="requestQuote(panel)">
-              {{ panel.inStock ? 'Devis' : 'Précommander' }}
+            <button class="btn-add" type="button" (click)="handlePrimaryAction(panel)" [disabled]="panel.inStock && isInCart(panel.id)">
+              {{ panel.inStock ? (isInCart(panel.id) ? 'Ajouté au panier' : 'Ajouter au panier') : 'Précommander' }}
             </button>
           </div>
         </article>
@@ -168,9 +168,12 @@
 <section class="section pro-cta" id="simulateur">
   <div class="container">
     <div class="pro-card">
-      <h3>Professionnel du bâtiment ?</h3>
-      <p>Bénéficiez d'un accompagnement sur-mesure, tarifs dégressifs et service de pose.</p>
-      <a [routerLink]="['/contact/']" [queryParams]="{ customerType: 'Professionnel' }" class="btn btn-primary">Contacter l’équipe</a>
+      <h3>Un projet complet ?</h3>
+      <p>Particuliers &amp; pros : estimation, livraison, pose, tarifs selon volume.</p>
+      <div class="pro-actions">
+      <button type="button" class="btn btn-primary" (click)="openProQuoteForm()">Demander un devis</button>
+      <a [routerLink]="['/contact/']" [queryParams]="{ customerType: 'Professionnel' }" class="btn btn-secondary">Contacter l’équipe</a>
+    </div>
     </div>
   </div>
 </section>

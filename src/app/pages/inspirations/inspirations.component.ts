@@ -1,7 +1,9 @@
 import { ChangeDetectionStrategy, Component, ElementRef, HostListener, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
-import { CatalogProduct, catalogProducts } from '../../shared/data/catalog';
+import { AssetUrlPipe } from '../../shared/pipes/asset-url.pipe';
+import { CatalogProduct } from '../../shared/models/catalog-product.model';
+import { ProductsApi } from '../../shared/services/products-api.service';
 
 type InspirationTag = 'spc' | 'panels';
 type InspirationTab = 'all' | InspirationTag;
@@ -36,31 +38,22 @@ const PANEL_ALIASES: Record<string, string> = {
 };
 
 const NEW_INSPIRATION_IMAGES = [
-  '/assets/spc/SPC001_store.png',
-  '/assets/panels/SPC006_HXAGONB_office.png',
-  '/assets/panels/SPC014_HXAGONB_office.png',
-  '/assets/panels/HEXAGONB_office.png',
-  '/assets/panels/HEGAGONB_light_home.png',
+  'spc/SPC001_store.png',
+  'panels/SPC006_HXAGONB_office.png',
+  'panels/SPC014_HXAGONB_office.png',
+  'panels/HEXAGONB_office.png',
+  'panels/HEGAGONB_light_home.png',
 ];
 
-const SPC_SKU_TO_ID = new Map(
-  catalogProducts.filter(product => product.type === 'spc').map(product => [product.sku.toUpperCase(), product.id]),
-);
-const PANEL_SKU_TO_ID = new Map(
-  catalogProducts
-    .filter(product => product.type === 'acoustic')
-    .map(product => [product.sku.toUpperCase(), product.id]),
-);
-
-const PANEL_SKUS = Array.from(PANEL_SKU_TO_ID.keys());
+const PANEL_SKUS = ['M-60240-WAVE1', 'HEXAGON', 'HEXAGONB'];
 
 const LEGACY_INSPIRATIONS: InspirationItem[] = [
   {
     id: 'spc006-natural-oak',
     title: 'Chêne naturel clair',
     type: 'beforeAfter',
-    beforeImage: '/assets/spc/spc_home_before.png',
-    afterImage: '/assets/spc/SPC006_home.png',
+    beforeImage: 'spc/spc_home_before.png',
+    afterImage: 'spc/SPC006_home.png',
     tags: ['spc'],
     productRefs: [{ kind: 'spc', id: 'spc006' }],
   },
@@ -68,8 +61,8 @@ const LEGACY_INSPIRATIONS: InspirationItem[] = [
     id: 'spc014-dark-walnut',
     title: 'Noyer profond',
     type: 'beforeAfter',
-    beforeImage: '/assets/spc/spc_home_before.png',
-    afterImage: '/assets/spc/SPC014_home.png',
+    beforeImage: 'spc/spc_home_before.png',
+    afterImage: 'spc/SPC014_home.png',
     tags: ['spc'],
     productRefs: [{ kind: 'spc', id: 'spc014' }],
   },
@@ -77,8 +70,8 @@ const LEGACY_INSPIRATIONS: InspirationItem[] = [
     id: 'spc001-light-wood',
     title: 'Bois clair moderne',
     type: 'beforeAfter',
-    beforeImage: '/assets/spc/spc_home_before.png',
-    afterImage: '/assets/spc/SPC001_home.png',
+    beforeImage: 'spc/spc_home_before.png',
+    afterImage: 'spc/SPC001_home.png',
     tags: ['spc'],
     productRefs: [{ kind: 'spc', id: 'spc001' }],
   },
@@ -86,8 +79,8 @@ const LEGACY_INSPIRATIONS: InspirationItem[] = [
     id: 'spc008-warm-stone',
     title: 'Pierre beige chaleureuse',
     type: 'beforeAfter',
-    beforeImage: '/assets/spc/spc_home_before.png',
-    afterImage: '/assets/spc/SPC008_home.png',
+    beforeImage: 'spc/spc_home_before.png',
+    afterImage: 'spc/SPC008_home.png',
     tags: ['spc'],
     productRefs: [{ kind: 'spc', id: 'spc008' }],
   },
@@ -95,8 +88,8 @@ const LEGACY_INSPIRATIONS: InspirationItem[] = [
     id: 'spc011-grey-mineral',
     title: 'Gris minéral contemporain',
     type: 'beforeAfter',
-    beforeImage: '/assets/spc/spc_home_before.png',
-    afterImage: '/assets/spc/SPC011_home.png',
+    beforeImage: 'spc/spc_home_before.png',
+    afterImage: 'spc/SPC011_home.png',
     tags: ['spc'],
     productRefs: [{ kind: 'spc', id: 'spc010' }],
   },
@@ -104,7 +97,7 @@ const LEGACY_INSPIRATIONS: InspirationItem[] = [
     id: 'panel-tete-lit',
     title: 'Tête de lit',
     type: 'single',
-    image: '/assets/panels/bed_HEXAGONB.png',
+    image: 'panels/bed_HEXAGONB.png',
     tags: ['panels'],
     productRefs: [{ kind: 'panel', id: 'hexagonb' }],
   },
@@ -112,7 +105,7 @@ const LEGACY_INSPIRATIONS: InspirationItem[] = [
     id: 'panel-mur-tv',
     title: 'Mur TV',
     type: 'single',
-    image: '/assets/panels/wall_HEXAGONB.png',
+    image: 'panels/wall_HEXAGONB.png',
     tags: ['panels'],
     productRefs: [{ kind: 'panel', id: 'hexagonb' }],
   },
@@ -120,7 +113,7 @@ const LEGACY_INSPIRATIONS: InspirationItem[] = [
     id: 'panel-accueil',
     title: 'Mur d’accueil',
     type: 'single',
-    image: '/assets/panels/wall_M-60240-WAVE1.png',
+    image: 'panels/wall_M-60240-WAVE1.png',
     tags: ['panels'],
     productRefs: [{ kind: 'panel', id: 'm-60240-wave1' }],
   },
@@ -128,7 +121,7 @@ const LEGACY_INSPIRATIONS: InspirationItem[] = [
     id: 'panel-chambre',
     title: 'Chambre cosy',
     type: 'single',
-    image: '/assets/panels/bed_M-60240-WAVE1.png',
+    image: 'panels/bed_M-60240-WAVE1.png',
     tags: ['panels'],
     productRefs: [{ kind: 'panel', id: 'm-60240-wave1' }],
   },
@@ -165,18 +158,8 @@ const extractPanelCodes = (filename: string): string[] => {
 
 const buildProductRefs = (spcCodes: string[], panelCodes: string[]): ProductRef[] => {
   const refs: ProductRef[] = [];
-  spcCodes.forEach(code => {
-    const id = SPC_SKU_TO_ID.get(code.toUpperCase());
-    if (id) {
-      refs.push({ kind: 'spc', id });
-    }
-  });
-  panelCodes.forEach(code => {
-    const id = PANEL_SKU_TO_ID.get(code.toUpperCase());
-    if (id) {
-      refs.push({ kind: 'panel', id });
-    }
-  });
+  spcCodes.forEach(code => refs.push({ kind: 'spc', id: code.toLowerCase() }));
+  panelCodes.forEach(code => refs.push({ kind: 'panel', id: code.toLowerCase() }));
   return refs;
 };
 
@@ -205,7 +188,7 @@ const buildInspirationFromImage = (path: string): InspirationItem => {
     tags.add('panels');
   }
   if (tags.size === 0) {
-    tags.add(path.includes('/panels/') ? 'panels' : 'spc');
+    tags.add(path.includes('panels/') ? 'panels' : 'spc');
   }
   const productRefs = buildProductRefs(spcCodes, panelCodes);
   return {
@@ -221,7 +204,7 @@ const buildInspirationFromImage = (path: string): InspirationItem => {
 @Component({
   selector: 'app-inspirations',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, AssetUrlPipe],
   templateUrl: './inspirations.component.html',
   styleUrl: './inspirations.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -244,7 +227,15 @@ export class InspirationsComponent {
   sliderValue = 50;
   showProductSheet = false;
 
-  constructor(private readonly router: Router) {}
+  private catalogProducts: CatalogProduct[] = [];
+
+  constructor(private readonly router: Router, private readonly productsApi: ProductsApi) {
+    this.productsApi.getCatalogProducts().subscribe({
+      next: products => {
+        this.catalogProducts = products;
+      },
+    });
+  }
 
   get filteredNewItems(): InspirationItem[] {
     return this.filterItems(this.newItems);
@@ -420,7 +411,7 @@ export class InspirationsComponent {
   }
 
   private findCatalogProduct(ref: ProductRef): CatalogProduct | undefined {
-    return catalogProducts.find(product => {
+    return this.catalogProducts.find(product => {
       if (ref.kind === 'spc') {
         return product.type === 'spc' && product.id === ref.id;
       }

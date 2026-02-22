@@ -1,0 +1,51 @@
+.city-select {
+  display: grid;
+  gap: 0.35rem;
+  font-weight: 600;
+}
+
+.city-select__control {
+  position: relative;
+}
+
+.city-select input {
+  width: 100%;
+  border: 1px solid #d8cebf;
+  border-radius: 0.5rem;
+  padding: 0.55rem 0.65rem;
+  font: inherit;
+  background: #fff;
+}
+
+.city-select__dropdown {
+  position: absolute;
+  top: calc(100% + 0.3rem);
+  left: 0;
+  width: 100%;
+  background: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  border-radius: 10px;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.08);
+  z-index: 50;
+  max-height: 220px;
+  overflow-y: auto;
+  margin: 0;
+  padding: 0.25rem;
+  list-style: none;
+}
+
+.city-select__dropdown li {
+  padding: 0.55rem 0.65rem;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.city-select__dropdown li:hover,
+.city-select__dropdown li.active {
+  background: rgba(0, 0, 0, 0.06);
+}
+
+.field-error {
+  color: #b53030;
+  font-weight: 500;
+}

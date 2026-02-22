@@ -1,20 +1,19 @@
 import { HttpClient, HttpParams, HttpResponse } from '@angular/common/http';
-import { Injectable, PLATFORM_ID, inject } from '@angular/core';
-import { isPlatformBrowser } from '@angular/common';
-import { Observable, catchError, map, of } from 'rxjs';
-import { CatalogProduct, CatalogProductType, catalogProducts } from '../data/catalog';
+import { Injectable } from '@angular/core';
+import { Observable, forkJoin, map } from 'rxjs';
+import { CatalogProduct, CatalogProductType } from '../models/catalog-product.model';
 import { apiUrl } from '../utils/api-url';
-import { environment } from '../../../environments/environment';
-import { ProductsApiResponse, normalizeApiProductsResponse } from './products-api.mapper';
+import { ProductDto, ProductsApiResponse, normalizeApiProductsResponse } from './products-api.mapper';
 
 export type ProductStockStatus = 'IN_STOCK' | 'PREORDER' | 'OUT_OF_STOCK';
 
 export interface ProductQuery {
-  type: CatalogProductType;
-  page: number;
-  size: number;
+  type?: CatalogProductType;
+  page?: number;
+  size?: number;
   q?: string;
-  stockStatus?: ProductStockStatus;
+  stock?: ProductStockStatus | 'ALL';
+  featured?: boolean;
 }
 
 export interface ProductPage {
@@ -27,62 +26,69 @@ export interface ProductPage {
 })
 export class ProductsApi {
   private readonly apiUrl = apiUrl('/products');
-  private readonly platformId = inject(PLATFORM_ID);
 
   constructor(private readonly http: HttpClient) {}
 
   getProducts(query: ProductQuery): Observable<ProductPage> {
-    const params = this.buildParams(query);
-
-    if (!this.shouldUseApi()) {
-      return of(this.paginateClient(catalogProducts, query));
-    }
+    const normalizedQuery: Required<Pick<ProductQuery, 'page' | 'size'>> & ProductQuery = {
+      page: query.page ?? 1,
+      size: query.size ?? 12,
+      ...query,
+    };
 
     return this.http
-      .get<ProductsApiResponse>(this.apiUrl, { params, observe: 'response' })
-      .pipe(
-        map(response => {
-          if (environment.debugProductsApi) {
-            const raw = response.body;
-            console.log('[ProductsApi] raw resp', raw, {
-              typeOf: typeof raw,
-              isArray: Array.isArray(raw),
-            });
-          }
+      .get<ProductsApiResponse>(this.apiUrl, { params: this.buildParams(normalizedQuery), observe: 'response' })
+      .pipe(map(response => this.normalizeResponse(response, normalizedQuery.type ?? 'spc')));
+  }
 
-          return this.normalizeResponse(response, query);
-        }),
-        catchError(() => of(this.paginateClient(catalogProducts, query))),
+  getCatalogProducts(): Observable<CatalogProduct[]> {
+    return forkJoin([
+      this.getProducts({ type: 'spc', page: 1, size: 100 }),
+      this.getProducts({ type: 'acoustic', page: 1, size: 100 }),
+    ]).pipe(map(([spc, acoustic]) => [...spc.items, ...acoustic.items]));
+  }
+
+  getProductById(type: CatalogProductType, productId: string): Observable<CatalogProduct | undefined> {
+    return this.http
+      .get<ProductDto>(`${this.apiUrl}/${encodeURIComponent(productId)}`)
+      .pipe(
+        map(dto => normalizeApiProductsResponse([dto], type).items[0]),
       );
   }
 
   private buildParams(query: ProductQuery): HttpParams {
-    const apiType = query.type === 'spc' ? 'SPC' : 'PANEL';
     const params: Record<string, string> = {
-      type: apiType,
-      page: String(query.page),
-      size: String(query.size),
+      page: String(query.page ?? 1),
+      size: String(query.size ?? 12),
     };
+
+    if (query.type) {
+      params.type = query.type === 'spc' ? 'SPC' : 'PANEL';
+    }
 
     if (query.q) {
       params.q = query.q;
     }
 
-    if (query.stockStatus) {
-      params.stockStatus = query.stockStatus;
+    if (query.stock && query.stock !== 'ALL') {
+      params.stock = query.stock;
+    }
+
+    if (typeof query.featured === 'boolean') {
+      params.featured = String(query.featured);
     }
 
     return new HttpParams({ fromObject: params });
   }
 
-  private normalizeResponse(response: HttpResponse<ProductsApiResponse>, query: ProductQuery): ProductPage {
+  private normalizeResponse(response: HttpResponse<ProductsApiResponse>, expectedType: CatalogProductType): ProductPage {
     const body = response.body;
 
     if (!body) {
-      return this.paginateClient(catalogProducts, query);
+      return { items: [], total: 0 };
     }
 
-    const normalized = normalizeApiProductsResponse(body, query.type);
+    const normalized = normalizeApiProductsResponse(body, expectedType);
 
     return {
       items: normalized.items,
@@ -101,78 +107,4 @@ export class ProductsApi {
     return Number.isFinite(parsed) ? parsed : fallback;
   }
 
-  private paginateClient(items: CatalogProduct[], query: ProductQuery): ProductPage {
-    const filtered = this.filterItems(items, query);
-    const startIndex = Math.max(query.page - 1, 0) * query.size;
-    const paged = filtered.slice(startIndex, startIndex + query.size);
-
-    return {
-      items: paged,
-      total: filtered.length,
-    };
-  }
-
-  private filterItems(items: CatalogProduct[], query: ProductQuery): CatalogProduct[] {
-    const normalizedQuery = this.normalizeQuery(query.q);
-
-    return items.filter(item => {
-      if (item.type !== query.type) {
-        return false;
-      }
-
-      if (query.stockStatus && this.resolveStockStatus(item) !== query.stockStatus) {
-        return false;
-      }
-
-      if (!normalizedQuery) {
-        return true;
-      }
-
-      const name = this.normalizeQuery(item.name);
-      const sku = this.normalizeQuery(item.sku);
-      const slug = this.normalizeQuery(item.id);
-
-      return name.includes(normalizedQuery) || sku.includes(normalizedQuery) || slug.includes(normalizedQuery);
-    });
-  }
-
-  private normalizeQuery(value?: string): string {
-    if (!value) {
-      return '';
-    }
-
-    return value
-      .trim()
-      .toLowerCase()
-      .normalize('NFD')
-      .replace(/[\u0300-\u036f]/g, '');
-  }
-
-  private resolveStockStatus(product: CatalogProduct): ProductStockStatus {
-    const apiStatus = (product as { stockStatus?: ProductStockStatus }).stockStatus;
-
-    if (apiStatus) {
-      return apiStatus;
-    }
-
-    if (product.inStock === true) {
-      return 'IN_STOCK';
-    }
-
-    if (product.inStock === false) {
-      return 'PREORDER';
-    }
-
-    return 'OUT_OF_STOCK';
-  }
-
-  private shouldUseApi(): boolean {
-    if (!isPlatformBrowser(this.platformId)) {
-      return true;
-    }
-
-    const hostname = window.location.hostname;
-
-    return hostname.endsWith('sopikeur.sn');
-  }
 }

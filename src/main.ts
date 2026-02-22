@@ -1,7 +1,7 @@
 import { bootstrapApplication } from '@angular/platform-browser';
 import { provideClientHydration } from '@angular/platform-browser';
 import { appConfig } from './app/app.config';
-import {provideRouter, RouterOutlet} from '@angular/router';
+import { provideRouter, RouterOutlet, withInMemoryScrolling } from '@angular/router';
 import { routes } from './app/app.routes';
 import { Component } from '@angular/core';
 import { SeoCanonicalService } from './app/shared/services/seo-canonical.service';
@@ -23,7 +23,7 @@ export class AppRoot {
 bootstrapApplication(AppRoot, {
   providers: [
     provideClientHydration(),
-    provideRouter(routes),
+    provideRouter(routes, withInMemoryScrolling({ anchorScrolling: 'enabled', scrollPositionRestoration: 'enabled' })),
     ...appConfig.providers ?? []
   ]
 }).catch(err => console.error(err));

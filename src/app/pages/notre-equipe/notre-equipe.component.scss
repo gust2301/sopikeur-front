@@ -1,0 +1,43 @@
+.legal-page {
+  padding: clamp(3rem, 6vw, 5rem) 0;
+
+  &__container {
+    display: grid;
+    gap: 1.25rem;
+  }
+
+  h1 {
+    font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+    line-height: 1.15;
+    margin: 0;
+  }
+
+  h2 {
+    font-size: clamp(1.15rem, 1.1rem + 0.6vw, 1.5rem);
+    line-height: 1.25;
+    margin: 1rem 0 0.35rem;
+  }
+
+  p {
+    line-height: 1.7;
+    max-width: 80ch;
+    margin: 0;
+  }
+
+  section {
+    display: grid;
+    gap: 0.5rem;
+    padding-top: 0.25rem;
+  }
+
+  &__list {
+    margin: 0.25rem 0 0;
+    padding-left: 1.1rem;
+    max-width: 80ch;
+
+    li {
+      line-height: 1.7;
+      margin: 0.25rem 0;
+    }
+  }
+}

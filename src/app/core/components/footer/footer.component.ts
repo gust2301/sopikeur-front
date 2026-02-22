@@ -1,43 +1,79 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
+import { environment } from '../../../../environments/environment';
+import { assetUrl } from '../../../shared/utils/asset-url';
+
+interface FooterBaseItem {
+  label: string;
+}
+
+interface FooterRouterLinkItem extends FooterBaseItem {
+  type: 'router';
+  to: string;
+}
+
+interface FooterHrefLinkItem extends FooterBaseItem {
+  type: 'href';
+  href: string;
+}
+
+interface FooterTextItem extends FooterBaseItem {
+  type: 'text';
+}
+
+type FooterItem = FooterRouterLinkItem | FooterHrefLinkItem | FooterTextItem;
 
 interface FooterColumn {
   title: string;
-  links: { label: string; href: string }[];
+  items: FooterItem[];
 }
 
 @Component({
   selector: 'app-footer',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterLink],
   templateUrl: './footer.component.html',
   styleUrl: './footer.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FooterComponent {
+  readonly logoUrl = assetUrl('logos/sopi_ker_light_500w.png', environment.assetBaseUrl);
+
   columns: FooterColumn[] = [
-    { title: 'À propos', links: [
-      { label: 'Notre équipe', href: '#' },
-      { label: 'Nos valeurs', href: '#' },
-      { label: 'Engagement qualité', href: '#' },
-    ]},
-    { title: 'Produits', links: [
-      { label: 'SPC sol', href: '/spc/' },
-      { label: 'Wall panels', href: '/panneaux/' },
-      { label: 'Accessoires', href: '#catalogue' },
-      { label: 'Échantillons', href: '#catalogue' },
-    ]},
-    { title: 'Aide', links: [
-      { label: 'Guide d’installation', href: '#contact' },
-      { label: 'Entretien', href: '#spc' },
-      { label: 'FAQ', href: '#contact' },
-      { label: 'Garanties', href: '#contact' },
-    ]},
-    { title: 'Contact', links: [
-      { label: '+221 77 429 37 57', href: 'tel:+221774293757' },
-      { label: 'contact@sopikeur.sn', href: 'mailto:contact@sopikeur.sn' },
-      { label: 'Dakar, Sénégal', href: '#contact' },
-      { label: 'Saly, Sénégal', href: '#contact' },
-    ]},
+    {
+      title: 'À propos',
+      items: [
+        { type: 'router', label: 'Notre équipe', to: '/notre-equipe' },
+        { type: 'router', label: 'Nos valeurs', to: '/nos-valeurs' },
+        { type: 'router', label: 'Engagement qualité', to: '/engagement-qualite' },
+      ],
+    },
+    {
+      title: 'Produits',
+      items: [
+        { type: 'router', label: 'SPC sol', to: '/spc' },
+        { type: 'router', label: 'Wall panels', to: '/panneaux' },
+        { type: 'href', label: 'Accessoires', href: '#catalogue' },
+        { type: 'router', label: 'Échantillons', to: '/contact' },
+      ],
+    },
+    {
+      title: 'Aide',
+      items: [
+        { type: 'router', label: 'Guide d’installation panneaux', to: '/guide-installation-panneaux' },
+        { type: 'router', label: 'Guide d’installation SPC', to: '/guide-installation-spc' },
+        { type: 'router', label: 'Questions fréquentes', to: '/faq' },
+      ],
+    },
+    {
+      title: 'Contact',
+      items: [
+        { type: 'href', label: '+221 77 429 37 57', href: 'tel:+221774293757' },
+        { type: 'href', label: 'contact@sopikeur.sn', href: 'mailto:contact@sopikeur.sn' },
+        { type: 'text', label: 'Dakar, Sénégal' },
+        { type: 'text', label: 'Saly, Sénégal' },
+      ],
+    },
   ];
 }

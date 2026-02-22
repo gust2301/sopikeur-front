@@ -1,7 +1,7 @@
 <header class="header" aria-label="Navigation principale">
   <div class="container header__bar">
     <a class="header__brand" routerLink="/" fragment="home" aria-label="Retour à l’accueil">
-      <img src="assets/logos/sopi_ker_logo_dark_500w.png" alt="SopiKër" loading="lazy" />
+      <img [src]="logoUrl" alt="SopiKër" loading="lazy" />
     </a>
 
     <div class="nav-desktop">
@@ -12,14 +12,22 @@
           [fragment]="link.fragment"
           routerLinkActive="is-active"
           [routerLinkActiveOptions]="link.exact ? { exact: true } : { exact: false }"
-          class="nav-link"
+          class="nav-link" [class.nav-link--featured]="link.featured"
         >
           {{ link.label }}
         </a>
       </nav>
+      <a class="cart-link" routerLink="/panier" aria-label="Panier">
+        <span class="cart-link__icon" aria-hidden="true">🛒</span>
+        <span class="cart-link__count" *ngIf="cartCount() > 0">{{ cartCount() }}</span>
+      </a>
     </div>
 
     <div class="nav-mobile">
+      <a class="cart-link" routerLink="/panier" aria-label="Panier">
+        <span class="cart-link__icon" aria-hidden="true">🛒</span>
+        <span class="cart-link__count" *ngIf="cartCount() > 0">{{ cartCount() }}</span>
+      </a>
       <button
         class="menu-toggle menu-btn button-reset"
         type="button"
@@ -49,7 +57,7 @@
               [fragment]="link.fragment"
               routerLinkActive="is-active"
               [routerLinkActiveOptions]="link.exact ? { exact: true } : { exact: false }"
-              class="mobile-menu__link"
+              class="mobile-menu__link" [class.mobile-menu__link--featured]="link.featured"
               (click)="closeMenu()"
             >
               {{ link.label }}

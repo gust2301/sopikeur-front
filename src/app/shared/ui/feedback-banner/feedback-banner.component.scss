@@ -1,0 +1,91 @@
+.feedback-banner {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.875rem;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: #fff;
+  padding: 1rem;
+  margin-top: 1rem;
+  animation: bannerFadeIn 220ms ease-out;
+
+  &:focus {
+    outline: 2px solid rgba(15, 23, 42, 0.2);
+    outline-offset: 2px;
+  }
+}
+
+.feedback-banner__icon {
+  inline-size: 1.75rem;
+  block-size: 1.75rem;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  font-weight: 700;
+  background: rgba(15, 23, 42, 0.06);
+}
+
+.feedback-banner__title {
+  margin: 0 0 0.35rem;
+  font-size: 1rem;
+}
+
+.feedback-banner__message,
+.feedback-banner__reference {
+  margin: 0;
+  color: rgba(15, 23, 42, 0.82);
+}
+
+.feedback-banner__reference {
+  margin-top: 0.4rem;
+}
+
+.feedback-banner__actions {
+  margin-top: 0.75rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.feedback-action {
+  border: 1px solid rgba(15, 23, 42, 0.12);
+  border-radius: 999px;
+  padding: 0.45rem 0.85rem;
+  background: #0f172a;
+  color: #fff;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.feedback-action--ghost {
+  background: transparent;
+  color: #0f172a;
+}
+
+.is-success .feedback-banner__icon {
+  color: #065f46;
+  background: rgba(16, 185, 129, 0.16);
+}
+
+.is-error .feedback-banner__icon {
+  color: #991b1b;
+  background: rgba(239, 68, 68, 0.16);
+}
+
+.is-info .feedback-banner__icon {
+  color: #1e40af;
+  background: rgba(59, 130, 246, 0.15);
+}
+
+@keyframes bannerFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

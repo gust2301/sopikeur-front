@@ -1,0 +1,105 @@
+.legal-page {
+  padding: clamp(3rem, 6vw, 5rem) 0;
+
+  &__container {
+    display: grid;
+    gap: 1rem;
+  }
+
+  h1 {
+    font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+  }
+}
+
+.faq-list {
+  display: grid;
+  gap: 0.75rem;
+  max-width: 100%;
+}
+
+.faq-item {
+  background: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  padding: 0.8rem 1rem;
+
+  summary {
+    cursor: pointer;
+    font-weight: 700;
+  }
+
+  p {
+    margin-top: 0.65rem;
+    line-height: 1.7;
+    max-width: 80ch;
+  }
+}
+
+.comparison-block {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.table-wrap {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  min-width: 680px;
+  border-collapse: collapse;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  background: #fff;
+}
+
+th,
+td {
+  padding: 0.65rem 0.75rem;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  text-align: left;
+  vertical-align: middle;
+}
+
+thead th {
+  background: #f7f7f7;
+  font-weight: 700;
+}
+
+tbody tr:nth-child(even) {
+  background: #fcfcfc;
+}
+
+.stars {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+
+.text-answer {
+  display: grid;
+  gap: 0.7rem;
+}
+
+.faq-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.faq-link {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+  font-weight: 600;
+  color: #294f7f;
+  border: 1px solid rgba(41, 79, 127, 0.2);
+  background: #f5f8fc;
+  padding: 0.35rem 0.6rem;
+
+  &:hover,
+  &:focus-visible {
+    color: #1f3b60;
+    border-color: rgba(31, 59, 96, 0.45);
+    background: #ebf2fb;
+  }
+}
