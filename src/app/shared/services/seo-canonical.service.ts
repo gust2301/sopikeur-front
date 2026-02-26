@@ -1,4 +1,4 @@
-import { DOCUMENT, isPlatformBrowser, Location } from '@angular/common';
+import { DOCUMENT, isPlatformBrowser } from '@angular/common';
 import { Injectable, PLATFORM_ID, inject } from '@angular/core';
 import { Meta, Title } from '@angular/platform-browser';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
@@ -13,7 +13,6 @@ interface RouteSeoData {
 @Injectable({ providedIn: 'root' })
 export class SeoCanonicalService {
   private readonly router = inject(Router);
-  private readonly location = inject(Location);
   private readonly document = inject(DOCUMENT);
   private readonly platformId = inject(PLATFORM_ID);
   private readonly activatedRoute = inject(ActivatedRoute);
@@ -34,14 +33,9 @@ export class SeoCanonicalService {
   private handleRouteUpdate(urlAfterRedirects: string): void {
     const parsedUrl = this.parseUrl(urlAfterRedirects);
     const normalizedPath = this.withTrailingSlash(parsedUrl.path);
-    const normalizedBrowserUrl = `${normalizedPath}${parsedUrl.query}${parsedUrl.fragment}`;
-
-    if (normalizedBrowserUrl !== urlAfterRedirects) {
-      this.location.replaceState(normalizedBrowserUrl);
-    }
 
     const canonicalBase = this.resolveCanonicalBaseUrl();
-    const canonicalHref = `${canonicalBase}${normalizedPath}${parsedUrl.query}`;
+    const canonicalHref = `${canonicalBase}${normalizedPath}`;
     this.updateCanonicalTag(canonicalHref);
     this.updateMetaRobots('index, follow');
     this.updateOpenGraphUrl(canonicalHref);
