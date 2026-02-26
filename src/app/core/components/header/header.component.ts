@@ -28,7 +28,7 @@ export class HeaderComponent implements OnDestroy {
   isMobileMenuOpen = false;
   private readonly cartService = inject(CartService);
   readonly cartCount = this.cartService.count;
-  readonly logoUrl = assetUrl('logos/sopi_ker_logo_dark_500w.png', environment.assetBaseUrl);
+  readonly logoUrl = assetUrl('logos/sopiker-logo-light-h40.png', environment.assetBaseUrl);
 
   navLinks: NavLink[] = [
     { label: 'Accueil', path: '/', fragment: 'home', exact: true },
