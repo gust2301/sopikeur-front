@@ -38,7 +38,7 @@ interface FooterColumn {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FooterComponent {
-  readonly logoUrl = assetUrl('logos/sopi_ker_light_500w.png', environment.assetBaseUrl);
+  readonly logoUrl = assetUrl('logos/sopiker-logo-dark-h32.png', environment.assetBaseUrl);
 
   columns: FooterColumn[] = [
     {
