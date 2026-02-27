@@ -2,54 +2,116 @@
   <div class="container legal-page__container">
     <p class="section-title">FAQ</p>
     <h1>Questions fréquentes</h1>
+
+    <!-- ── Contrôles : recherche + chips catégories ── -->
+    <div class="faq-controls">
+
+      <!-- Barre de recherche -->
+      <div class="faq-search">
+        <input
+          class="faq-search__input"
+          type="search"
+          placeholder="Rechercher une question…"
+          [value]="searchQuery()"
+          (input)="searchQuery.set($any($event.target).value)"
+          autocomplete="off"
+          aria-label="Rechercher dans la FAQ"
+        />
+        <button
+          *ngIf="searchQuery()"
+          class="faq-search__clear"
+          type="button"
+          (click)="clearSearch()"
+          aria-label="Effacer la recherche"
+        >×</button>
+      </div>
+
+      <!-- Chips catégories — itère sur `categories` (statique) pour garder tous les chips visibles -->
+      <div class="faq-chips" role="group" aria-label="Filtrer par catégorie">
+        <button
+          class="faq-chip"
+          [class.faq-chip--active]="activeCategory() === null"
+          type="button"
+          (click)="setCategory(null)"
+        >Tous</button>
+        <button
+          *ngFor="let cat of categories"
+          class="faq-chip"
+          [class.faq-chip--active]="activeCategory() === cat.label"
+          type="button"
+          (click)="setCategory(cat.label)"
+        >{{ cat.label }}</button>
+      </div>
+
+      <!-- Compteur de résultats (visible seulement quand un filtre est actif) -->
+      <p class="faq-results-count" *ngIf="searchQuery() || activeCategory() !== null">
+        {{ resultCount() }} résultat{{ resultCount() > 1 ? 's' : '' }}
+      </p>
+
+    </div>
+    <!-- ── Fin contrôles ── -->
+
     <div class="faq-list">
-      <details *ngFor="let item of faqs" class="faq-item">
-        <summary>{{ item.question }}</summary>
+      <ng-container *ngFor="let cat of filteredCategories()">
+        <h2 class="faq-category">{{ cat.label }}</h2>
 
-        <ng-container [ngSwitch]="item.type">
-          <div *ngSwitchCase="'text'" class="text-answer">
-            <p>{{ item.answer }}</p>
-            <div class="faq-links" *ngIf="item.links?.length">
-              <a
-                *ngFor="let link of item.links"
-                class="faq-link"
-                [href]="link.href"
-                [attr.target]="link.external ? '_blank' : null"
-                [attr.rel]="link.external ? 'noopener' : null"
-              >
-                {{ link.label }}
-              </a>
+        <details *ngFor="let item of cat.items" class="faq-item">
+          <summary>{{ item.question }}</summary>
+
+          <ng-container [ngSwitch]="item.type">
+            <div *ngSwitchCase="'text'" class="text-answer">
+              <p>{{ item.answer }}</p>
+              <ul *ngIf="item.bullets?.length" class="faq-bullets">
+                <li *ngFor="let b of item.bullets">{{ b }}</li>
+              </ul>
+              <div class="faq-links" *ngIf="item.links?.length">
+                <a
+                  *ngFor="let link of item.links"
+                  class="faq-link"
+                  [href]="link.href"
+                  [attr.target]="link.external ? '_blank' : null"
+                  [attr.rel]="link.external ? 'noopener' : null"
+                >
+                  {{ link.label }}
+                </a>
+              </div>
             </div>
-          </div>
 
-          <div *ngSwitchCase="'comparison'" class="comparison-block">
-            <p>
-              Le SPC se démarque par sa résistance à l’humidité, sa stabilité et sa simplicité de pose.
-              Voici un comparatif rapide avec d’autres revêtements courants.
-            </p>
+            <div *ngSwitchCase="'comparison'" class="comparison-block">
+              <p>
+                Le SPC se démarque par sa résistance à l'humidité, sa stabilité et sa simplicité de pose.
+                Voici un comparatif rapide avec d'autres revêtements courants.
+              </p>
 
-            <div class="table-wrap">
-              <table>
-                <thead>
-                  <tr>
-                    <th scope="col">Critère</th>
-                    <th scope="col" *ngFor="let column of item.comparison.columns">{{ column }}</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr *ngFor="let row of item.comparison.rows">
-                    <th scope="row">{{ row.critere }}</th>
-                    <td *ngFor="let value of row.values">
-                      <span *ngIf="isNumber(value); else textValue" class="stars">{{ stars(value) }}</span>
-                      <ng-template #textValue>{{ value }}</ng-template>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
+              <div class="table-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th scope="col">Critère</th>
+                      <th scope="col" *ngFor="let column of item.comparison.columns">{{ column }}</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let row of item.comparison.rows">
+                      <th scope="row">{{ row.critere }}</th>
+                      <td *ngFor="let value of row.values">
+                        <span *ngIf="isNumber(value); else textValue" class="stars">{{ stars(value) }}</span>
+                        <ng-template #textValue>{{ value }}</ng-template>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
             </div>
-          </div>
-        </ng-container>
-      </details>
+          </ng-container>
+        </details>
+      </ng-container>
+
+      <!-- État vide -->
+      <p class="faq-empty" *ngIf="filteredCategories().length === 0">
+        Aucun résultat pour cette recherche.
+        Essayez un autre mot-clé ou sélectionnez une autre catégorie.
+      </p>
     </div>
   </div>
 </section>
