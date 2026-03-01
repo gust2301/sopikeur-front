@@ -147,6 +147,63 @@ textarea {
   margin-top: 0.35rem;
 }
 
+/* Payment plan selector */
+.payment-plans-section {
+  margin: 0.5rem 0 0.25rem;
+}
+
+.payment-plans-title {
+  font-weight: 600;
+  margin: 0 0 0.5rem;
+  font-size: 0.95rem;
+}
+
+.payment-plans-list {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.plan-option {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  border: 1.5px solid #e9e2d7;
+  border-radius: 10px;
+  padding: 0.7rem 0.8rem;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+  font-weight: normal;
+}
+
+.plan-option--selected {
+  border-color: #3c2f1f;
+  background: #faf7f3;
+}
+
+.plan-radio {
+  margin-top: 0.2rem;
+  accent-color: #3c2f1f;
+  flex-shrink: 0;
+}
+
+.plan-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.plan-label {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: #1f1f1f;
+}
+
+.plan-desc {
+  font-size: 0.82rem;
+  color: #6a5a49;
+  line-height: 1.4;
+}
+
 
 .accordion-toggle {
   display: none;

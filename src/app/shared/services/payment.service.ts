@@ -44,6 +44,17 @@ export class PaymentService {
   }
 
   /**
+   * Crée une session Stripe Checkout pour une commande existante.
+   * Le montant est calculé automatiquement selon le plan de paiement de la commande.
+   */
+  createOrderPaymentSession(orderPublicId: string): Observable<StripeCheckoutResponse> {
+    return this.http.post<StripeCheckoutResponse>(
+      apiUrl(`/orders/${orderPublicId}/payments/stripe`),
+      {}
+    );
+  }
+
+  /**
    * Récupère le statut d'un paiement par notre publicId interne.
    */
   getPaymentStatus(paymentIntentId: string): Observable<PaymentStatusResponse> {

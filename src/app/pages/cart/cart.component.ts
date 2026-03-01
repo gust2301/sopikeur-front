@@ -5,12 +5,18 @@ import { EMPTY, catchError, finalize, tap } from 'rxjs';
 import { CitySelectComponent } from '../../shared/ui/city-select/city-select.component';
 import { RouterModule } from '@angular/router';
 import { FeedbackBannerComponent, FeedbackAction } from '../../shared/ui/feedback-banner/feedback-banner.component';
-import { CartItem } from '../../shared/models/commerce.models';
+import { CartItem, PaymentPlan } from '../../shared/models/commerce.models';
 import { CartService } from '../../shared/services/cart.service';
 import { OrdersApiService } from '../../shared/services/orders-api.service';
 import { LocationsService } from '../../shared/services/locations.service';
 import { PaymentService } from '../../shared/services/payment.service';
-import { environment } from '../../../environments/environment';
+
+interface PaymentPlanOption {
+  value: PaymentPlan;
+  icon: string;
+  label: string;
+  description: string;
+}
 
 @Component({
   selector: 'app-cart',
@@ -36,8 +42,6 @@ export class CartComponent implements OnInit, OnDestroy {
   responseRef?: string;
   errorMessage?: string;
 
-  /** publicId de la commande créée, utilisé pour initier le paiement Stripe */
-  orderPublicId?: string;
   /** Montant capturé avant le vidage du panier */
   savedOrderAmount = 0;
   /** Indique qu'une redirection Stripe est en cours */
@@ -57,6 +61,27 @@ export class CartComponent implements OnInit, OnDestroy {
   readonly totalAmountFcfa = this.cartService.totalAmountFcfa;
   readonly isEmpty = computed(() => this.items().length === 0);
 
+  readonly paymentPlanOptions: PaymentPlanOption[] = [
+    {
+      value: 'CASH_ON_DELIVERY',
+      icon: '💵',
+      label: 'Paiement à la livraison',
+      description: 'Aucune avance requise. Vous payez à la réception.',
+    },
+    {
+      value: 'DEPOSIT_50',
+      icon: '🤝',
+      label: 'Acompte 50% en ligne',
+      description: 'Réservez avec 50% maintenant, le reste à la livraison.',
+    },
+    {
+      value: 'FULL_ONLINE',
+      icon: '💳',
+      label: 'Paiement intégral en ligne',
+      description: 'Payez 100% immédiatement et sécurisez votre commande.',
+    },
+  ];
+
   readonly form = this.fb.group({
     fullName: ['', Validators.required],
     phone: ['', Validators.required],
@@ -66,6 +91,7 @@ export class CartComponent implements OnInit, OnDestroy {
     address: [''],
     installRequested: [false],
     notes: [''],
+    paymentPlan: ['CASH_ON_DELIVERY' as PaymentPlan, Validators.required],
   });
 
   cities: string[] = [];
@@ -124,15 +150,7 @@ export class CartComponent implements OnInit, OnDestroy {
 
 
   get successActions(): FeedbackAction[] {
-    const actions: FeedbackAction[] = [];
-    if (this.orderPublicId && this.savedOrderAmount > 0) {
-      actions.push({
-        label: this.paymentLoading ? 'Redirection…' : 'Payer l\u2019acompte en ligne',
-        onClick: () => this.initiatePayment(),
-      });
-    }
-    actions.push({ label: 'Retour à l\u2019accueil', routerLink: ['/'] });
-    return actions;
+    return [{ label: 'Retour à l\u2019accueil', routerLink: ['/'] }];
   }
 
   increment(productId: string, qty: number): void {
@@ -184,6 +202,8 @@ export class CartComponent implements OnInit, OnDestroy {
     }
 
     const value = this.form.getRawValue();
+    const paymentPlan = (value.paymentPlan ?? 'CASH_ON_DELIVERY') as PaymentPlan;
+
     const payload = {
       customer: {
         fullName: (value.fullName ?? '').trim(),
@@ -198,6 +218,8 @@ export class CartComponent implements OnInit, OnDestroy {
       },
       cityZone: [this.toOptionalText(value.city), this.toOptionalText(value.area)].filter(Boolean).join(' / '),
       installRequested: value.installRequested === true,
+      paymentPlan,
+      paymentMethodSelected: paymentPlan !== 'CASH_ON_DELIVERY' ? 'STRIPE' : undefined,
       items: this.items().map(item => ({
         productId: String(item.productId),
         sku: item.sku,
@@ -207,13 +229,13 @@ export class CartComponent implements OnInit, OnDestroy {
     };
 
     if (!payload.cityZone) {
-      payload.cityZone = undefined;
+      (payload as any).cityZone = undefined;
     }
 
     this.status = 'loading';
     this.errorMessage = undefined;
 
-    // Capturer le montant avant soumission (le panier sera vidé après succès)
+    // Capture amount before cart is cleared
     const orderAmount = this.totalAmountFcfa();
 
     this.orderApi
@@ -222,7 +244,31 @@ export class CartComponent implements OnInit, OnDestroy {
         tap(response => {
           const responseRef = response?.orderNumber ?? response?.id;
           const publicId = response?.id ?? '';
-          this.handleSuccess(responseRef, publicId, orderAmount);
+          const plan = response?.paymentPlan ?? paymentPlan;
+
+          this.cartService.clear();
+          this.responseRef = responseRef;
+          this.savedOrderAmount = orderAmount;
+
+          if (plan === 'DEPOSIT_50' || plan === 'FULL_ONLINE') {
+            // Redirect to Stripe automatically
+            this.paymentLoading = true;
+            this.cdr.markForCheck();
+            this.paymentService.createOrderPaymentSession(publicId).pipe(
+              tap(payRes => {
+                sessionStorage.setItem('sopikeur_payment_intent_id', payRes.paymentIntentId);
+                window.location.href = payRes.checkoutUrl;
+              }),
+              catchError(() => {
+                // Fallback: show success without Stripe redirect
+                this.paymentLoading = false;
+                this.handleSuccess(responseRef, publicId, orderAmount);
+                return EMPTY;
+              }),
+            ).subscribe();
+          } else {
+            this.handleSuccess(responseRef, publicId, orderAmount);
+          }
         }),
         catchError(error => {
           this.handleError(error, 'Impossible d\u2019envoyer la commande, réessayez.');
@@ -233,39 +279,13 @@ export class CartComponent implements OnInit, OnDestroy {
       .subscribe();
   }
 
-  /** Initie une session Stripe Checkout pour payer l'acompte. */
-  initiatePayment(): void {
-    if (!this.orderPublicId || this.paymentLoading) return;
-
-    this.paymentLoading = true;
-    this.cdr.markForCheck();
-
-    this.paymentService.createDepositSession({
-      orderId: this.orderPublicId,
-      purpose: 'DEPOSIT',
-      amountXof: this.savedOrderAmount,
-      description: `Acompte commande ${this.responseRef ?? ''}`.trim(),
-    }).pipe(
-      tap(res => {
-        sessionStorage.setItem('sopikeur_payment_intent_id', res.paymentIntentId);
-        window.location.href = res.checkoutUrl;
-      }),
-      catchError(() => {
-        this.paymentLoading = false;
-        this.cdr.markForCheck();
-        return EMPTY;
-      }),
-    ).subscribe();
-  }
-
   private handleSuccess(reference: string, publicId: string, amount: number): void {
     this.status = 'success';
     this.responseRef = reference;
-    this.orderPublicId = publicId;
     this.savedOrderAmount = amount;
     this.scrollToFeedback();
-    this.cartService.clear();
     this.focusSuccessState();
+    this.cdr.markForCheck();
   }
 
   private handleError(error: any, fallbackMessage: string): void {

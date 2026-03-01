@@ -2,7 +2,7 @@
   <div class="container">
     <header class="page-header">
       <h1 class="section-title">Panier</h1>
-      <p class="page-subtitle">Validez votre commande (paiement à la livraison).</p>
+      <p class="page-subtitle">Validez votre commande et choisissez votre mode de paiement.</p>
     </header>
 
     <section
@@ -115,7 +115,7 @@
             </label>
             <label class="checkbox-row">
               <input formControlName="installRequested" type="checkbox" />
-              <span>Je souhaite la pose par l’équipe Sopi Kër ({{ installationLabel }})</span>
+              <span>Je souhaite la pose par l'équipe Sopi Kër ({{ installationLabel }})</span>
             </label>
             <label>
               Notes livraison
@@ -124,10 +124,39 @@
 
             <ng-container *ngIf="isMobile" [ngTemplateOutlet]="recapTemplate"></ng-container>
 
+            <!-- Payment plan selector -->
+            <div class="payment-plans-section">
+              <p class="payment-plans-title">Mode de paiement</p>
+              <div class="payment-plans-list">
+                <label
+                  class="plan-option"
+                  *ngFor="let plan of paymentPlanOptions"
+                  [class.plan-option--selected]="form.get('paymentPlan')?.value === plan.value"
+                >
+                  <input
+                    type="radio"
+                    formControlName="paymentPlan"
+                    [value]="plan.value"
+                    class="plan-radio"
+                  />
+                  <div class="plan-content">
+                    <span class="plan-label">{{ plan.icon }} {{ plan.label }}</span>
+                    <span class="plan-desc">{{ plan.description }}</span>
+                  </div>
+                </label>
+              </div>
+            </div>
+
             <p class="mini-total">Total produits (hors pose &amp; livraison) : <strong>{{ currency.format(totalAmountFcfa()) }} FCFA</strong></p>
 
-            <button class="btn btn-primary" type="submit" [disabled]="status === 'loading'">
-              {{ status === 'loading' ? 'Envoi...' : 'Valider la commande' }}
+            <button class="btn btn-primary" type="submit" [disabled]="status === 'loading' || paymentLoading">
+              @if (paymentLoading) {
+                Redirection vers le paiement…
+              } @else if (status === 'loading') {
+                Envoi en cours…
+              } @else {
+                Valider la commande
+              }
             </button>
           </form>
 
@@ -136,7 +165,7 @@
               *ngIf="status === 'error'"
               type="error"
               title="Une erreur est survenue."
-              [message]="errorMessage || 'Impossible d’envoyer la commande, réessayez.'"
+              [message]="errorMessage || 'Impossible d\'envoyer la commande, réessayez.'"
             />
             <button *ngIf="status === 'error'" class="btn btn-secondary" type="button" (click)="submitOrder()">Réessayer</button>
           </div>
@@ -153,7 +182,7 @@
         <p class="summary-total"><span>Total (hors pose &amp; livraison)</span><strong>{{ currency.format(totalAmountFcfa()) }} FCFA</strong></p>
       </div>
 
-      <p class="pose-callout">ℹ️ La pose n’est pas incluse dans le total. Elle est chiffrée sur devis selon la surface et le support.</p>
+      <p class="pose-callout">ℹ️ La pose n'est pas incluse dans le total. Elle est chiffrée sur devis selon la surface et le support.</p>
     </ng-template>
 
     <ng-template #emptyState>
