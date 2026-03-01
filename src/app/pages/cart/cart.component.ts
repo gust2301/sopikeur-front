@@ -64,19 +64,19 @@ export class CartComponent implements OnInit, OnDestroy {
   readonly paymentPlanOptions: PaymentPlanOption[] = [
     {
       value: 'CASH_ON_DELIVERY',
-      icon: '💵',
+      icon: 'local_atm',
       label: 'Paiement à la livraison',
       description: 'Aucune avance requise. Vous payez à la réception.',
     },
     {
       value: 'DEPOSIT_50',
-      icon: '🤝',
+      icon: 'handshake',
       label: 'Acompte 50% en ligne',
       description: 'Réservez avec 50% maintenant, le reste à la livraison.',
     },
     {
       value: 'FULL_ONLINE',
-      icon: '💳',
+      icon: 'credit_card',
       label: 'Paiement intégral en ligne',
       description: 'Payez 100% immédiatement et sécurisez votre commande.',
     },

@@ -196,6 +196,25 @@ textarea {
   font-weight: 600;
   font-size: 0.9rem;
   color: #1f1f1f;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.plan-icon {
+  font-size: 1.1rem;
+  width: 1.1rem;
+  height: 1.1rem;
+  color: #3c2f1f;
+  flex-shrink: 0;
+}
+
+.pose-info-icon {
+  font-size: 1rem;
+  width: 1rem;
+  height: 1rem;
+  vertical-align: middle;
+  color: #6a5a49;
 }
 
 .plan-desc {
