@@ -9,6 +9,7 @@ import { CartItem } from '../../shared/models/commerce.models';
 import { CartService } from '../../shared/services/cart.service';
 import { OrdersApiService } from '../../shared/services/orders-api.service';
 import { LocationsService } from '../../shared/services/locations.service';
+import { PaymentService } from '../../shared/services/payment.service';
 import { environment } from '../../../environments/environment';
 
 @Component({
@@ -26,6 +27,7 @@ export class CartComponent implements OnInit, OnDestroy {
   private readonly orderApi = inject(OrdersApiService);
   private readonly locationsService = inject(LocationsService);
   private readonly cdr = inject(ChangeDetectorRef);
+  private readonly paymentService = inject(PaymentService);
 
   @ViewChild('feedbackAnchor') private readonly feedbackAnchor?: ElementRef<HTMLElement>;
   @ViewChild('successState') private readonly successState?: ElementRef<HTMLElement>;
@@ -33,6 +35,13 @@ export class CartComponent implements OnInit, OnDestroy {
   status: 'idle' | 'loading' | 'success' | 'error' = 'idle';
   responseRef?: string;
   errorMessage?: string;
+
+  /** publicId de la commande créée, utilisé pour initier le paiement Stripe */
+  orderPublicId?: string;
+  /** Montant capturé avant le vidage du panier */
+  savedOrderAmount = 0;
+  /** Indique qu'une redirection Stripe est en cours */
+  paymentLoading = false;
 
   isMobile = false;
   productsOpen = true;
@@ -115,9 +124,15 @@ export class CartComponent implements OnInit, OnDestroy {
 
 
   get successActions(): FeedbackAction[] {
-    return [
-      { label: 'Retour à l’accueil', routerLink: ['/'] }
-    ];
+    const actions: FeedbackAction[] = [];
+    if (this.orderPublicId && this.savedOrderAmount > 0) {
+      actions.push({
+        label: this.paymentLoading ? 'Redirection…' : 'Payer l\u2019acompte en ligne',
+        onClick: () => this.initiatePayment(),
+      });
+    }
+    actions.push({ label: 'Retour à l\u2019accueil', routerLink: ['/'] });
+    return actions;
   }
 
   increment(productId: string, qty: number): void {
@@ -163,7 +178,7 @@ export class CartComponent implements OnInit, OnDestroy {
     if (this.form.invalid || this.isEmpty()) {
       this.form.markAllAsTouched();
       this.status = 'error';
-      this.errorMessage = 'Merci de compléter les champs obligatoires et d’ajouter au moins un produit.';
+      this.errorMessage = 'Merci de compléter les champs obligatoires et d\u2019ajouter au moins un produit.';
       this.scrollToFeedback();
       return;
     }
@@ -198,15 +213,19 @@ export class CartComponent implements OnInit, OnDestroy {
     this.status = 'loading';
     this.errorMessage = undefined;
 
+    // Capturer le montant avant soumission (le panier sera vidé après succès)
+    const orderAmount = this.totalAmountFcfa();
+
     this.orderApi
       .createOrder(payload)
       .pipe(
         tap(response => {
           const responseRef = response?.orderNumber ?? response?.id;
-          this.handleSuccess(responseRef);
+          const publicId = response?.id ?? '';
+          this.handleSuccess(responseRef, publicId, orderAmount);
         }),
         catchError(error => {
-          this.handleError(error, 'Impossible d’envoyer la commande, réessayez.');
+          this.handleError(error, 'Impossible d\u2019envoyer la commande, réessayez.');
           return EMPTY;
         }),
         finalize(() => this.cdr.markForCheck()),
@@ -214,9 +233,36 @@ export class CartComponent implements OnInit, OnDestroy {
       .subscribe();
   }
 
-  private handleSuccess(reference: string): void {
+  /** Initie une session Stripe Checkout pour payer l'acompte. */
+  initiatePayment(): void {
+    if (!this.orderPublicId || this.paymentLoading) return;
+
+    this.paymentLoading = true;
+    this.cdr.markForCheck();
+
+    this.paymentService.createDepositSession({
+      orderId: this.orderPublicId,
+      purpose: 'DEPOSIT',
+      amountXof: this.savedOrderAmount,
+      description: `Acompte commande ${this.responseRef ?? ''}`.trim(),
+    }).pipe(
+      tap(res => {
+        sessionStorage.setItem('sopikeur_payment_intent_id', res.paymentIntentId);
+        window.location.href = res.checkoutUrl;
+      }),
+      catchError(() => {
+        this.paymentLoading = false;
+        this.cdr.markForCheck();
+        return EMPTY;
+      }),
+    ).subscribe();
+  }
+
+  private handleSuccess(reference: string, publicId: string, amount: number): void {
     this.status = 'success';
     this.responseRef = reference;
+    this.orderPublicId = publicId;
+    this.savedOrderAmount = amount;
     this.scrollToFeedback();
     this.cartService.clear();
     this.focusSuccessState();
