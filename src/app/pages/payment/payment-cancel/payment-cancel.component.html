@@ -4,9 +4,9 @@
     <h1>Paiement annulé</h1>
     <p>
       Vous avez annulé le paiement. Aucun montant n'a été débité.
-      Vous pouvez relancer le paiement depuis votre confirmation de commande.
+      Votre panier est intact — vous pouvez modifier votre commande ou choisir un autre mode de paiement.
     </p>
-    <a routerLink="/" class="btn-secondary">Retour à l'accueil</a>
+    <a routerLink="/panier" class="btn-primary">Retourner au panier</a>
   </div>
 </section>
 
@@ -44,17 +44,16 @@
     line-height: 1.6;
     margin: 0 0 2rem;
   }
-  .btn-secondary {
+  .btn-primary {
     display: inline-block;
-    background: transparent;
-    color: #1f1f1f;
-    border: 2px solid #1f1f1f;
+    background: #1f1f1f;
+    color: #fff;
     padding: 0.75rem 1.75rem;
     border-radius: 8px;
     text-decoration: none;
     font-weight: 600;
     font-size: 0.9rem;
-    transition: all 0.2s;
+    transition: background 0.2s;
   }
-  .btn-secondary:hover { background: #1f1f1f; color: #fff; }
+  .btn-primary:hover { background: #333; }
 </style>

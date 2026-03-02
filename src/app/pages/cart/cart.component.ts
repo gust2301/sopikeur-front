@@ -203,6 +203,7 @@ export class CartComponent implements OnInit, OnDestroy {
 
     const value = this.form.getRawValue();
     const paymentPlan = (value.paymentPlan ?? 'CASH_ON_DELIVERY') as PaymentPlan;
+    const needsStripe = paymentPlan === 'DEPOSIT_50' || paymentPlan === 'FULL_ONLINE';
 
     const payload = {
       customer: {
@@ -219,7 +220,7 @@ export class CartComponent implements OnInit, OnDestroy {
       cityZone: [this.toOptionalText(value.city), this.toOptionalText(value.area)].filter(Boolean).join(' / '),
       installRequested: value.installRequested === true,
       paymentPlan,
-      paymentMethodSelected: paymentPlan !== 'CASH_ON_DELIVERY' ? 'STRIPE' : undefined,
+      paymentMethodSelected: needsStripe ? 'STRIPE' : undefined,
       items: this.items().map(item => ({
         productId: String(item.productId),
         sku: item.sku,
@@ -232,10 +233,17 @@ export class CartComponent implements OnInit, OnDestroy {
       (payload as any).cityZone = undefined;
     }
 
+    // Pour Stripe : afficher le spinner IMMÉDIATEMENT avant tout appel API
+    // pour éviter le flash de panier vide avant la redirection.
+    if (needsStripe) {
+      this.paymentLoading = true;
+      this.cdr.markForCheck();
+    }
+
     this.status = 'loading';
     this.errorMessage = undefined;
 
-    // Capture amount before cart is cleared
+    // Capture amount before cart might be cleared
     const orderAmount = this.totalAmountFcfa();
 
     this.orderApi
@@ -246,31 +254,35 @@ export class CartComponent implements OnInit, OnDestroy {
           const publicId = response?.id ?? '';
           const plan = response?.paymentPlan ?? paymentPlan;
 
-          this.cartService.clear();
-          this.responseRef = responseRef;
-          this.savedOrderAmount = orderAmount;
-
           if (plan === 'DEPOSIT_50' || plan === 'FULL_ONLINE') {
-            // Redirect to Stripe automatically
-            this.paymentLoading = true;
-            this.cdr.markForCheck();
+            // Stripe : NE PAS vider le panier avant confirmation du paiement.
+            // Le panier sera vidé par la page /payment/success au retour de Stripe.
+            this.responseRef = responseRef;
+            this.savedOrderAmount = orderAmount;
+            sessionStorage.setItem('sk_pending_order_ref', responseRef ?? '');
+            sessionStorage.setItem('sk_pending_order_id', publicId);
+
             this.paymentService.createOrderPaymentSession(publicId).pipe(
               tap(payRes => {
                 sessionStorage.setItem('sopikeur_payment_intent_id', payRes.paymentIntentId);
                 window.location.href = payRes.checkoutUrl;
               }),
               catchError(() => {
-                // Fallback: show success without Stripe redirect
+                // Fallback : erreur Stripe → afficher succès sans redirection
                 this.paymentLoading = false;
+                this.cartService.clear();
                 this.handleSuccess(responseRef, publicId, orderAmount);
                 return EMPTY;
               }),
             ).subscribe();
           } else {
+            // CASH_ON_DELIVERY : vider le panier et afficher le succès directement
+            this.cartService.clear();
             this.handleSuccess(responseRef, publicId, orderAmount);
           }
         }),
         catchError(error => {
+          this.paymentLoading = false;
           this.handleError(error, 'Impossible d\u2019envoyer la commande, réessayez.');
           return EMPTY;
         }),
