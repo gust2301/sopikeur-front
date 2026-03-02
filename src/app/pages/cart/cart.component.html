@@ -1,4 +1,15 @@
 <section class="cart-page">
+
+  @if (paymentLoading) {
+    <div class="stripe-redirect-overlay" role="alert" aria-live="assertive">
+      <div class="stripe-redirect-content">
+        <div class="stripe-spinner"></div>
+        <p class="stripe-redirect-message">Redirection vers le paiement…</p>
+        <p class="stripe-redirect-sub">Veuillez patienter, ne fermez pas cette page.</p>
+      </div>
+    </div>
+  }
+
   <div class="container">
     <header class="page-header">
       <h1 class="section-title">Panier</h1>
