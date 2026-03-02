@@ -268,10 +268,9 @@ export class CartComponent implements OnInit, OnDestroy {
                 window.location.href = payRes.checkoutUrl;
               }),
               catchError(() => {
-                // Fallback : erreur Stripe → afficher succès sans redirection
+                // Erreur Stripe → afficher un message, NE PAS vider le panier
                 this.paymentLoading = false;
-                this.cartService.clear();
-                this.handleSuccess(responseRef, publicId, orderAmount);
+                this.handleError(null, 'Impossible de créer la session de paiement. Veuillez réessayer.');
                 return EMPTY;
               }),
             ).subscribe();

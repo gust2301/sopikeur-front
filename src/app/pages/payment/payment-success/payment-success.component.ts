@@ -24,10 +24,17 @@ export class PaymentSuccessComponent implements OnInit {
     const ref  = sessionStorage.getItem('sk_pending_order_ref');
     this.orderRef.set(ref);
 
+    // Aucun contexte de paiement (navigation directe sans passer par Stripe) :
+    // ne pas toucher au panier, juste afficher la page de succès.
+    if (!piId && !ref) {
+      this.verifying.set(false);
+      return;
+    }
+
     if (piId) {
       this.pollStatus(piId, 0);
     } else {
-      // Pas d'intent en session (retour direct) : vider le panier et afficher le succès
+      // Ref présente mais pas de piId (cas rare) : confirmer et vider le panier
       this.confirm();
     }
   }
