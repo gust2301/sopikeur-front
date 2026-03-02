@@ -158,6 +158,34 @@
               </div>
             </div>
 
+            <!-- Provider selector (visible uniquement si paiement en ligne) -->
+            <div
+              class="payment-plans-section"
+              *ngIf="form.get('paymentPlan')?.value === 'DEPOSIT_50' || form.get('paymentPlan')?.value === 'FULL_ONLINE'"
+            >
+              <p class="payment-plans-title">Moyen de paiement en ligne</p>
+              <div class="payment-plans-list">
+                <label
+                  class="plan-option"
+                  *ngFor="let prov of paymentProviderOptions"
+                  [class.plan-option--selected]="selectedProvider === prov.value"
+                >
+                  <input
+                    type="radio"
+                    name="paymentProvider"
+                    [value]="prov.value"
+                    [checked]="selectedProvider === prov.value"
+                    (change)="selectedProvider = prov.value"
+                    class="plan-radio"
+                  />
+                  <div class="plan-content">
+                    <span class="plan-label"><span class="material-icons plan-icon">{{ prov.icon }}</span> {{ prov.label }}</span>
+                    <span class="plan-desc">{{ prov.description }}</span>
+                  </div>
+                </label>
+              </div>
+            </div>
+
             <p class="mini-total">Total produits (hors pose &amp; livraison) : <strong>{{ currency.format(totalAmountFcfa()) }} FCFA</strong></p>
 
             <button class="btn btn-primary" type="submit" [disabled]="status === 'loading' || paymentLoading">

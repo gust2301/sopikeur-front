@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { apiUrl } from '../utils/api-url';
+import { PaymentProvider } from '../models/commerce.models';
 
 export interface StripeCheckoutRequest {
   orderId: string;
@@ -17,6 +18,7 @@ export interface StripeCheckoutResponse {
 
 export interface PaymentStatusResponse {
   id: string;
+  provider: string;
   stripeSessionId: string;
   stripePaymentIntentId: string | null;
   status: 'PENDING' | 'SUCCEEDED' | 'FAILED' | 'EXPIRED';
@@ -36,7 +38,7 @@ export class PaymentService {
   constructor(private readonly http: HttpClient) {}
 
   /**
-   * Crée une session Stripe Checkout pour un acompte.
+   * Crée une session Stripe Checkout pour un acompte (legacy).
    * @returns l'URL Stripe vers laquelle rediriger le client.
    */
   createDepositSession(request: StripeCheckoutRequest): Observable<StripeCheckoutResponse> {
@@ -44,13 +46,30 @@ export class PaymentService {
   }
 
   /**
-   * Crée une session Stripe Checkout pour une commande existante.
+   * Crée une session Stripe Checkout pour une commande existante (legacy Stripe uniquement).
    * Le montant est calculé automatiquement selon le plan de paiement de la commande.
    */
   createOrderPaymentSession(orderPublicId: string): Observable<StripeCheckoutResponse> {
     return this.http.post<StripeCheckoutResponse>(
       apiUrl(`/orders/${orderPublicId}/payments/stripe`),
       {}
+    );
+  }
+
+  /**
+   * Crée une session de paiement pour une commande avec le provider choisi (multi-provider).
+   * @param orderPublicId publicId de la commande
+   * @param provider STRIPE | WAVE | ORANGE_MONEY
+   * @param purpose DEPOSIT | FULL
+   */
+  createOrderPayment(
+    orderPublicId: string,
+    provider: PaymentProvider,
+    purpose: 'DEPOSIT' | 'FULL'
+  ): Observable<StripeCheckoutResponse> {
+    return this.http.post<StripeCheckoutResponse>(
+      apiUrl(`/orders/${orderPublicId}/payments`),
+      { provider, purpose }
     );
   }
 

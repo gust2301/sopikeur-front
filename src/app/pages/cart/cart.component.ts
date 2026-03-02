@@ -5,7 +5,7 @@ import { EMPTY, catchError, finalize, tap } from 'rxjs';
 import { CitySelectComponent } from '../../shared/ui/city-select/city-select.component';
 import { RouterModule } from '@angular/router';
 import { FeedbackBannerComponent, FeedbackAction } from '../../shared/ui/feedback-banner/feedback-banner.component';
-import { CartItem, PaymentPlan } from '../../shared/models/commerce.models';
+import { CartItem, PaymentPlan, PaymentProvider } from '../../shared/models/commerce.models';
 import { CartService } from '../../shared/services/cart.service';
 import { OrdersApiService } from '../../shared/services/orders-api.service';
 import { LocationsService } from '../../shared/services/locations.service';
@@ -60,6 +60,29 @@ export class CartComponent implements OnInit, OnDestroy {
   readonly totalItems = this.cartService.count;
   readonly totalAmountFcfa = this.cartService.totalAmountFcfa;
   readonly isEmpty = computed(() => this.items().length === 0);
+
+  selectedProvider: PaymentProvider = 'STRIPE';
+
+  readonly paymentProviderOptions: Array<{ value: PaymentProvider; icon: string; label: string; description: string }> = [
+    {
+      value: 'STRIPE',
+      icon: 'credit_card',
+      label: 'Carte bancaire (Stripe)',
+      description: 'Visa, Mastercard… Paiement sécurisé en ligne.',
+    },
+    {
+      value: 'WAVE',
+      icon: 'waves',
+      label: 'Wave',
+      description: 'Paiement mobile Wave Sénégal.',
+    },
+    {
+      value: 'ORANGE_MONEY',
+      icon: 'smartphone',
+      label: 'Orange Money',
+      description: 'Paiement mobile Orange Money.',
+    },
+  ];
 
   readonly paymentPlanOptions: PaymentPlanOption[] = [
     {
@@ -220,7 +243,7 @@ export class CartComponent implements OnInit, OnDestroy {
       cityZone: [this.toOptionalText(value.city), this.toOptionalText(value.area)].filter(Boolean).join(' / '),
       installRequested: value.installRequested === true,
       paymentPlan,
-      paymentMethodSelected: needsStripe ? 'STRIPE' : undefined,
+      paymentMethodSelected: needsStripe ? this.selectedProvider : undefined,
       items: this.items().map(item => ({
         productId: String(item.productId),
         sku: item.sku,
@@ -262,13 +285,14 @@ export class CartComponent implements OnInit, OnDestroy {
             sessionStorage.setItem('sk_pending_order_ref', responseRef ?? '');
             sessionStorage.setItem('sk_pending_order_id', publicId);
 
-            this.paymentService.createOrderPaymentSession(publicId).pipe(
+            const purpose = plan === 'DEPOSIT_50' ? 'DEPOSIT' : 'FULL';
+            this.paymentService.createOrderPayment(publicId, this.selectedProvider, purpose).pipe(
               tap(payRes => {
                 sessionStorage.setItem('sopikeur_payment_intent_id', payRes.paymentIntentId);
                 window.location.href = payRes.checkoutUrl;
               }),
               catchError(() => {
-                // Erreur Stripe → afficher un message, NE PAS vider le panier
+                // Erreur provider → afficher un message, NE PAS vider le panier
                 this.paymentLoading = false;
                 this.handleError(null, 'Impossible de créer la session de paiement. Veuillez réessayer.');
                 return EMPTY;
