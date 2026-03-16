@@ -201,6 +201,21 @@ export const routes: Routes = [
           },
         },
       },
+      // ── Pages de retour Stripe (dans le layout principal) ─────────────────
+      {
+        path: 'payment/success',
+        loadComponent: () =>
+          import('./pages/payment/payment-success/payment-success.component').then(
+            m => m.PaymentSuccessComponent,
+          ),
+      },
+      {
+        path: 'payment/cancel',
+        loadComponent: () =>
+          import('./pages/payment/payment-cancel/payment-cancel.component').then(
+            m => m.PaymentCancelComponent,
+          ),
+      },
     ],
   },
   { path: '**', redirectTo: '' },

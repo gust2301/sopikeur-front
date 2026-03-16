@@ -31,11 +31,17 @@ export interface DeliveryDto {
   notes?: string;
 }
 
+export type PaymentPlan = 'CASH_ON_DELIVERY' | 'DEPOSIT_50' | 'FULL_ONLINE';
+
+export type PaymentProvider = 'STRIPE' | 'WAVE' | 'ORANGE_MONEY';
+
 export interface OrderCreateRequest {
   customer: CustomerDto;
   delivery?: DeliveryDto;
   cityZone?: string;
   installRequested?: boolean;
+  paymentPlan: PaymentPlan;
+  paymentMethodSelected?: string;
   items: Array<{
     productId: string;
     sku?: string;
@@ -48,6 +54,8 @@ export interface OrderCreateResponse {
   id: string;
   orderNumber?: string;
   status: string;
+  paymentPlan: PaymentPlan;
+  paymentStatus: string;
   createdAt: string;
 }
 
