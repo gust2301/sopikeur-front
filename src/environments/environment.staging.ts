@@ -1,8 +1,8 @@
 export const environment = {
   production: true,
-  siteUrl: 'https://develop.sopikeur-front.pages.dev',
-  apiBaseUrl: 'https://api-staging.sopikeur.sn',
+  siteUrl: 'https://www.sopikeur.sn',
+  apiBaseUrl: 'https://api.sopikeur.sn',
   apiPrefix: '/api/v1',
   assetBaseUrl: 'https://assets.sopikeur.sn',
-  turnstileSiteKey: '',
+  turnstileSiteKey: '0x4AAAAAACb1Q7jqFxC3oZdh',
 };
