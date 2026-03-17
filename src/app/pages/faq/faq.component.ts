@@ -135,7 +135,7 @@ export class FaqComponent {
             { label: 'Formulaire de contact', href: '/contact/' },
             {
               label: 'WhatsApp',
-              href: 'https://wa.me/221773380463?text=Bonjour%2C%20je%20souhaite%20obtenir%20un%20devis.',
+              href: 'https://wa.me/221774293757?text=Bonjour%2C%20je%20souhaite%20obtenir%20un%20devis.',
               external: true,
             },
           ],
