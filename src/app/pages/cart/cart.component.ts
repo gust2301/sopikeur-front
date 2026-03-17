@@ -5,18 +5,11 @@ import { EMPTY, catchError, finalize, tap } from 'rxjs';
 import { CitySelectComponent } from '../../shared/ui/city-select/city-select.component';
 import { RouterModule } from '@angular/router';
 import { FeedbackBannerComponent, FeedbackAction } from '../../shared/ui/feedback-banner/feedback-banner.component';
-import { CartItem, PaymentPlan, PaymentProvider } from '../../shared/models/commerce.models';
+import { CartItem } from '../../shared/models/commerce.models';
 import { CartService } from '../../shared/services/cart.service';
 import { OrdersApiService } from '../../shared/services/orders-api.service';
 import { LocationsService } from '../../shared/services/locations.service';
-import { PaymentService } from '../../shared/services/payment.service';
-
-interface PaymentPlanOption {
-  value: PaymentPlan;
-  icon: string;
-  label: string;
-  description: string;
-}
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-cart',
@@ -33,7 +26,6 @@ export class CartComponent implements OnInit, OnDestroy {
   private readonly orderApi = inject(OrdersApiService);
   private readonly locationsService = inject(LocationsService);
   private readonly cdr = inject(ChangeDetectorRef);
-  private readonly paymentService = inject(PaymentService);
 
   @ViewChild('feedbackAnchor') private readonly feedbackAnchor?: ElementRef<HTMLElement>;
   @ViewChild('successState') private readonly successState?: ElementRef<HTMLElement>;
@@ -41,11 +33,6 @@ export class CartComponent implements OnInit, OnDestroy {
   status: 'idle' | 'loading' | 'success' | 'error' = 'idle';
   responseRef?: string;
   errorMessage?: string;
-
-  /** Montant capturé avant le vidage du panier */
-  savedOrderAmount = 0;
-  /** Indique qu'une redirection Stripe est en cours */
-  paymentLoading = false;
 
   isMobile = false;
   productsOpen = true;
@@ -61,50 +48,6 @@ export class CartComponent implements OnInit, OnDestroy {
   readonly totalAmountFcfa = this.cartService.totalAmountFcfa;
   readonly isEmpty = computed(() => this.items().length === 0);
 
-  selectedProvider: PaymentProvider = 'STRIPE';
-
-  readonly paymentProviderOptions: Array<{ value: PaymentProvider; icon: string; label: string; description: string }> = [
-    {
-      value: 'STRIPE',
-      icon: 'credit_card',
-      label: 'Carte bancaire (Stripe)',
-      description: 'Visa, Mastercard… Paiement sécurisé en ligne.',
-    },
-    {
-      value: 'WAVE',
-      icon: 'waves',
-      label: 'Wave',
-      description: 'Paiement mobile Wave Sénégal.',
-    },
-    {
-      value: 'ORANGE_MONEY',
-      icon: 'smartphone',
-      label: 'Orange Money',
-      description: 'Paiement mobile Orange Money.',
-    },
-  ];
-
-  readonly paymentPlanOptions: PaymentPlanOption[] = [
-    {
-      value: 'CASH_ON_DELIVERY',
-      icon: 'local_atm',
-      label: 'Paiement à la livraison',
-      description: 'Aucune avance requise. Vous payez à la réception.',
-    },
-    {
-      value: 'DEPOSIT_50',
-      icon: 'handshake',
-      label: 'Acompte 50% en ligne',
-      description: 'Réservez avec 50% maintenant, le reste à la livraison.',
-    },
-    {
-      value: 'FULL_ONLINE',
-      icon: 'credit_card',
-      label: 'Paiement intégral en ligne',
-      description: 'Payez 100% immédiatement et sécurisez votre commande.',
-    },
-  ];
-
   readonly form = this.fb.group({
     fullName: ['', Validators.required],
     phone: ['', Validators.required],
@@ -114,7 +57,6 @@ export class CartComponent implements OnInit, OnDestroy {
     address: [''],
     installRequested: [false],
     notes: [''],
-    paymentPlan: ['CASH_ON_DELIVERY' as PaymentPlan, Validators.required],
   });
 
   cities: string[] = [];
@@ -173,7 +115,9 @@ export class CartComponent implements OnInit, OnDestroy {
 
 
   get successActions(): FeedbackAction[] {
-    return [{ label: 'Retour à l\u2019accueil', routerLink: ['/'] }];
+    return [
+      { label: 'Retour à l’accueil', routerLink: ['/'] }
+    ];
   }
 
   increment(productId: string, qty: number): void {
@@ -219,15 +163,12 @@ export class CartComponent implements OnInit, OnDestroy {
     if (this.form.invalid || this.isEmpty()) {
       this.form.markAllAsTouched();
       this.status = 'error';
-      this.errorMessage = 'Merci de compléter les champs obligatoires et d\u2019ajouter au moins un produit.';
+      this.errorMessage = 'Merci de compléter les champs obligatoires et d’ajouter au moins un produit.';
       this.scrollToFeedback();
       return;
     }
 
     const value = this.form.getRawValue();
-    const paymentPlan = (value.paymentPlan ?? 'CASH_ON_DELIVERY') as PaymentPlan;
-    const needsStripe = paymentPlan === 'DEPOSIT_50' || paymentPlan === 'FULL_ONLINE';
-
     const payload = {
       customer: {
         fullName: (value.fullName ?? '').trim(),
@@ -242,8 +183,6 @@ export class CartComponent implements OnInit, OnDestroy {
       },
       cityZone: [this.toOptionalText(value.city), this.toOptionalText(value.area)].filter(Boolean).join(' / '),
       installRequested: value.installRequested === true,
-      paymentPlan,
-      paymentMethodSelected: needsStripe ? this.selectedProvider : undefined,
       items: this.items().map(item => ({
         productId: String(item.productId),
         sku: item.sku,
@@ -253,60 +192,21 @@ export class CartComponent implements OnInit, OnDestroy {
     };
 
     if (!payload.cityZone) {
-      (payload as any).cityZone = undefined;
-    }
-
-    // Pour Stripe : afficher le spinner IMMÉDIATEMENT avant tout appel API
-    // pour éviter le flash de panier vide avant la redirection.
-    if (needsStripe) {
-      this.paymentLoading = true;
-      this.cdr.markForCheck();
+      payload.cityZone = undefined;
     }
 
     this.status = 'loading';
     this.errorMessage = undefined;
-
-    // Capture amount before cart might be cleared
-    const orderAmount = this.totalAmountFcfa();
 
     this.orderApi
       .createOrder(payload)
       .pipe(
         tap(response => {
           const responseRef = response?.orderNumber ?? response?.id;
-          const publicId = response?.id ?? '';
-          const plan = response?.paymentPlan ?? paymentPlan;
-
-          if (plan === 'DEPOSIT_50' || plan === 'FULL_ONLINE') {
-            // Stripe : NE PAS vider le panier avant confirmation du paiement.
-            // Le panier sera vidé par la page /payment/success au retour de Stripe.
-            this.responseRef = responseRef;
-            this.savedOrderAmount = orderAmount;
-            sessionStorage.setItem('sk_pending_order_ref', responseRef ?? '');
-            sessionStorage.setItem('sk_pending_order_id', publicId);
-
-            const purpose = plan === 'DEPOSIT_50' ? 'DEPOSIT' : 'FULL';
-            this.paymentService.createOrderPayment(publicId, this.selectedProvider, purpose).pipe(
-              tap(payRes => {
-                sessionStorage.setItem('sopikeur_payment_intent_id', payRes.paymentIntentId);
-                window.location.href = payRes.checkoutUrl;
-              }),
-              catchError(() => {
-                // Erreur provider → afficher un message, NE PAS vider le panier
-                this.paymentLoading = false;
-                this.handleError(null, 'Impossible de créer la session de paiement. Veuillez réessayer.');
-                return EMPTY;
-              }),
-            ).subscribe();
-          } else {
-            // CASH_ON_DELIVERY : vider le panier et afficher le succès directement
-            this.cartService.clear();
-            this.handleSuccess(responseRef, publicId, orderAmount);
-          }
+          this.handleSuccess(responseRef);
         }),
         catchError(error => {
-          this.paymentLoading = false;
-          this.handleError(error, 'Impossible d\u2019envoyer la commande, réessayez.');
+          this.handleError(error, 'Impossible d’envoyer la commande, réessayez.');
           return EMPTY;
         }),
         finalize(() => this.cdr.markForCheck()),
@@ -314,13 +214,12 @@ export class CartComponent implements OnInit, OnDestroy {
       .subscribe();
   }
 
-  private handleSuccess(reference: string, publicId: string, amount: number): void {
+  private handleSuccess(reference: string): void {
     this.status = 'success';
     this.responseRef = reference;
-    this.savedOrderAmount = amount;
     this.scrollToFeedback();
+    this.cartService.clear();
     this.focusSuccessState();
-    this.cdr.markForCheck();
   }
 
   private handleError(error: any, fallbackMessage: string): void {

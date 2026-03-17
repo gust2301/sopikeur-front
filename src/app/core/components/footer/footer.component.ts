@@ -69,7 +69,7 @@ export class FooterComponent {
     {
       title: 'Contact',
       items: [
-        { type: 'href', label: '+221 77 338 04 63', href: 'tel:+221773380463' },
+        { type: 'href', label: '+221 77 429 37 57', href: 'tel:+221774293757' },
         { type: 'href', label: 'contact@sopikeur.sn', href: 'mailto:contact@sopikeur.sn' },
         { type: 'text', label: 'Dakar, Sénégal' },
         { type: 'text', label: 'Saly, Sénégal' },
