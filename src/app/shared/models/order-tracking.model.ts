@@ -28,7 +28,15 @@ export interface OrderTrackingDelivery {
   city: string | null;
   zone: string | null;
   cityZone: string | null;
+  expectedDate: string | null;
   expectedDeliveryDate: string | null;
+  note: string | null;
+}
+
+export interface OrderTrackingInstallation {
+  requested: boolean;
+  date: string | null;
+  note: string | null;
 }
 
 export interface OrderTracking {
@@ -40,6 +48,7 @@ export interface OrderTracking {
   customerName: string | null;
   phone: string | null;
   delivery: OrderTrackingDelivery | null;
+  installation: OrderTrackingInstallation | null;
   installationRequested: boolean;
   installationDate: string | null;
   installationDateText: string | null;

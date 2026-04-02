@@ -5,14 +5,14 @@
         <p class="tracking-kicker">Suivi de commande</p>
         <h1>Commande introuvable</h1>
         <p *ngIf="vm.statusCode === 404">
-          Aucun suivi n’est disponible pour l’identifiant <strong>{{ vm.publicId }}</strong>.
+          Aucun suivi n'est disponible pour l'identifiant <strong>{{ vm.publicId }}</strong>.
         </p>
         <p *ngIf="vm.statusCode !== 404">
-          Le suivi est momentanément indisponible. Réessayez dans quelques instants.
+          Le suivi est momentanement indisponible. Reessayez dans quelques instants.
         </p>
         <div class="tracking-actions">
           <a class="tracking-btn tracking-btn--primary" routerLink="/">Retour au site</a>
-          <a class="tracking-btn tracking-btn--ghost" routerLink="/contact">Contacter SOPIKËR</a>
+          <a class="tracking-btn tracking-btn--ghost" routerLink="/contact">Contacter SOPIKER</a>
         </div>
       </div>
 
@@ -21,7 +21,7 @@
           <div>
             <p class="tracking-kicker">Suivi de commande</p>
             <h1>{{ vm.order.orderRef }}</h1>
-            <p class="tracking-subtitle">Consultez l’avancement, la livraison, l’installation et le solde restant dû.</p>
+            <p class="tracking-subtitle">Consultez l'avancement, la livraison, l'installation et le solde restant du.</p>
           </div>
           <span class="tracking-badge" [ngClass]="getStatusVariant(vm.order.status)">
             {{ getStatusLabel(vm.order.status) }}
@@ -31,8 +31,8 @@
         <div class="tracking-grid">
           <section class="tracking-panel tracking-panel--timeline">
             <div class="tracking-panel__head">
-              <h2>Étapes</h2>
-              <p>Une vue simple de l’avancement de votre commande.</p>
+              <h2>Etapes</h2>
+              <p>Une vue simple de l'avancement de votre commande.</p>
             </div>
 
             <ol class="timeline">
@@ -60,38 +60,39 @@
               <dl class="tracking-meta">
                 <div>
                   <dt>Nom</dt>
-                  <dd>{{ vm.order.customerName || 'Client SOPIKËR' }}</dd>
+                  <dd>{{ vm.order.customerName || 'Client SOPIKER' }}</dd>
                 </div>
                 <div>
-                  <dt>Téléphone</dt>
-                  <dd>{{ vm.order.phone || 'À confirmer' }}</dd>
+                  <dt>Telephone</dt>
+                  <dd>{{ vm.order.phone || 'A confirmer' }}</dd>
                 </div>
                 <div>
                   <dt>Ville / zone</dt>
-                  <dd>{{ vm.order.delivery?.cityZone || vm.order.delivery?.city || 'À confirmer' }}</dd>
+                  <dd>{{ vm.order.delivery?.cityZone || vm.order.delivery?.city || 'A confirmer' }}</dd>
                 </div>
                 <div>
-                  <dt>Référence</dt>
+                  <dt>Reference</dt>
                   <dd>{{ vm.order.orderRef }}</dd>
                 </div>
               </dl>
             </section>
 
-            <section class="tracking-panel tracking-panel--split">
-              <div>
-                <div class="tracking-panel__head">
-                  <h2>Livraison</h2>
-                </div>
-                <p class="tracking-value">{{ getDeliveryText(vm.order) }}</p>
-                <p class="tracking-note">Date prévisionnelle de livraison</p>
+            <section class="tracking-panel">
+              <div class="tracking-panel__head">
+                <h2>Livraison</h2>
               </div>
-              <div>
-                <div class="tracking-panel__head">
-                  <h2>Installation</h2>
-                </div>
-                <p class="tracking-value">{{ vm.order.installationRequested ? 'Oui' : 'Non' }}</p>
-                <p class="tracking-note">{{ getInstallationText(vm.order) }}</p>
+              <p class="tracking-value">{{ getDeliveryText(vm.order) }}</p>
+              <p class="tracking-note">Date previsionnelle de livraison</p>
+              <p class="tracking-note" *ngIf="getDeliveryNote(vm.order)">{{ getDeliveryNote(vm.order) }}</p>
+            </section>
+
+            <section class="tracking-panel">
+              <div class="tracking-panel__head">
+                <h2>Installation</h2>
               </div>
+              <p class="tracking-value">{{ getInstallationRequested(vm.order) ? 'Oui' : 'Non' }}</p>
+              <p class="tracking-note">{{ getInstallationText(vm.order) }}</p>
+              <p class="tracking-note" *ngIf="getInstallationRequested(vm.order) && getInstallationNote(vm.order)">{{ getInstallationNote(vm.order) }}</p>
             </section>
 
             <section class="tracking-panel">
@@ -104,8 +105,8 @@
                     <tr>
                       <th>Produit</th>
                       <th>SKU</th>
-                      <th>Unité</th>
-                      <th>Qté</th>
+                      <th>Unite</th>
+                      <th>Qte</th>
                       <th>Prix unit.</th>
                       <th>Total ligne</th>
                     </tr>
@@ -113,8 +114,8 @@
                   <tbody>
                     <tr *ngFor="let item of vm.order.items">
                       <td>{{ item.name }}</td>
-                      <td>{{ item.sku || '—' }}</td>
-                      <td>{{ item.unit || '—' }}</td>
+                      <td>{{ item.sku || '-' }}</td>
+                      <td>{{ item.unit || '-' }}</td>
                       <td>{{ item.quantity }}</td>
                       <td>{{ currency.format(item.unitPrice) }} FCFA</td>
                       <td>{{ currency.format(item.lineTotal) }} FCFA</td>
@@ -135,24 +136,24 @@
                   <strong>{{ currency.format(vm.order.totals.total) }} FCFA</strong>
                 </div>
                 <div>
-                  <span>Payé</span>
+                  <span>Paye</span>
                   <strong>{{ currency.format(vm.order.totals.paid) }} FCFA</strong>
                 </div>
                 <div>
-                  <span>Restant dû</span>
+                  <span>Restant du</span>
                   <strong>{{ currency.format(vm.order.totals.due) }} FCFA</strong>
                 </div>
               </div>
 
               <p class="tracking-note">
                 {{ getPaymentPlanLabel(vm.order.payment?.paymentPlan) }}
-                <span *ngIf="vm.order.payment?.paymentMethod"> · {{ vm.order.payment?.paymentMethod }}</span>
+                <span *ngIf="vm.order.payment?.paymentMethod"> | {{ vm.order.payment?.paymentMethod }}</span>
               </p>
             </section>
 
             <div class="tracking-actions">
               <a class="tracking-btn tracking-btn--primary" [href]="getWhatsappHref(vm.order)" target="_blank" rel="noopener">
-                Contacter SOPIKËR (WhatsApp)
+                Contacter SOPIKER (WhatsApp)
               </a>
               <a class="tracking-btn tracking-btn--ghost" routerLink="/">Retour au site</a>
             </div>

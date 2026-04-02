@@ -53,18 +53,32 @@ export class OrderTrackingComponent {
     return getTimelineStepState(order.timeline, index);
   }
 
+  getInstallationRequested(order: OrderTracking): boolean {
+    return order.installation?.requested ?? order.installationRequested;
+  }
+
   getInstallationText(order: OrderTracking): string {
-    if (!order.installationRequested) {
+    if (!this.getInstallationRequested(order)) {
       return 'Non';
     }
-    if (order.installationDate) {
-      return this.formatDate(order.installationDate);
+    const installationDate = order.installation?.date ?? order.installationDate;
+    if (installationDate) {
+      return this.formatDate(installationDate);
     }
-    return order.installationDateText ?? 'À confirmer';
+    return order.installation?.note ?? order.installationDateText ?? 'A confirmer';
+  }
+
+  getInstallationNote(order: OrderTracking): string | null {
+    return order.installation?.note ?? order.installationDateText;
   }
 
   getDeliveryText(order: OrderTracking): string {
-    return order.delivery?.expectedDeliveryDate ? this.formatDate(order.delivery.expectedDeliveryDate) : 'À confirmer';
+    const expectedDate = order.delivery?.expectedDate ?? order.delivery?.expectedDeliveryDate;
+    return expectedDate ? this.formatDate(expectedDate) : 'A confirmer';
+  }
+
+  getDeliveryNote(order: OrderTracking): string | null {
+    return order.delivery?.note ?? null;
   }
 
   getWhatsappHref(order: OrderTracking): string {
@@ -75,7 +89,7 @@ export class OrderTrackingComponent {
 
   formatDate(value: string | null | undefined): string {
     if (!value) {
-      return 'À confirmer';
+      return 'A confirmer';
     }
 
     const date = new Date(value);
