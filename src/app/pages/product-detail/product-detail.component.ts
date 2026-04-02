@@ -73,6 +73,7 @@ export class ProductDetailComponent implements AfterViewInit {
           this.loadRelatedProducts(type, foundProduct.id);
           this.scrollToHero();
         },
+        error: () => this.router.navigate([type === 'acoustic' ? '/panneaux' : '/spc']),
       });
     });
   }
