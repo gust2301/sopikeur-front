@@ -1,15 +1,14 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit, ViewChild, computed, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { EMPTY, catchError, finalize, tap } from 'rxjs';
-import { CitySelectComponent } from '../../shared/ui/city-select/city-select.component';
 import { RouterModule } from '@angular/router';
-import { FeedbackBannerComponent, FeedbackAction } from '../../shared/ui/feedback-banner/feedback-banner.component';
+import { EMPTY, catchError, finalize, tap } from 'rxjs';
 import { CartItem } from '../../shared/models/commerce.models';
 import { CartService } from '../../shared/services/cart.service';
-import { OrdersApiService } from '../../shared/services/orders-api.service';
 import { LocationsService } from '../../shared/services/locations.service';
-import { environment } from '../../../environments/environment';
+import { OrdersApiService } from '../../shared/services/orders-api.service';
+import { FeedbackAction, FeedbackBannerComponent } from '../../shared/ui/feedback-banner/feedback-banner.component';
+import { CitySelectComponent } from '../../shared/ui/city-select/city-select.component';
 
 @Component({
   selector: 'app-cart',
@@ -32,6 +31,7 @@ export class CartComponent implements OnInit, OnDestroy {
 
   status: 'idle' | 'loading' | 'success' | 'error' = 'idle';
   responseRef?: string;
+  trackingPublicId?: string;
   errorMessage?: string;
 
   isMobile = false;
@@ -70,7 +70,6 @@ export class CartComponent implements OnInit, OnDestroy {
     const control = this.form.get('city');
     return Boolean(control?.invalid && (control.touched || control.dirty || this.status === 'error'));
   }
-
 
   ngOnInit(): void {
     this.locationsService.getCities().subscribe(cities => {
@@ -113,10 +112,10 @@ export class CartComponent implements OnInit, OnDestroy {
     this.deliveryOpen = !this.deliveryOpen;
   }
 
-
   get successActions(): FeedbackAction[] {
     return [
-      { label: 'Retour à l’accueil', routerLink: ['/'] }
+      ...(this.trackingPublicId ? [{ label: 'Suivre ma commande', routerLink: ['/suivi', this.trackingPublicId] }] : []),
+      { label: 'Retour à l’accueil', routerLink: ['/'] },
     ];
   }
 
@@ -131,7 +130,6 @@ export class CartComponent implements OnInit, OnDestroy {
   remove(productId: string): void {
     this.cartService.removeItem(productId);
   }
-
 
   getItemTitle(item: CartItem): string {
     return item.name || item.sku;
@@ -203,7 +201,7 @@ export class CartComponent implements OnInit, OnDestroy {
       .pipe(
         tap(response => {
           const responseRef = response?.orderNumber ?? response?.id;
-          this.handleSuccess(responseRef);
+          this.handleSuccess(responseRef, response?.id);
         }),
         catchError(error => {
           this.handleError(error, 'Impossible d’envoyer la commande, réessayez.');
@@ -214,9 +212,10 @@ export class CartComponent implements OnInit, OnDestroy {
       .subscribe();
   }
 
-  private handleSuccess(reference: string): void {
+  private handleSuccess(reference: string, publicId?: string): void {
     this.status = 'success';
     this.responseRef = reference;
+    this.trackingPublicId = publicId;
     this.scrollToFeedback();
     this.cartService.clear();
     this.focusSuccessState();
@@ -237,7 +236,6 @@ export class CartComponent implements OnInit, OnDestroy {
       this.successState?.nativeElement.focus();
     }, 0);
   }
-
 
   private applyViewportState(isMobile: boolean): void {
     this.isMobile = isMobile;
