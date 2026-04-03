@@ -10,6 +10,7 @@
   max-width: 1180px;
   margin: 0 auto;
   padding: 0 20px;
+  box-sizing: border-box;
 }
 
 .tracking-hero,
@@ -44,6 +45,7 @@
   color: #1f1610;
   font-size: clamp(2rem, 5vw, 3.2rem);
   line-height: 0.95;
+  overflow-wrap: anywhere;
 }
 
 .tracking-subtitle {
@@ -79,6 +81,8 @@
 
 .tracking-panel {
   padding: 24px;
+  min-width: 0;
+  overflow: hidden;
 }
 
 .tracking-panel__head h2 {
@@ -149,11 +153,13 @@
   gap: 16px;
   color: #5f4e3c;
   font-size: 0.93rem;
+  min-width: 0;
 }
 
 .timeline__row strong {
   color: #1f1610;
   font-size: 1rem;
+  overflow-wrap: anywhere;
 }
 
 .tracking-meta {
@@ -175,6 +181,7 @@
 .tracking-meta dd {
   margin: 0;
   color: #1f1610;
+  overflow-wrap: anywhere;
 }
 
 .tracking-panel--split {
@@ -198,11 +205,14 @@
 
 .tracking-table-wrap {
   overflow-x: auto;
+  max-width: 100%;
+  -webkit-overflow-scrolling: touch;
 }
 
 .tracking-table {
   width: 100%;
   border-collapse: collapse;
+  min-width: 640px;
 }
 
 .tracking-table th,
@@ -298,26 +308,146 @@
 
 @media (max-width: 640px) {
   .tracking-page {
-    padding: 28px 0 48px;
+    padding: 20px 0 36px;
   }
 
   .tracking-shell {
-    padding: 0 14px;
+    padding: 0 10px;
   }
 
   .tracking-hero,
   .tracking-panel,
   .tracking-empty {
-    border-radius: 22px;
-    padding: 20px;
+    border-radius: 18px;
+    padding: 16px;
   }
 
   .tracking-hero {
     flex-direction: column;
+    gap: 14px;
+    margin-bottom: 16px;
+  }
+
+  .tracking-kicker {
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+  }
+
+  .tracking-hero h1,
+  .tracking-empty h1 {
+    font-size: 1.45rem;
+    line-height: 1.05;
+  }
+
+  .tracking-subtitle,
+  .tracking-panel__head p,
+  .tracking-note,
+  .timeline__row,
+  .tracking-meta dd,
+  .tracking-btn {
+    font-size: 0.84rem;
+  }
+
+  .tracking-panel__head h2 {
+    font-size: 1rem;
+  }
+
+  .tracking-value {
+    font-size: 1.12rem;
+    line-height: 1.2;
+  }
+
+  .tracking-badge {
+    padding: 8px 12px;
+    font-size: 0.74rem;
+  }
+
+  .tracking-grid,
+  .tracking-stack {
+    gap: 14px;
   }
 
   .timeline__row {
     flex-direction: column;
     gap: 4px;
+  }
+
+  .timeline__item {
+    padding-left: 28px;
+  }
+
+  .timeline__item::before {
+    left: 7px;
+  }
+
+  .timeline__marker {
+    width: 16px;
+    height: 16px;
+  }
+
+  .tracking-meta {
+    gap: 12px;
+  }
+
+  .tracking-table {
+    min-width: 520px;
+  }
+
+  .tracking-table th,
+  .tracking-table td {
+    padding: 10px 8px;
+    font-size: 0.78rem;
+  }
+
+  .tracking-table th {
+    font-size: 0.68rem;
+  }
+
+  .tracking-money div {
+    padding: 12px;
+  }
+
+  .tracking-money strong {
+    font-size: 0.95rem;
+  }
+
+  .tracking-actions {
+    flex-direction: column;
+  }
+
+  .tracking-btn {
+    width: 100%;
+    padding: 12px 16px;
+  }
+}
+
+@media (max-width: 420px) {
+  .tracking-shell {
+    padding: 0 8px;
+  }
+
+  .tracking-hero,
+  .tracking-panel,
+  .tracking-empty {
+    padding: 14px;
+    border-radius: 16px;
+  }
+
+  .tracking-hero h1,
+  .tracking-empty h1 {
+    font-size: 1.25rem;
+  }
+
+  .tracking-subtitle,
+  .tracking-panel__head p,
+  .tracking-note,
+  .timeline__row,
+  .tracking-meta dd,
+  .tracking-btn {
+    font-size: 0.8rem;
+  }
+
+  .tracking-value {
+    font-size: 1rem;
   }
 }
