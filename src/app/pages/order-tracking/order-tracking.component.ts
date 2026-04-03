@@ -50,40 +50,34 @@ export class OrderTrackingComponent {
   }
 
   getTimelineStepState(order: OrderTracking, index: number): string {
-    return getTimelineStepState(order.timeline, index);
-  }
-
-  getInstallationRequested(order: OrderTracking): boolean {
-    return order.installation?.requested ?? order.installationRequested;
-  }
-
-  getInstallationText(order: OrderTracking): string {
-    if (!this.getInstallationRequested(order)) {
-      return 'Non';
-    }
-    const installationDate = order.installation?.date ?? order.installationDate;
-    if (installationDate) {
-      return this.formatDate(installationDate);
-    }
-    return order.installation?.note ?? order.installationDateText ?? 'A confirmer';
-  }
-
-  getInstallationNote(order: OrderTracking): string | null {
-    return order.installation?.note ?? order.installationDateText;
+    return getTimelineStepState(order.timelineSteps, index);
   }
 
   getDeliveryText(order: OrderTracking): string {
-    const expectedDate = order.delivery?.expectedDate ?? order.delivery?.expectedDeliveryDate;
-    return expectedDate ? this.formatDate(expectedDate) : 'A confirmer';
+    return order.deliveredAt ? this.formatDate(order.deliveredAt) : this.formatDate(order.deliveryEtaDate);
   }
 
-  getDeliveryNote(order: OrderTracking): string | null {
-    return order.delivery?.note ?? null;
+  getDeliveryLegend(order: OrderTracking): string {
+    return order.deliveredAt ? 'Livree le' : 'Date previsionnelle de livraison';
+  }
+
+  getInstallationText(order: OrderTracking): string {
+    if (!order.installationRequested) {
+      return 'Non';
+    }
+    return order.installedAt ? this.formatDate(order.installedAt) : this.formatDate(order.installationEtaDate);
+  }
+
+  getInstallationLegend(order: OrderTracking): string {
+    if (!order.installationRequested) {
+      return 'Installation non demandee';
+    }
+    return order.installedAt ? 'Pose terminee le' : 'Date previsionnelle d installation';
   }
 
   getWhatsappHref(order: OrderTracking): string {
     return buildWhatsappLinkFromMessage(
-      `Bonjour, je souhaite un point sur ma commande ${order.orderRef} (${order.publicId}).`,
+      `Bonjour, je souhaite un point sur ma commande ${order.reference} (${order.publicId}).`,
     );
   }
 
@@ -101,6 +95,8 @@ export class OrderTrackingComponent {
       day: '2-digit',
       month: 'long',
       year: 'numeric',
+      hour: value.includes('T') || value.includes(':') ? '2-digit' : undefined,
+      minute: value.includes('T') || value.includes(':') ? '2-digit' : undefined,
     }).format(date);
   }
 }

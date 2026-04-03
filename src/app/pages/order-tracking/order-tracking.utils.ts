@@ -5,13 +5,17 @@ export type TrackingStepState = 'done' | 'current' | 'todo';
 export function getTrackingStatusLabel(status: string): string {
   switch (status) {
     case 'PENDING_CONFIRMATION':
-      return 'Commande reçue';
+      return 'Commande recue';
     case 'CONFIRMED':
-      return 'Confirmée';
+      return 'Confirmee';
     case 'CANCELLED':
-      return 'Annulée';
+      return 'Annulee';
     case 'FULFILLED':
-      return 'Finalisée';
+      return 'Finalisee';
+    case 'DELIVERED':
+      return 'Livree';
+    case 'INSTALLED':
+      return 'Pose terminee';
     default:
       return status;
   }
@@ -20,6 +24,8 @@ export function getTrackingStatusLabel(status: string): string {
 export function getTrackingStatusVariant(status: string): 'info' | 'success' | 'warning' | 'danger' {
   switch (status) {
     case 'FULFILLED':
+    case 'DELIVERED':
+    case 'INSTALLED':
       return 'success';
     case 'CANCELLED':
       return 'danger';
@@ -33,21 +39,26 @@ export function getTrackingStatusVariant(status: string): 'info' | 'success' | '
 export function getPaymentPlanLabel(paymentPlan: string | null | undefined): string {
   switch (paymentPlan) {
     case 'CASH_ON_DELIVERY':
-      return 'Paiement à la livraison';
+      return 'Paiement a la livraison';
     case 'DEPOSIT':
       return 'Acompte';
     case 'FULL':
-      return 'Paiement intégral';
+      return 'Paiement integral';
     default:
-      return 'À confirmer';
+      return 'A confirmer';
   }
 }
 
 export function getTimelineStepState(steps: OrderTrackingTimelineStep[], index: number): TrackingStepState {
   const step = steps[index];
   if (!step) return 'todo';
-  if (step.done) return 'done';
 
-  const hasEarlierPending = steps.slice(0, index).some(candidate => !candidate.done);
-  return hasEarlierPending ? 'todo' : 'current';
+  switch (step.state) {
+    case 'DONE':
+      return 'done';
+    case 'CURRENT':
+      return 'current';
+    default:
+      return 'todo';
+  }
 }

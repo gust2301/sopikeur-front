@@ -20,7 +20,7 @@
         <header class="tracking-hero">
           <div>
             <p class="tracking-kicker">Suivi de commande</p>
-            <h1>{{ vm.order.orderRef }}</h1>
+            <h1>{{ vm.order.reference }}</h1>
             <p class="tracking-subtitle">Consultez l'avancement, la livraison, l'installation et le solde restant du.</p>
           </div>
           <span class="tracking-badge" [ngClass]="getStatusVariant(vm.order.status)">
@@ -38,14 +38,14 @@
             <ol class="timeline">
               <li
                 class="timeline__item"
-                *ngFor="let step of vm.order.timeline; let i = index"
+                *ngFor="let step of vm.order.timelineSteps; let i = index"
                 [ngClass]="'timeline__item--' + getTimelineStepState(vm.order, i)"
               >
                 <span class="timeline__marker"></span>
                 <div class="timeline__content">
                   <div class="timeline__row">
                     <strong>{{ step.label }}</strong>
-                    <span>{{ step.date ? formatDate(step.date) : 'En attente' }}</span>
+                    <span>{{ step.dateDisplay ? formatDate(step.dateDisplay) : 'En attente' }}</span>
                   </div>
                 </div>
               </li>
@@ -60,19 +60,19 @@
               <dl class="tracking-meta">
                 <div>
                   <dt>Nom</dt>
-                  <dd>{{ vm.order.customerName || 'Client SOPIKER' }}</dd>
+                  <dd>{{ vm.order.summary.customerName || 'Client SOPIKER' }}</dd>
                 </div>
                 <div>
                   <dt>Telephone</dt>
-                  <dd>{{ vm.order.phone || 'A confirmer' }}</dd>
+                  <dd>{{ vm.order.summary.phone || 'A confirmer' }}</dd>
                 </div>
                 <div>
                   <dt>Ville / zone</dt>
-                  <dd>{{ vm.order.delivery?.cityZone || vm.order.delivery?.city || 'A confirmer' }}</dd>
+                  <dd>{{ vm.order.summary.cityZone || vm.order.summary.city || 'A confirmer' }}</dd>
                 </div>
                 <div>
                   <dt>Reference</dt>
-                  <dd>{{ vm.order.orderRef }}</dd>
+                  <dd>{{ vm.order.reference }}</dd>
                 </div>
               </dl>
             </section>
@@ -82,17 +82,16 @@
                 <h2>Livraison</h2>
               </div>
               <p class="tracking-value">{{ getDeliveryText(vm.order) }}</p>
-              <p class="tracking-note">Date previsionnelle de livraison</p>
-              <p class="tracking-note" *ngIf="getDeliveryNote(vm.order)">{{ getDeliveryNote(vm.order) }}</p>
+              <p class="tracking-note">{{ getDeliveryLegend(vm.order) }}</p>
             </section>
 
             <section class="tracking-panel">
               <div class="tracking-panel__head">
                 <h2>Installation</h2>
               </div>
-              <p class="tracking-value">{{ getInstallationRequested(vm.order) ? 'Oui' : 'Non' }}</p>
+              <p class="tracking-value">{{ vm.order.installationRequested ? 'Oui' : 'Non' }}</p>
               <p class="tracking-note">{{ getInstallationText(vm.order) }}</p>
-              <p class="tracking-note" *ngIf="getInstallationRequested(vm.order) && getInstallationNote(vm.order)">{{ getInstallationNote(vm.order) }}</p>
+              <p class="tracking-note">{{ getInstallationLegend(vm.order) }}</p>
             </section>
 
             <section class="tracking-panel">
@@ -133,21 +132,21 @@
               <div class="tracking-money">
                 <div>
                   <span>Total</span>
-                  <strong>{{ currency.format(vm.order.totals.total) }} FCFA</strong>
+                  <strong>{{ currency.format(vm.order.payment.total) }} FCFA</strong>
                 </div>
                 <div>
                   <span>Paye</span>
-                  <strong>{{ currency.format(vm.order.totals.paid) }} FCFA</strong>
+                  <strong>{{ currency.format(vm.order.payment.paid) }} FCFA</strong>
                 </div>
                 <div>
                   <span>Restant du</span>
-                  <strong>{{ currency.format(vm.order.totals.due) }} FCFA</strong>
+                  <strong>{{ currency.format(vm.order.payment.due) }} FCFA</strong>
                 </div>
               </div>
 
               <p class="tracking-note">
-                {{ getPaymentPlanLabel(vm.order.payment?.paymentPlan) }}
-                <span *ngIf="vm.order.payment?.paymentMethod"> | {{ vm.order.payment?.paymentMethod }}</span>
+                {{ getPaymentPlanLabel(vm.order.payment.paymentPlan) }}
+                <span *ngIf="vm.order.payment.paymentMethod"> | {{ vm.order.payment.paymentMethod }}</span>
               </p>
             </section>
 

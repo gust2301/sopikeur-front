@@ -9,6 +9,6 @@ export class OrderTrackingService {
   constructor(private readonly http: HttpClient) {}
 
   getByPublicId(publicId: string): Observable<OrderTracking> {
-    return this.http.get<OrderTracking>(apiUrl(`/public/orders/${publicId}`));
+    return this.http.get<OrderTracking>(apiUrl(`/public/orders/${publicId}/tracking`));
   }
 }
