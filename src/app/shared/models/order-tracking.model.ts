@@ -17,6 +17,7 @@ export interface OrderTrackingPayment {
   total: number;
   paid: number;
   due: number;
+  installationAmount: number | null;
   paymentPlan: string | null;
   paymentMethod: string | null;
 }
