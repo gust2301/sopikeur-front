@@ -80,6 +80,17 @@ export const routes: Routes = [
         },
       },
       {
+        path: 'suivi/:publicId',
+        loadComponent: () =>
+          import('./pages/order-tracking/order-tracking.component').then(m => m.OrderTrackingComponent),
+        data: {
+          seo: {
+            title: 'Suivi de commande | Sopi Kër Sénégal',
+            description: 'Suivez l’avancement de votre commande Sopi Kër : préparation, livraison, pose et paiement.',
+          },
+        },
+      },
+      {
         path: 'precommande',
         loadComponent: () => import('./pages/preorder/preorder.component').then(m => m.PreorderComponent),
         data: {
