@@ -7,6 +7,13 @@ import { OrderTrackingService } from '../../shared/services/order-tracking.servi
 import { buildWhatsappLinkFromMessage } from '../../shared/utils/whatsapp';
 import { getPaymentPlanLabel, getTimelineStepState, getTrackingStatusLabel, getTrackingStatusVariant } from './order-tracking.utils';
 
+type TrackingServiceBreakdown = {
+  subtotalProducts: number;
+  delivery: number;
+  installation: number;
+  other: number;
+};
+
 @Component({
   selector: 'app-order-tracking',
   standalone: true,
@@ -73,6 +80,27 @@ export class OrderTrackingComponent {
       return 'Installation non demandee';
     }
     return order.installedAt ? 'Pose terminee le' : 'Date previsionnelle d installation';
+  }
+
+  getServiceBreakdown(order: OrderTracking): TrackingServiceBreakdown {
+    return order.items.reduce<TrackingServiceBreakdown>((totals, item) => {
+      const amount = item.lineTotal ?? item.unitPrice * item.quantity;
+      const sku = (item.sku ?? '').toUpperCase();
+      if (sku === 'SRV-LIVRAISON') {
+        totals.delivery += amount;
+        return totals;
+      }
+      if (sku === 'SRV-POSE') {
+        totals.installation += amount;
+        return totals;
+      }
+      if (sku.startsWith('SRV-')) {
+        totals.other += amount;
+        return totals;
+      }
+      totals.subtotalProducts += amount;
+      return totals;
+    }, { subtotalProducts: 0, delivery: 0, installation: 0, other: 0 });
   }
 
   getWhatsappHref(order: OrderTracking): string {

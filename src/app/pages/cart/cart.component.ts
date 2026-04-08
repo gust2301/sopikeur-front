@@ -228,7 +228,23 @@ export class CartComponent implements OnInit, OnDestroy {
   }
 
   private extractBackendMessage(error: any): string | null {
-    return error?.error?.message || error?.error?.detail || null;
+    const rawMessage = error?.error?.message || error?.error?.detail || error?.message || null;
+    if (!rawMessage) {
+      return null;
+    }
+
+    const normalized = String(rawMessage).toLowerCase();
+    if (normalized.includes('failed to fetch') || normalized.includes('networkerror') || normalized.includes('http failure')) {
+      return 'Impossible d’envoyer la commande pour le moment. Vérifiez votre connexion et réessayez.';
+    }
+    if (normalized.includes('contrainte de donnees') || normalized.includes('constraint') || normalized.includes('column ') || normalized.includes('sql')) {
+      return 'Impossible d’enregistrer votre commande pour le moment. Merci de réessayer dans un instant.';
+    }
+    if (normalized.includes('stock unavailable') || normalized.includes('insufficient stock')) {
+      return 'Un ou plusieurs produits ne sont plus disponibles en stock. Merci de mettre à jour votre panier.';
+    }
+
+    return rawMessage;
   }
 
   private focusSuccessState(): void {
