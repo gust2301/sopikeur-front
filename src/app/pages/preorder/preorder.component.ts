@@ -142,6 +142,7 @@ export class PreorderComponent {
     this.errorMessage = undefined;
 
     const value = this.form.getRawValue();
+    const quantity = this.resolveQuantity(value.quantity);
     const payload = {
       contact: {
         fullName: (value.fullName ?? '').trim(),
@@ -161,7 +162,7 @@ export class PreorderComponent {
         {
           sku: product.sku,
           productId: String(product.id),
-          qty: Number(value.quantity) || 1,
+          qty: quantity,
           unit: product.type === 'spc' ? 'M2' as const : 'PIECE' as const,
         },
       ],
@@ -197,6 +198,14 @@ export class PreorderComponent {
 
   private extractBackendMessage(error: any): string | null {
     return error?.error?.message || error?.error?.detail || null;
+  }
+
+  private resolveQuantity(rawValue: unknown): number {
+    const quantity = Number(rawValue);
+    if (Number.isFinite(quantity) && quantity >= 1) {
+      return quantity;
+    }
+    return 1;
   }
 
   private resetFormState(): void {

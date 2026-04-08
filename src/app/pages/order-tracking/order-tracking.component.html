@@ -131,25 +131,44 @@
               <div class="tracking-panel__head">
                 <h2>Paiement</h2>
               </div>
-
-              <div class="tracking-money">
-                <div>
-                  <span>Total</span>
-                  <strong>{{ currency.format(vm.order.payment.total) }} FCFA</strong>
+              <ng-container *ngIf="getServiceBreakdown(vm.order) as paymentBreakdown">
+                <p
+                  class="tracking-note"
+                  *ngIf="paymentBreakdown.delivery || paymentBreakdown.installation || paymentBreakdown.other"
+                >
+                  Services
+                </p>
+                <div class="tracking-money">
+                  <div>
+                    <span>Produits</span>
+                    <strong>{{ currency.format(paymentBreakdown.subtotalProducts) }} FCFA</strong>
+                  </div>
+                  <div *ngIf="paymentBreakdown.delivery">
+                    <span>Livraison</span>
+                    <strong>{{ currency.format(paymentBreakdown.delivery) }} FCFA</strong>
+                  </div>
+                  <div *ngIf="paymentBreakdown.installation">
+                    <span>Pose</span>
+                    <strong>{{ currency.format(paymentBreakdown.installation) }} FCFA</strong>
+                  </div>
+                  <div *ngIf="paymentBreakdown.other">
+                    <span>Autres services</span>
+                    <strong>{{ currency.format(paymentBreakdown.other) }} FCFA</strong>
+                  </div>
+                  <div>
+                    <span>Total</span>
+                    <strong>{{ currency.format(vm.order.payment.total) }} FCFA</strong>
+                  </div>
+                  <div>
+                    <span>Paye</span>
+                    <strong>{{ currency.format(vm.order.payment.paid) }} FCFA</strong>
+                  </div>
+                  <div>
+                    <span>Restant du</span>
+                    <strong>{{ currency.format(vm.order.payment.due) }} FCFA</strong>
+                  </div>
                 </div>
-                <div *ngIf="vm.order.installationRequested && vm.order.payment.installationAmount">
-                  <span>Pose</span>
-                  <strong>{{ currency.format(vm.order.payment.installationAmount) }} FCFA</strong>
-                </div>
-                <div>
-                  <span>Paye</span>
-                  <strong>{{ currency.format(vm.order.payment.paid) }} FCFA</strong>
-                </div>
-                <div>
-                  <span>Restant du</span>
-                  <strong>{{ currency.format(vm.order.payment.due) }} FCFA</strong>
-                </div>
-              </div>
+              </ng-container>
 
               <p class="tracking-note">
                 {{ getPaymentPlanLabel(vm.order.payment.paymentPlan) }}

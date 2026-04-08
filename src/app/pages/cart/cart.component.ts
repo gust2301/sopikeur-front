@@ -37,6 +37,7 @@ export class CartComponent implements OnInit, OnDestroy {
   isMobile = false;
   productsOpen = true;
   deliveryOpen = true;
+  quantityDrafts: Record<string, string> = {};
 
   private mediaQueryList?: MediaQueryList;
   private readonly onViewportChange = (event: MediaQueryListEvent): void => {
@@ -121,14 +122,22 @@ export class CartComponent implements OnInit, OnDestroy {
 
   increment(productId: string, qty: number): void {
     this.cartService.updateQuantity(productId, qty + 1);
+    this.quantityDrafts[productId] = String(qty + 1);
   }
 
   decrement(productId: string, qty: number): void {
     this.cartService.updateQuantity(productId, qty - 1);
+    const nextQty = qty - 1;
+    if (nextQty > 0) {
+      this.quantityDrafts[productId] = String(nextQty);
+    } else {
+      delete this.quantityDrafts[productId];
+    }
   }
 
   remove(productId: string): void {
     this.cartService.removeItem(productId);
+    delete this.quantityDrafts[productId];
   }
 
   getItemTitle(item: CartItem): string {
@@ -143,13 +152,34 @@ export class CartComponent implements OnInit, OnDestroy {
     return item.unit === 'M2' ? 'm²' : 'pièce';
   }
 
+  getQuantityInputValue(productId: string, quantity: number): string | number {
+    return this.quantityDrafts[productId] ?? quantity;
+  }
+
   onQuantityInput(productId: string, rawValue: string): void {
-    const nextValue = Number.parseFloat(rawValue);
-    if (Number.isNaN(nextValue)) {
+    this.quantityDrafts[productId] = rawValue;
+  }
+
+  applyQuantityInput(productId: string, currentQuantity: number): void {
+    const draft = this.quantityDrafts[productId];
+    if (draft == null) {
+      return;
+    }
+
+    const trimmed = draft.trim();
+    if (!trimmed) {
+      this.quantityDrafts[productId] = String(currentQuantity);
+      return;
+    }
+
+    const nextValue = Number.parseFloat(trimmed);
+    if (Number.isNaN(nextValue) || nextValue <= 0) {
+      this.quantityDrafts[productId] = String(currentQuantity);
       return;
     }
 
     this.cartService.updateQuantity(productId, nextValue);
+    this.quantityDrafts[productId] = String(nextValue);
   }
 
   private toOptionalText(value: string | null | undefined): string | undefined {
@@ -228,7 +258,23 @@ export class CartComponent implements OnInit, OnDestroy {
   }
 
   private extractBackendMessage(error: any): string | null {
-    return error?.error?.message || error?.error?.detail || null;
+    const rawMessage = error?.error?.message || error?.error?.detail || error?.message || null;
+    if (!rawMessage) {
+      return null;
+    }
+
+    const normalized = String(rawMessage).toLowerCase();
+    if (normalized.includes('failed to fetch') || normalized.includes('networkerror') || normalized.includes('http failure')) {
+      return 'Impossible d’envoyer la commande pour le moment. Vérifiez votre connexion et réessayez.';
+    }
+    if (normalized.includes('contrainte de donnees') || normalized.includes('constraint') || normalized.includes('column ') || normalized.includes('sql')) {
+      return 'Impossible d’enregistrer votre commande pour le moment. Merci de réessayer dans un instant.';
+    }
+    if (normalized.includes('stock unavailable') || normalized.includes('insufficient stock')) {
+      return 'Un ou plusieurs produits ne sont plus disponibles en stock. Merci de mettre à jour votre panier.';
+    }
+
+    return rawMessage;
   }
 
   private focusSuccessState(): void {
