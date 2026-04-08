@@ -50,10 +50,12 @@
               <input
                 class="qty-input"
                 type="number"
-                [value]="item.quantity"
+                [value]="getQuantityInputValue(item.productId, item.quantity)"
                 min="1"
                 [step]="item.unit === 'M2' ? 1 : 1"
                 (input)="onQuantityInput(item.productId, $any($event.target).value)"
+                (blur)="applyQuantityInput(item.productId, item.quantity)"
+                (keydown.enter)="applyQuantityInput(item.productId, item.quantity)"
               />
               <button type="button" (click)="increment(item.productId, item.quantity)">+</button>
               <button type="button" class="remove" (click)="remove(item.productId)">Supprimer</button>

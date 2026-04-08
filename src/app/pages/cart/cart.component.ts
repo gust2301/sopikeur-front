@@ -37,6 +37,7 @@ export class CartComponent implements OnInit, OnDestroy {
   isMobile = false;
   productsOpen = true;
   deliveryOpen = true;
+  quantityDrafts: Record<string, string> = {};
 
   private mediaQueryList?: MediaQueryList;
   private readonly onViewportChange = (event: MediaQueryListEvent): void => {
@@ -121,14 +122,22 @@ export class CartComponent implements OnInit, OnDestroy {
 
   increment(productId: string, qty: number): void {
     this.cartService.updateQuantity(productId, qty + 1);
+    this.quantityDrafts[productId] = String(qty + 1);
   }
 
   decrement(productId: string, qty: number): void {
     this.cartService.updateQuantity(productId, qty - 1);
+    const nextQty = qty - 1;
+    if (nextQty > 0) {
+      this.quantityDrafts[productId] = String(nextQty);
+    } else {
+      delete this.quantityDrafts[productId];
+    }
   }
 
   remove(productId: string): void {
     this.cartService.removeItem(productId);
+    delete this.quantityDrafts[productId];
   }
 
   getItemTitle(item: CartItem): string {
@@ -143,13 +152,34 @@ export class CartComponent implements OnInit, OnDestroy {
     return item.unit === 'M2' ? 'm²' : 'pièce';
   }
 
+  getQuantityInputValue(productId: string, quantity: number): string | number {
+    return this.quantityDrafts[productId] ?? quantity;
+  }
+
   onQuantityInput(productId: string, rawValue: string): void {
-    const nextValue = Number.parseFloat(rawValue);
-    if (Number.isNaN(nextValue)) {
+    this.quantityDrafts[productId] = rawValue;
+  }
+
+  applyQuantityInput(productId: string, currentQuantity: number): void {
+    const draft = this.quantityDrafts[productId];
+    if (draft == null) {
+      return;
+    }
+
+    const trimmed = draft.trim();
+    if (!trimmed) {
+      this.quantityDrafts[productId] = String(currentQuantity);
+      return;
+    }
+
+    const nextValue = Number.parseFloat(trimmed);
+    if (Number.isNaN(nextValue) || nextValue <= 0) {
+      this.quantityDrafts[productId] = String(currentQuantity);
       return;
     }
 
     this.cartService.updateQuantity(productId, nextValue);
+    this.quantityDrafts[productId] = String(nextValue);
   }
 
   private toOptionalText(value: string | null | undefined): string | undefined {
