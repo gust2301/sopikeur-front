@@ -44,26 +44,26 @@ export class FooterComponent {
     {
       title: 'À propos',
       items: [
-        { type: 'router', label: 'Notre équipe', to: '/notre-equipe' },
-        { type: 'router', label: 'Nos valeurs', to: '/nos-valeurs' },
-        { type: 'router', label: 'Engagement qualité', to: '/engagement-qualite' },
+        { type: 'router', label: 'Notre équipe', to: '/notre-equipe/' },
+        { type: 'router', label: 'Nos valeurs', to: '/nos-valeurs/' },
+        { type: 'router', label: 'Engagement qualité', to: '/engagement-qualite/' },
       ],
     },
     {
       title: 'Produits',
       items: [
-        { type: 'router', label: 'SPC sol', to: '/spc' },
-        { type: 'router', label: 'Wall panels', to: '/panneaux' },
+        { type: 'router', label: 'SPC sol', to: '/spc/' },
+        { type: 'router', label: 'Wall panels', to: '/panneaux/' },
         { type: 'href', label: 'Accessoires', href: '#catalogue' },
-        { type: 'router', label: 'Échantillons', to: '/contact' },
+        { type: 'router', label: 'Échantillons', to: '/contact/' },
       ],
     },
     {
       title: 'Aide',
       items: [
-        { type: 'router', label: 'Guide d’installation panneaux', to: '/guide-installation-panneaux' },
-        { type: 'router', label: 'Guide d’installation SPC', to: '/guide-installation-spc' },
-        { type: 'router', label: 'Questions fréquentes', to: '/faq' },
+        { type: 'router', label: 'Guide d’installation panneaux', to: '/guide-installation-panneaux/' },
+        { type: 'router', label: 'Guide d’installation SPC', to: '/guide-installation-spc/' },
+        { type: 'router', label: 'Questions fréquentes', to: '/faq/' },
       ],
     },
     {

@@ -53,7 +53,7 @@ export class PreorderComponent {
   get successActions(): FeedbackAction[] {
     return [
       { label: 'Nouvelle demande', kind: 'ghost', onClick: () => this.resetStatus() },
-      { label: 'Continuer mes achats', kind: 'ghost', routerLink: ['/spc'] },
+      { label: 'Continuer mes achats', kind: 'ghost', routerLink: ['/spc/'] },
     ];
   }
   constructor() {
