@@ -19,12 +19,20 @@ export class SeoCanonicalService {
   private readonly titleService = inject(Title);
   private readonly metaService = inject(Meta);
 
+  private initialized = false;
+
   init(): void {
-    if (!isPlatformBrowser(this.platformId)) {
+    if (this.initialized) {
       return;
     }
+    this.initialized = true;
 
-    this.handleRouteUpdate(this.router.url);
+    // On browser: apply immediately for the current URL (router already has it)
+    if (isPlatformBrowser(this.platformId)) {
+      this.handleRouteUpdate(this.router.url);
+    }
+
+    // On both platforms: subscribe to NavigationEnd so SSR/prerender captures the correct route
     this.router.events
       .pipe(filter((event): event is NavigationEnd => event instanceof NavigationEnd))
       .subscribe(event => this.handleRouteUpdate(event.urlAfterRedirects));
@@ -33,12 +41,17 @@ export class SeoCanonicalService {
   private handleRouteUpdate(urlAfterRedirects: string): void {
     const parsedUrl = this.parseUrl(urlAfterRedirects);
     const normalizedPath = this.withTrailingSlash(parsedUrl.path);
-
     const canonicalBase = this.resolveCanonicalBaseUrl();
-    const canonicalHref = `${canonicalBase}${normalizedPath}`;
-    this.updateCanonicalTag(canonicalHref);
+
+    // Guard: only write canonical if we have an absolute base URL.
+    // An empty base would produce a relative canonical (/spc/) which Google rejects.
+    if (canonicalBase) {
+      const canonicalHref = `${canonicalBase}${normalizedPath}`;
+      this.updateCanonicalTag(canonicalHref);
+      this.updateOpenGraphUrl(canonicalHref);
+    }
+
     this.updateMetaRobots('index, follow');
-    this.updateOpenGraphUrl(canonicalHref);
     this.applyRouteSeoData();
   }
 
@@ -95,7 +108,12 @@ export class SeoCanonicalService {
       return configuredBase.replace(/\/$/, '');
     }
 
-    return window.location.origin.replace(/\/$/, '');
+    // window is only available on the browser — not on server/prerender
+    if (isPlatformBrowser(this.platformId)) {
+      return window.location.origin.replace(/\/$/, '');
+    }
+
+    return '';
   }
 
   private updateCanonicalTag(href: string): void {
