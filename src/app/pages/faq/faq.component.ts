@@ -187,7 +187,7 @@ export class FaqComponent {
         },
         {
           type: 'text',
-          question: 'SPC ou parquet stratifi\u00e9 : quel rev\u00eatement de sol choisir \u00e0 Dakar ?',
+          question: 'SPC ou parquet stratifi\u00e9 : quel rev\u00eatement de sol choisir au S\u00e9n\u00e9gal ?',
           answer:
             'Pour le climat s\u00e9n\u00e9galais (chaleur, humidit\u00e9, sable), le SPC est nettement pr\u00e9f\u00e9rable au parquet stratifi\u00e9. Le parquet stratifi\u00e9 gonfle, se soul\u00e8ve et se d\u00e9grade rapidement dans les pi\u00e8ces humides ou mal ventil\u00e9es. Le SPC, lui, est 100\u00a0% \u00e9tanche, ne craint pas l\u2019humidit\u00e9 ni les variations de temp\u00e9rature, et se pose facilement par clipsage sans colle. Autre avantage : son entretien est beaucoup plus simple (pas de cire, pas de ponc\u00e7age).',
         },
