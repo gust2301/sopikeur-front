@@ -35,9 +35,9 @@ export const routes: Routes = [
         data: {
           type: 'SPC',
           seo: {
-            title: 'Sol SPC clipsable Dakar | Prix, livraison et pose au Sénégal',
+            title: 'Sol SPC clipsable Dakar | Revêtement de sol vinyle rigide au Sénégal',
             description:
-              'Découvrez notre sol SPC clipsable: résistant à l’eau, durable et élégant. Devis rapide, livraison et pose professionnelle à Dakar et dans tout le Sénégal.',
+              'Rev\u00eatement de sol SPC (PVC rigide) : r\u00e9sistant \u00e0 l\u2019eau, stable \u00e0 la chaleur, facile \u00e0 poser. Alternative durable au parquet et au carrelage. Livraison et pose \u00e0 Dakar et partout au S\u00e9n\u00e9gal.',
           },
         },
       },
@@ -47,9 +47,9 @@ export const routes: Routes = [
         data: {
           type: 'PANEL',
           seo: {
-            title: 'Panneaux muraux acoustiques Dakar | Design & isolation sonore',
+            title: 'Panneaux muraux acoustiques décoratifs Dakar | Revêtement mural Sénégal',
             description:
-              'Améliorez l’acoustique de votre intérieur avec nos panneaux muraux décoratifs. Livraison et pose à Dakar et partout au Sénégal.',
+              'Panneaux acoustiques muraux d\u00e9coratifs : r\u00e9duisez l\u2019\u00e9cho et embellissez vos murs. Salon, bureau, boutique. Livraison et pose \u00e0 Dakar et partout au S\u00e9n\u00e9gal.',
           },
         },
       },
@@ -143,9 +143,9 @@ export const routes: Routes = [
         loadComponent: () => import('./pages/faq/faq.component').then(m => m.FaqComponent),
         data: {
           seo: {
-            title: 'FAQ | Revêtements SPC et panneaux acoustiques au Sénégal',
+            title: 'FAQ Revêtements SPC & Panneaux acoustiques | Sopi Kër Sénégal',
             description:
-              'Toutes les réponses sur les prix, la pose, la livraison et l’entretien de vos revêtements SPC et panneaux acoustiques.',
+              'SPC vs PVC, SPC vs parquet, panneau acoustique vs panneau phonique : toutes les réponses sur les prix, la pose et la livraison de vos revêtements de sol au Sénégal.',
           },
         },
       },
