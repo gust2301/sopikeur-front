@@ -176,6 +176,23 @@ export class FaqComponent {
         },
         {
           type: 'text',
+          question: 'Quelle diff\u00e9rence entre SPC, PVC vinyle et LVT ?',
+          answer:
+            'Le SPC est une \u00e9volution du sol PVC classique. Contrairement au PVC souple ou au LVT (Luxury Vinyl Tile) standard, le SPC poss\u00e8de un c\u0153ur composite pierre-plastique (calcaire + PVC) qui le rend totalement rigide, plus stable \u00e0 la chaleur et nettement plus r\u00e9sistant aux impacts. R\u00e9sum\u00e9 : SPC > LVT rigide > LVT souple > PVC standard en termes de durabilit\u00e9 et de stabilit\u00e9 thermique.',
+          bullets: [
+            'PVC souple : l\u00e9ger, peu co\u00fbteux, mais se d\u00e9forme avec la chaleur.',
+            'LVT (Luxury Vinyl Tile) : meilleur que le PVC souple, mais \u00e2me en fibre de verre.',
+            'SPC : \u00e2me pierre-plastique, 100\u00a0% \u00e9tanche, r\u00e9siste aux grandes amplitudes thermiques (id\u00e9al sous climat chaud comme au S\u00e9n\u00e9gal).',
+          ],
+        },
+        {
+          type: 'text',
+          question: 'SPC ou parquet stratifi\u00e9 : quel rev\u00eatement de sol choisir \u00e0 Dakar ?',
+          answer:
+            'Pour le climat s\u00e9n\u00e9galais (chaleur, humidit\u00e9, sable), le SPC est nettement pr\u00e9f\u00e9rable au parquet stratifi\u00e9. Le parquet stratifi\u00e9 gonfle, se soul\u00e8ve et se d\u00e9grade rapidement dans les pi\u00e8ces humides ou mal ventil\u00e9es. Le SPC, lui, est 100\u00a0% \u00e9tanche, ne craint pas l\u2019humidit\u00e9 ni les variations de temp\u00e9rature, et se pose facilement par clipsage sans colle. Autre avantage : son entretien est beaucoup plus simple (pas de cire, pas de ponc\u00e7age).',
+        },
+        {
+          type: 'text',
           question: 'Le SPC est-il adapt\u00e9 aux pi\u00e8ces humides ?',
           answer:
             'Oui, il convient tr\u00e8s bien aux cuisines, couloirs et espaces \u00e0 fort passage. Pour les salles de bain, c\u2019est possible selon le type de pose et les finitions (joints d\u2019\u00e9tanch\u00e9it\u00e9 recommand\u00e9s).',
@@ -196,15 +213,15 @@ export class FaqComponent {
           type: 'comparison',
           question: 'Pourquoi choisir un sol SPC plut\u00f4t qu\u2019un autre rev\u00eatement ?',
           comparison: {
-            columns: ['SPC vinyle', 'Carreaux', 'Parquet'],
+            columns: ['SPC vinyle', 'PVC / LVT souple', 'Carreaux', 'Parquet stratifi\u00e9'],
             rows: [
-              { critere: '\u00c9tanch\u00e9it\u00e9', values: [5, 5, 2] },
-              { critere: 'R\u00e9sistance rayures', values: [4, 5, 4] },
-              { critere: 'Confort', values: [4, 2, 5] },
-              { critere: 'Facilit\u00e9 de pose', values: [5, 2, 2] },
-              { critere: 'Stabilit\u00e9 thermique', values: [5, 2, 3] },
-              { critere: 'Prix moyen', values: ['Moyen', 'Moyen', '\u00c9lev\u00e9'] },
-              { critere: 'Durabilit\u00e9', values: [4, 5, 4] },
+              { critere: '\u00c9tanch\u00e9it\u00e9', values: [5, 4, 5, 2] },
+              { critere: 'R\u00e9sistance rayures', values: [4, 3, 5, 4] },
+              { critere: 'Confort', values: [4, 4, 2, 5] },
+              { critere: 'Facilit\u00e9 de pose', values: [5, 4, 2, 2] },
+              { critere: 'Stabilit\u00e9 thermique', values: [5, 2, 2, 3] },
+              { critere: 'Prix moyen', values: ['Moyen', 'Faible', 'Moyen', '\u00c9lev\u00e9'] },
+              { critere: 'Durabilit\u00e9', values: [4, 3, 5, 4] },
             ],
           },
         },
@@ -213,6 +230,12 @@ export class FaqComponent {
     {
       label: 'Panneaux acoustiques',
       items: [
+        {
+          type: 'text',
+          question: 'Quelle diff\u00e9rence entre un panneau acoustique mural et un panneau phonique ?',
+          answer:
+            'Ce sont deux termes souvent utilis\u00e9s pour d\u00e9signer la m\u00eame chose. Un panneau phonique ou panneau acoustique mural d\u00e9coratif agit sur la r\u00e9verb\u00e9ration sonore \u00e0 l\u2019int\u00e9rieur d\u2019une pi\u00e8ce \u2014 il absorbe les ondes sonores pour r\u00e9duire l\u2019\u00e9cho et am\u00e9liorer le confort auditif. Nos panneaux sont des rev\u00eatements muraux d\u00e9coratifs : ils combin\u00e9ent traitement acoustique et esth\u00e9tique (bois, cannell\u00e9, relief), id\u00e9aux pour salons, bureaux, boutiques et espaces de vie.',
+        },
         {
           type: 'text',
           question: 'Est-ce que \u00e7a insonorise compl\u00e8tement ?',
