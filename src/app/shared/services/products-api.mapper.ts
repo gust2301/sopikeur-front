@@ -15,7 +15,8 @@ export interface ProductDto {
   image?: string;
   mainImage?: string;
   coverUrl?: string;
-  images?: string[];
+  galleryImages?: Array<string | null | undefined>;
+  images?: Array<string | MediaAssetDto | null | undefined>;
   specs?: string[];
   price?: string | number;
   unit?: string;
@@ -28,6 +29,12 @@ export interface ProductDto {
   longDescription?: string;
   features?: string[];
   dimensions?: string;
+}
+
+interface MediaAssetDto {
+  path?: string | null;
+  url?: string | null;
+  cover?: boolean;
 }
 
 
@@ -76,7 +83,7 @@ function toCatalogProduct(dto: ProductDto, expectedType: CatalogProductType): Ca
     type,
     name,
     image,
-    images: resolveImages(dto.images, image),
+    images: resolveImages(dto, image),
     specs: Array.isArray(dto.specs) ? dto.specs : [],
     price,
     unit,
@@ -120,17 +127,33 @@ function resolveImage(dto: ProductDto, type: CatalogProductType): string {
     : assetUrl('panels/M-60240-WAVE1.png', environment.assetBaseUrl);
 }
 
-function resolveImages(images: Array<string | null | undefined> | undefined, fallbackImage: string): string[] {
-  if (!Array.isArray(images) || images.length === 0) {
+function resolveImages(dto: ProductDto, fallbackImage: string): string[] {
+  const galleryImages = Array.isArray(dto.galleryImages) && dto.galleryImages.length > 0 ? dto.galleryImages : undefined;
+  const mediaImages = Array.isArray(dto.images) && dto.images.length > 0 ? dto.images : undefined;
+  const rawImages = galleryImages ?? mediaImages;
+
+  if (!rawImages) {
     return [fallbackImage];
   }
 
-  const normalized = images
-    .map(toCleanString)
+  const normalized = rawImages
+    .map(toImagePath)
     .filter((path): path is string => Boolean(path))
     .map(path => assetUrl(path, environment.assetBaseUrl));
 
   return normalized.length > 0 ? normalized : [fallbackImage];
+}
+
+function toImagePath(value: string | MediaAssetDto | null | undefined): string | undefined {
+  if (typeof value === 'string') {
+    return toCleanString(value);
+  }
+
+  if (!value || typeof value !== 'object') {
+    return undefined;
+  }
+
+  return toCleanString(value.path) ?? toCleanString(value.url);
 }
 
 function toCleanString(value: unknown): string | undefined {
