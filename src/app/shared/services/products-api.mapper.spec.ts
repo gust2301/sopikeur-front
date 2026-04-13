@@ -73,4 +73,50 @@ describe('normalizeApiProductsResponse', () => {
     expect(result.items[0].image).toBe('https://cdn.example.com/panel.png');
     expect(result.items[0].inStock).toBeTrue();
   });
+
+  it('maps product detail galleryImages from the public API', () => {
+    const result = normalizeApiProductsResponse(
+      [
+        {
+          id: 'spc-3',
+          sku: 'SPC003',
+          type: 'SPC',
+          name: 'SPC 003',
+          mainImage: 'spc/cover.png',
+          galleryImages: ['spc/detail-1.png', 'spc/detail-2.png'],
+        },
+      ],
+      'spc',
+    );
+
+    expect(result.items[0].image).toBe('/assets/spc/cover.png');
+    expect(result.items[0].images).toEqual(['/assets/spc/detail-1.png', '/assets/spc/detail-2.png']);
+  });
+
+  it('maps media asset objects when galleryImages is not present', () => {
+    const result = normalizeApiProductsResponse(
+      [
+        {
+          id: 'panel-2',
+          sku: 'P-2',
+          type: 'PANEL',
+          name: 'Panel 2',
+          mainImage: 'panels/cover.png',
+          images: [
+            { path: 'panels/cover.png', cover: true },
+            { path: 'panels/detail-1.png', cover: false },
+            { path: 'panels/detail-2.png', cover: false },
+          ],
+        },
+      ],
+      'acoustic',
+    );
+
+    expect(result.items[0].image).toBe('/assets/panels/cover.png');
+    expect(result.items[0].images).toEqual([
+      '/assets/panels/cover.png',
+      '/assets/panels/detail-1.png',
+      '/assets/panels/detail-2.png',
+    ]);
+  });
 });
