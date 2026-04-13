@@ -193,7 +193,10 @@ export class ProductDetailComponent implements AfterViewInit {
 
   private buildCandidateImages(product: CatalogProduct): string[] {
     const sku = product.sku;
-    const candidates =
+    const backendImages = [product.image, ...(product.images ?? [])]
+      .filter(Boolean)
+      .map(image => this.toAssetUrl(image));
+    const legacyImages =
       product.type === 'spc'
         ? [
             this.toAssetUrl(`spc/${sku}_lame.png`),
@@ -205,10 +208,7 @@ export class ProductDetailComponent implements AfterViewInit {
             this.toAssetUrl(`panels/bed_${sku}.png`),
             this.toAssetUrl(`panels/wall_${sku}.png`),
           ];
-    const fallbackImages = [...(product.images ?? []), product.image]
-      .filter(Boolean)
-      .map(image => this.toAssetUrl(image));
-    return Array.from(new Set([...candidates, ...fallbackImages]));
+    return Array.from(new Set([...backendImages, ...legacyImages]));
   }
 
   private async filterExistingImages(images: string[]): Promise<string[]> {
