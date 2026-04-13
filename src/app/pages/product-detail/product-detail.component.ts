@@ -91,9 +91,6 @@ export class ProductDetailComponent implements AfterViewInit {
   }
 
   getRelatedImage(product: CatalogProduct): string {
-    if (product.type === 'spc') {
-      return this.toAssetUrl(`spc/${product.sku}_lame.png`);
-    }
     return this.toAssetUrl(product.image);
   }
 
@@ -192,23 +189,10 @@ export class ProductDetailComponent implements AfterViewInit {
   }
 
   private buildCandidateImages(product: CatalogProduct): string[] {
-    const sku = product.sku;
     const backendImages = [product.image, ...(product.images ?? [])]
       .filter(Boolean)
       .map(image => this.toAssetUrl(image));
-    const legacyImages =
-      product.type === 'spc'
-        ? [
-            this.toAssetUrl(`spc/${sku}_lame.png`),
-            this.toAssetUrl(`spc/${sku}.png`),
-            this.toAssetUrl(`spc/${sku}_home.png`),
-          ]
-        : [
-            this.toAssetUrl(`panels/${sku}.png`),
-            this.toAssetUrl(`panels/bed_${sku}.png`),
-            this.toAssetUrl(`panels/wall_${sku}.png`),
-          ];
-    return Array.from(new Set([...backendImages, ...legacyImages]));
+    return Array.from(new Set(backendImages));
   }
 
   private async filterExistingImages(images: string[]): Promise<string[]> {
