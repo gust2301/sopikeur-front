@@ -1,2 +1,26 @@
+# Canonical : www -> sopikeur.sn (sans www)
+https://www.sopikeur.sn/* https://sopikeur.sn/:splat 301
+
+# Routes sans slash final (evite les 301 trailing-slash Cloudflare Pages)
+/spc                         /index.html 200
+/panneaux                    /index.html 200
+/contact                     /index.html 200
+/faq                         /index.html 200
+/inspirations                /index.html 200
+/blog                        /index.html 200
+/devis                       /index.html 200
+/panier                      /index.html 200
+/precommande                 /index.html 200
+/notre-equipe                /index.html 200
+/nos-valeurs                 /index.html 200
+/engagement-qualite          /index.html 200
+/cgv                         /index.html 200
+/mentions-legales            /index.html 200
+/guide-installation-spc      /index.html 200
+/guide-installation-panneaux /index.html 200
+
+# Assets
 /assets/* /assets/:splat 200
+
+# SPA fallback (routes dynamiques + slash final)
 /* /index.html 200
