@@ -35,6 +35,7 @@ export class HeaderComponent implements OnDestroy {
     { label: 'SPC', path: '/spc/' },
     { label: 'Panneaux', path: '/panneaux/' },
     { label: 'Inspirations', path: '/inspirations/' },
+    { label: 'Blog', path: '/blog/' },
     { label: 'FAQ', path: '/faq/', featured: true },
     { label: 'Contact', path: '/contact/' },
   ];

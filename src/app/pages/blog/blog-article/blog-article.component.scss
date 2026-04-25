@@ -1,0 +1,130 @@
+.blog-article {
+  padding: 2.5rem 0 5rem;
+  background:
+    radial-gradient(circle at top left, rgba(177, 126, 71, 0.12), transparent 24rem),
+    linear-gradient(180deg, #fffaf4 0%, #ffffff 35%);
+}
+
+.blog-article__inner {
+  max-width: 56rem;
+  display: grid;
+  gap: 1.5rem;
+}
+
+.blog-article__breadcrumb {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  color: #7b7064;
+  font-size: 0.92rem;
+}
+
+.blog-article__breadcrumb a,
+.blog-article__back {
+  color: #8c6136;
+  text-decoration: none;
+}
+
+.blog-article__header {
+  display: grid;
+  gap: 0.65rem;
+}
+
+.blog-article__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  color: #6b6258;
+  font-size: 0.95rem;
+}
+
+.blog-article__cover {
+  width: 100%;
+  border-radius: 1.5rem;
+  object-fit: cover;
+  max-height: 28rem;
+  box-shadow: 0 24px 60px rgba(52, 37, 20, 0.14);
+}
+
+.blog-article__content {
+  display: grid;
+  gap: 1rem;
+  color: #342b23;
+  font-size: 1.05rem;
+  line-height: 1.9;
+}
+
+.blog-article__content :is(h2, h3) {
+  color: #1f1a16;
+  line-height: 1.2;
+  margin: 2rem 0 0.7rem;
+}
+
+.blog-article__content h2 {
+  font-size: 1.75rem;
+}
+
+.blog-article__content h3 {
+  font-size: 1.25rem;
+}
+
+.blog-article__content p {
+  margin: 0;
+}
+
+.blog-article__content a {
+  color: #8c6136;
+  font-weight: 700;
+}
+
+.blog-article__cta {
+  display: grid;
+  gap: 1rem;
+  align-items: center;
+  grid-template-columns: 1fr auto;
+  margin-top: 1rem;
+  padding: 1.8rem;
+  border-radius: 1.5rem;
+  background: linear-gradient(135deg, #1f1a16 0%, #5a3a1f 100%);
+  color: #fff;
+}
+
+.blog-article__cta-kicker {
+  margin: 0 0 0.35rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.blog-article__cta h2,
+.blog-article__cta p {
+  margin: 0;
+}
+
+.blog-article__cta-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.95rem 1.2rem;
+  border-radius: 999px;
+  background: #fff;
+  color: #1f1a16;
+  text-decoration: none;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.blog-article--loading {
+  min-height: 30vh;
+}
+
+@media (max-width: 768px) {
+  .blog-article {
+    padding: 2rem 0 4rem;
+  }
+
+  .blog-article__cta {
+    grid-template-columns: 1fr;
+  }
+}

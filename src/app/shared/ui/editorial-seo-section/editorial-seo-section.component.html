@@ -1,0 +1,46 @@
+<section class="editorial-seo">
+  <div class="editorial-seo__shell">
+    <div class="editorial-seo__header">
+      <app-section-title [title]="title" [subtitle]="subtitle" align="left" [compact]="true"></app-section-title>
+
+      <div class="editorial-seo__intro-panel">
+        <p class="editorial-seo__eyebrow">{{ eyebrow }}</p>
+        <p class="editorial-seo__intro">{{ intro }}</p>
+        <div class="editorial-seo__highlights" *ngIf="highlights.length > 0">
+          <span class="editorial-seo__highlight" *ngFor="let highlight of highlights">{{ highlight }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="editorial-seo__grid">
+      <article class="editorial-seo__card" *ngFor="let item of items; let index = index">
+        <div class="editorial-seo__card-head">
+          <span class="editorial-seo__index">0{{ index + 1 }}</span>
+          <p class="editorial-seo__kicker">{{ item.kicker }}</p>
+        </div>
+
+        <h3>{{ item.title }}</h3>
+        <p class="editorial-seo__summary">{{ item.summary }}</p>
+
+        <ul class="editorial-seo__points" *ngIf="item.points.length > 0">
+          <li *ngFor="let point of item.points">{{ point }}</li>
+        </ul>
+
+        <details class="editorial-seo__details" *ngIf="item.details?.length">
+          <summary>Lire la suite</summary>
+          <div class="editorial-seo__copy">
+            <p *ngFor="let paragraph of item.details">{{ paragraph }}</p>
+          </div>
+        </details>
+      </article>
+    </div>
+
+    <div class="editorial-seo__footer">
+      <div>
+        <p class="editorial-seo__footer-kicker">{{ footerKicker }}</p>
+        <p class="editorial-seo__footer-text">{{ footerText }}</p>
+      </div>
+      <a class="editorial-seo__cta" routerLink="/devis">{{ ctaLabel }}</a>
+    </div>
+  </div>
+</section>
