@@ -8,6 +8,8 @@
 
 .container {
   @include container;
+  padding-left: 80px;
+  padding-right: 80px;
 }
 
 .products-page {
@@ -315,6 +317,11 @@
 }
 
 @media (max-width: 960px) {
+  .container {
+    padding-left: 40px;
+    padding-right: 40px;
+  }
+
   .products-layout {
     grid-template-columns: 1fr;
   }
@@ -338,6 +345,11 @@
 }
 
 @media (max-width: 640px) {
+  .container {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
   .products-page {
     padding: $space-8 0 $space-10;
   }

@@ -25,6 +25,12 @@
   align-items: start;
 }
 
+.editorial-seo__header app-section-title {
+  display: block;
+  padding-left: clamp(1.25rem, 3vw, 1.7rem);
+  padding-right: clamp(1.25rem, 3vw, 1.7rem);
+}
+
 .editorial-seo__intro-panel {
   padding: clamp(1.25rem, 3vw, 1.8rem);
   border-radius: 1.5rem;
@@ -44,6 +50,10 @@
   font-size: 0.76rem;
   font-weight: 700;
   color: $color-accent;
+}
+
+.editorial-seo__eyebrow {
+  padding-left: 0.1rem;
 }
 
 .editorial-seo__intro,
@@ -222,12 +232,21 @@
   .editorial-seo__grid {
     grid-template-columns: 1fr;
   }
+
+  .editorial-seo__header app-section-title {
+    padding-left: 0;
+    padding-right: 0;
+  }
 }
 
 @media (max-width: 640px) {
   .editorial-seo {
     margin-top: 3.25rem;
     padding: 2.5rem 0 4rem;
+  }
+
+  .editorial-seo__eyebrow {
+    padding-left: 0;
   }
 
   .editorial-seo__footer {
