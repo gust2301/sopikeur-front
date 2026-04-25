@@ -1,5 +1,5 @@
-import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, computed, inject, signal } from '@angular/core';
+import { DOCUMENT, CommonModule } from '@angular/common';
 
 interface FaqComparisonRow {
   critere: string;
@@ -46,7 +46,9 @@ interface FaqCategory {
   styleUrl: './faq.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FaqComponent {
+export class FaqComponent implements OnInit, OnDestroy {
+  private readonly document = inject(DOCUMENT);
+
   readonly searchQuery = signal('');
   readonly activeCategory = signal<string | null>(null);
 
@@ -254,6 +256,18 @@ export class FaqComponent {
           answer:
             'Un d\u00e9poussi\u00e9rage r\u00e9gulier suffit. Selon la finition, un chiffon l\u00e9g\u00e8rement humide peut \u00eatre utilis\u00e9 d\u00e9licatement.',
         },
+        {
+          type: 'text',
+          question: 'Quelle est la diff\u00e9rence entre le lambris plastique et les panneaux acoustiques ?',
+          answer:
+            'Le lambris plastique (PVC) est une solution \u00e9conomique utilis\u00e9e pour habiller les murs. Il est l\u00e9ger, facile \u00e0 poser, mais reste principalement d\u00e9coratif avec un rendu souvent basique. Les panneaux acoustiques SOPIK\u00cbR offrent un rendu plus moderne et haut de gamme, avec des lames d\u00e9coratives et une feutrine noire int\u00e9gr\u00e9e qui am\u00e9liore le confort sonore en r\u00e9duisant les \u00e9chos.',
+          links: [
+            {
+              label: 'Lambris plastique vs panneaux acoustiques : quelle diff\u00e9rence au S\u00e9n\u00e9gal ?',
+              href: '/blog/lambris-plastique-vs-panneaux-acoustiques-senegal',
+            },
+          ],
+        },
       ],
     },
     {
@@ -308,5 +322,43 @@ export class FaqComponent {
 
   setCategory(label: string | null): void {
     this.activeCategory.set(label);
+  }
+
+  ngOnInit(): void {
+    this.injectFaqSchema();
+  }
+
+  ngOnDestroy(): void {
+    this.document.getElementById('faq-jsonld')?.remove();
+  }
+
+  private injectFaqSchema(): void {
+    if (this.document.getElementById('faq-jsonld')) {
+      return;
+    }
+
+    const mainEntity = this.categories
+      .flatMap(cat => cat.items)
+      .filter((item): item is FaqTextItem => item.type === 'text')
+      .map(item => ({
+        '@type': 'Question',
+        name: item.question,
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: item.bullets ? `${item.answer} ${item.bullets.join(' ')}` : item.answer,
+        },
+      }));
+
+    const schema = {
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
+      mainEntity,
+    };
+
+    const script = this.document.createElement('script') as HTMLScriptElement;
+    script.id = 'faq-jsonld';
+    script.type = 'application/ld+json';
+    script.text = JSON.stringify(schema);
+    this.document.head.appendChild(script);
   }
 }

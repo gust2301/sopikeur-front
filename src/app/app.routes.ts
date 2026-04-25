@@ -30,6 +30,20 @@ export const routes: Routes = [
         },
       },
       {
+        path: 'blog',
+        loadComponent: () => import('./pages/blog/blog-list/blog-list.component').then(m => m.BlogListComponent),
+        data: {
+          seo: {
+            title: 'Blog SOPIKËR — Conseils revêtements de sol & décoration au Sénégal',
+            description: 'Conseils, guides et inspirations sur les revêtements de sol SPC et décoration intérieure au Sénégal.',
+          },
+        },
+      },
+      {
+        path: 'blog/:slug',
+        loadComponent: () => import('./pages/blog/blog-article/blog-article.component').then(m => m.BlogArticleComponent),
+      },
+      {
         path: 'spc',
         loadComponent: () => import('./pages/products/products.component').then(m => m.ProductsComponent),
         data: {

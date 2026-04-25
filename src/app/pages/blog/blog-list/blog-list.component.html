@@ -1,0 +1,49 @@
+<section class="blog-list">
+  <div class="container blog-list__inner">
+    <div class="blog-list__hero">
+      <p class="blog-list__eyebrow">Conseils & guides</p>
+      <h1 class="section-title">Blog SOPIKËR — Conseils revêtements de sol au Sénégal</h1>
+      <p class="page-subtitle blog-list__intro">
+        Conseils pratiques, comparatifs et inspirations pour choisir un revêtement de sol adapté au climat, au budget et au style de vie au Sénégal.
+      </p>
+    </div>
+
+    @if (loading()) {
+      <div class="blog-list__grid">
+        @for (item of [1, 2, 3]; track item) {
+          <article class="blog-card blog-card--skeleton">
+            <div class="blog-card__cover shimmer"></div>
+            <div class="blog-card__body">
+              <div class="shimmer shimmer--line shimmer--line-lg"></div>
+              <div class="shimmer shimmer--line"></div>
+              <div class="shimmer shimmer--line shimmer--line-sm"></div>
+            </div>
+          </article>
+        }
+      </div>
+    } @else if (articles().length === 0) {
+      <div class="blog-list__empty">Aucun article pour le moment.</div>
+    } @else {
+      <div class="blog-list__grid">
+        @for (article of articles(); track article.id) {
+          <article class="blog-card">
+            @if (article.coverUrl) {
+              <a [routerLink]="['/blog', article.slug]" class="blog-card__image-link">
+                <img class="blog-card__cover" [src]="article.coverUrl" [alt]="article.title" />
+              </a>
+            }
+            <div class="blog-card__body">
+              <div class="blog-card__meta">
+                <span>{{ article.publishedAt | date: 'dd MMMM yyyy' }}</span>
+                <span>{{ article.readingTimeMinutes }} min de lecture</span>
+              </div>
+              <h2><a [routerLink]="['/blog', article.slug]">{{ article.title }}</a></h2>
+              <p>{{ article.excerpt }}</p>
+              <a class="blog-card__cta" [routerLink]="['/blog', article.slug]">Lire l'article</a>
+            </div>
+          </article>
+        }
+      </div>
+    }
+  </div>
+</section>

@@ -1,5 +1,5 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { NgIf } from '@angular/common';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 
 @Component({
   selector: 'app-section-title',
@@ -13,4 +13,5 @@ export class SectionTitleComponent {
   @Input() title = '';
   @Input() subtitle?: string;
   @Input() align: 'left' | 'center' = 'center';
+  @Input() compact = false;
 }

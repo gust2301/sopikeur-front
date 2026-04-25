@@ -6,7 +6,13 @@
   gap: $space-3;
   margin-bottom: $space-8;
 
-  &--left { text-align: left; }
+  &--left {
+    text-align: left;
+  }
+
+  &--compact {
+    margin-bottom: $space-6;
+  }
 }
 
 .section-title__eyebrow {
@@ -21,6 +27,10 @@ h2 {
   font-size: clamp(2rem, 2.8vw, 2.75rem);
   line-height: 1.1;
   color: $color-hero;
+}
+
+.section-title--compact h2 {
+  font-size: clamp(1.3rem, 1.45vw, 1.6rem);
 }
 
 .section-title__subtitle {

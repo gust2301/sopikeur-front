@@ -1,0 +1,44 @@
+@if (loading()) {
+  <section class="blog-article blog-article--loading">
+    <div class="container"><p>Chargement de l'article...</p></div>
+  </section>
+} @else {
+  @if (article(); as currentArticle) {
+    <section class="blog-article">
+      <div class="container blog-article__inner">
+        <nav class="blog-article__breadcrumb" aria-label="Fil d'Ariane">
+          <a routerLink="/">Accueil</a>
+          <span>›</span>
+          <a routerLink="/blog">Blog</a>
+          <span>›</span>
+          <span>{{ currentArticle.title }}</span>
+        </nav>
+
+        <a class="blog-article__back" routerLink="/blog">← Retour au blog</a>
+
+        <header class="blog-article__header">
+          <h1 class="section-title">{{ currentArticle.title }}</h1>
+          <div class="blog-article__meta">
+            <span>{{ currentArticle.publishedAt | date: 'dd MMMM yyyy' }}</span>
+            <span>{{ currentArticle.readingTimeMinutes }} min de lecture</span>
+          </div>
+        </header>
+
+        @if (currentArticle.coverUrl) {
+          <img class="blog-article__cover" [src]="currentArticle.coverUrl" [alt]="currentArticle.title" />
+        }
+
+        <article class="blog-article__content" [innerHTML]="currentArticle.content"></article>
+
+        <div class="blog-article__cta">
+          <div>
+            <p class="blog-article__cta-kicker">Projet intérieur</p>
+            <h2>Vous souhaitez transformer votre intérieur ?</h2>
+            <p>Recevez un conseil personnalisé et une estimation adaptée à votre projet à Dakar ou partout au Sénégal.</p>
+          </div>
+          <a routerLink="/devis" class="blog-article__cta-button">Demander un devis</a>
+        </div>
+      </div>
+    </section>
+  }
+}

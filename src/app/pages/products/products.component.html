@@ -46,7 +46,7 @@
                 <span
                   class="stock-badge"
                   [class.stock-badge--preorder]="isPreorder(product)"
-                                  >
+                >
                   {{ getStockLabel(product) }}
                 </span>
                 <img [src]="product.image | assetUrl" [alt]="product.name" loading="lazy" />
@@ -63,7 +63,12 @@
                 <div class="product-footer">
                   <div class="product-price">{{ product.price }} {{ product.unit }}</div>
                   <div class="product-actions">
-                    <button class="btn btn-primary" type="button" (click)="handlePrimaryAction(product)" [disabled]="!isPreorder(product) && isInCart(product.id)">
+                    <button
+                      class="btn btn-primary"
+                      type="button"
+                      (click)="handlePrimaryAction(product)"
+                      [disabled]="!isPreorder(product) && isInCart(product.id)"
+                    >
                       {{ isPreorder(product) ? 'Précommander' : (isInCart(product.id) ? 'Ajouté au panier' : 'Ajouter au panier') }}
                     </button>
                   </div>
@@ -71,7 +76,6 @@
               </div>
             </article>
           </div>
-
 
           <p class="error" *ngIf="vm.error">{{ vm.error }}</p>
           <div class="empty-state" *ngIf="!vm.loading && vm.products.length === 0">
@@ -102,6 +106,18 @@
           </div>
         </section>
       </div>
+
+      <app-editorial-seo-section
+        [eyebrow]="getSeoContent(vm.type).eyebrow"
+        [title]="getSeoContent(vm.type).title"
+        [subtitle]="getSeoContent(vm.type).subtitle"
+        [intro]="getSeoContent(vm.type).intro"
+        [highlights]="getSeoContent(vm.type).highlights"
+        [items]="getSeoContent(vm.type).items"
+        [footerKicker]="getSeoContent(vm.type).footerKicker"
+        [footerText]="getSeoContent(vm.type).footerText"
+        [ctaLabel]="getSeoContent(vm.type).ctaLabel"
+      ></app-editorial-seo-section>
     </ng-container>
   </div>
 </section>
