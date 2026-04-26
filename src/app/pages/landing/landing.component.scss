@@ -99,6 +99,10 @@
   margin: 0;
 }
 
+.hero h1.eyebrow {
+  font-size: 1.3rem;
+}
+
 .subtitle {
   font-size: 1.2rem;
   color: rgba(#fff, 0.9);
@@ -638,7 +642,7 @@
     backdrop-filter: blur(4px);
   }
 
-  .hero h1 {
+  .hero h1:not(.eyebrow) {
     font-size: 2rem;
   }
 
@@ -670,4 +674,3 @@
   display: inline-flex;
 }
 
-                                                             
