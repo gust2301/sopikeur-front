@@ -9,6 +9,11 @@ export interface CatalogProduct {
   images?: string[];
   specs: string[];
   price: string;
+  effectivePrice: string;
+  originalPrice: string;
+  promotionActive?: boolean;
+  promoLabel?: string;
+  discountPercent?: number;
   unit: string;
   inStock?: boolean;
   shortDescription: string;

@@ -38,10 +38,16 @@
     <div class="detail-info">
       <p class="section-title">{{ productDetails().headline }}</p>
       <h1>{{ product.name }}</h1>
+      <span class="promo-badge" *ngIf="product.promotionActive">
+        {{ product.discountPercent ? ('-' + product.discountPercent + '%') : (product.promoLabel || 'PROMO') }}
+      </span>
       <span class="stock-pill" [class.stock-pill--preorder]="!product.inStock">
         {{ product.inStock ? 'En stock' : 'PRÉCOMMANDE' }}
       </span>
-      <p class="price">{{ product.price }} {{ product.unit }}</p>
+      <div class="price-block">
+        <p class="price-original" *ngIf="product.promotionActive">{{ product.originalPrice }} {{ product.unit }}</p>
+        <p class="price">{{ product.price }} {{ product.unit }}</p>
+      </div>
       <p class="description description--short" *ngIf="productDetails().shortDescription">{{ productDetails().shortDescription }}</p>
 
       <ng-container *ngIf="descriptionContent() as desc">
@@ -98,7 +104,10 @@
         <img [src]="getRelatedImage(item) | assetUrl" [alt]="item.name" loading="lazy" decoding="async" />
         <div class="related-info">
           <span class="name">{{ item.name }}</span>
-          <span class="price">{{ item.price }} {{ item.unit }}</span>
+          <span class="price-block price-block--compact">
+            <span class="price-original" *ngIf="item.promotionActive">{{ item.originalPrice }} {{ item.unit }}</span>
+            <span class="price">{{ item.price }} {{ item.unit }}</span>
+          </span>
         </div>
       </button>
     </div>

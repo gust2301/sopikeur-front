@@ -115,9 +115,43 @@
   gap: $space-4;
 }
 
+.promo-badge {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  padding: 0.35rem 0.8rem;
+  border-radius: 999px;
+  background: rgba($color-accent, 0.12);
+  color: $color-accent;
+  font-weight: 700;
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+}
+
 .price {
   font-weight: 700;
   color: $color-accent;
+  margin: 0;
+  font-size: 1.6rem;
+}
+
+.price-block {
+  display: grid;
+  gap: 0.3rem;
+}
+
+.price-block--compact {
+  justify-items: end;
+  text-align: right;
+}
+
+.price-original {
+  margin: 0;
+  color: $color-muted;
+  text-decoration: line-through;
+  text-decoration-thickness: 1.5px;
+  font-size: 0.95rem;
 }
 
 .stock-pill {
@@ -285,4 +319,5 @@
 .related-info .price {
   color: $color-muted;
   font-weight: 600;
+  font-size: 1rem;
 }

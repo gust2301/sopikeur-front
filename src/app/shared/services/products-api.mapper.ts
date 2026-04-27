@@ -19,6 +19,13 @@ export interface ProductDto {
   images?: Array<string | MediaAssetDto | null | undefined>;
   specs?: string[];
   price?: string | number;
+  effectivePrice?: string | number;
+  originalPrice?: string | number;
+  promotionActive?: boolean;
+  promoActive?: boolean;
+  promoPrice?: string | number;
+  promoLabel?: string;
+  discountPercent?: number;
   unit?: string;
   inStock?: boolean;
   stockStatus?: ProductStockStatus;
@@ -74,8 +81,12 @@ function toCatalogProduct(dto: ProductDto, expectedType: CatalogProductType): Ca
   const descriptionLong = String(dto.descriptionLong ?? dto.longDescription ?? dto.description ?? shortDescription).trim();
   const image = resolveImage(dto, type);
   const price = dto.price === undefined || dto.price === null ? '—' : String(dto.price);
+  const effectivePrice = dto.effectivePrice === undefined || dto.effectivePrice === null
+    ? price
+    : String(dto.effectivePrice);
   const unit = String(dto.unit ?? (type === 'spc' ? 'FCFA / m²' : 'FCFA / pièce'));
   const inStock = resolveInStock(dto);
+  const promotionActive = dto.promotionActive === true;
 
   return {
     id,
@@ -85,7 +96,12 @@ function toCatalogProduct(dto: ProductDto, expectedType: CatalogProductType): Ca
     image,
     images: resolveImages(dto, image),
     specs: Array.isArray(dto.specs) ? dto.specs : [],
-    price,
+    price: effectivePrice,
+    effectivePrice,
+    originalPrice: price,
+    promotionActive,
+    promoLabel: typeof dto.promoLabel === 'string' ? dto.promoLabel.trim() || undefined : undefined,
+    discountPercent: typeof dto.discountPercent === 'number' ? dto.discountPercent : undefined,
     unit,
     inStock,
     shortDescription,
