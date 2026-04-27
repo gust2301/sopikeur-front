@@ -49,6 +49,9 @@
                 >
                   {{ getStockLabel(product) }}
                 </span>
+                <span class="promo-badge" *ngIf="product.promotionActive">
+                  {{ product.discountPercent ? ('-' + product.discountPercent + '%') : (product.promoLabel || 'PROMO') }}
+                </span>
                 <img [src]="product.image | assetUrl" [alt]="product.name" loading="lazy" />
               </a>
               <div class="product-info">
@@ -61,7 +64,10 @@
                   </div>
                 </div>
                 <div class="product-footer">
-                  <div class="product-price">{{ product.price }} {{ product.unit }}</div>
+                  <div class="product-price-block">
+                    <div class="product-price-original" *ngIf="product.promotionActive">{{ product.originalPrice }} {{ product.unit }}</div>
+                    <div class="product-price">{{ product.price }} {{ product.unit }}</div>
+                  </div>
                   <div class="product-actions">
                     <button
                       class="btn btn-primary"

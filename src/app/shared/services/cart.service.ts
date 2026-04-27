@@ -48,8 +48,8 @@ export class CartService {
         type: product.type === 'spc' ? 'SPC' : 'PANNEAU',
         quantity: normalizedQty,
         unit: product.type === 'spc' ? 'M2' : 'PIECE',
-        unitPriceLabel: `${product.price} ${product.unit}`,
-        unitPriceFcfa: this.parsePriceToFcfa(product.price),
+        unitPriceLabel: `${product.effectivePrice} ${product.unit}`,
+        unitPriceFcfa: this.parsePriceToFcfa(product.effectivePrice),
         inStock: true,
     };
 

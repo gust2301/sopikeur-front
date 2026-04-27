@@ -119,4 +119,29 @@ describe('normalizeApiProductsResponse', () => {
       '/assets/panels/detail-2.png',
     ]);
   });
+
+  it('maps promotion pricing fields without overwriting the original price reference', () => {
+    const result = normalizeApiProductsResponse(
+      [
+        {
+          id: 'promo-1',
+          sku: 'SPC-PROMO',
+          type: 'SPC',
+          name: 'SPC Promo',
+          price: 34900,
+          effectivePrice: 29900,
+          promotionActive: true,
+          promoLabel: 'Promo',
+          discountPercent: 14,
+        },
+      ],
+      'spc',
+    );
+
+    expect(result.items[0].price).toBe('29900');
+    expect(result.items[0].effectivePrice).toBe('29900');
+    expect(result.items[0].originalPrice).toBe('34900');
+    expect(result.items[0].promotionActive).toBeTrue();
+    expect(result.items[0].discountPercent).toBe(14);
+  });
 });
