@@ -10,6 +10,15 @@
 /node_modules
 npm-debug.log
 yarn-error.log
+*.log
+
+# Environment & Secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.crt
 
 # IDEs and editors
 .idea/
