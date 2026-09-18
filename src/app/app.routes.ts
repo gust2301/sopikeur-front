@@ -226,6 +226,18 @@ export const routes: Routes = [
           },
         },
       },
+      {
+        path: 'confidentialite',
+        loadComponent: () =>
+          import('./pages/privacy-policy/privacy-policy.component').then(m => m.PrivacyPolicyComponent),
+        data: {
+          seo: {
+            title: 'Politique de confidentialité | Sopi Kër',
+            description:
+              'Quelles données Sopi Kër collecte via le site et le service de devis WhatsApp, pourquoi, combien de temps, et comment exercer vos droits.',
+          },
+        },
+      },
     ],
   },
   { path: '**', redirectTo: '' },
