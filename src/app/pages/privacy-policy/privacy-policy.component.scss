@@ -1,0 +1,33 @@
+.privacy-page {
+  padding: clamp(3rem, 6vw, 5rem) 0;
+
+  &__container {
+    display: grid;
+    gap: 1rem;
+  }
+
+  h1 {
+    font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+  }
+
+  h2 {
+    margin-top: 1.5rem;
+  }
+
+  p,
+  li {
+    line-height: 1.7;
+    max-width: 80ch;
+  }
+
+  ul {
+    padding-left: 1.25rem;
+    display: grid;
+    gap: 0.4rem;
+  }
+
+  &__updated {
+    font-style: italic;
+    opacity: 0.75;
+  }
+}
