@@ -85,6 +85,7 @@
 
 .footer__legal {
   display: flex;
+  flex-wrap: wrap;
   gap: $space-4;
 
   a {
