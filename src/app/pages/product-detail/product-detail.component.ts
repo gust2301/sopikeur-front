@@ -6,6 +6,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CatalogProduct, CatalogProductType } from '../../shared/models/catalog-product.model';
 import { CartService } from '../../shared/services/cart.service';
 import { ProductsApi } from '../../shared/services/products-api.service';
+import { PageSeoService } from '../../shared/services/page-seo.service';
 import { environment } from '../../../environments/environment';
 import { assetUrl } from '../../shared/utils/asset-url';
 import { buildProductDetails, parseDescriptionContent } from './product-details.util';
@@ -50,6 +51,7 @@ export class ProductDetailComponent implements AfterViewInit {
     private readonly zone: NgZone,
     private readonly cartService: CartService,
     private readonly productsApi: ProductsApi,
+    private readonly seo: PageSeoService,
   ) {
     this.route.paramMap.pipe(takeUntilDestroyed()).subscribe(params => {
       const productId = params.get('id');
@@ -69,6 +71,7 @@ export class ProductDetailComponent implements AfterViewInit {
           }
 
           this.productSignal.set(foundProduct);
+          this.applySeo(foundProduct);
           void this.updateGallery(foundProduct);
           this.loadRelatedProducts(type, foundProduct.id);
           this.scrollToHero();
@@ -159,6 +162,37 @@ export class ProductDetailComponent implements AfterViewInit {
     }
 
     void this.router.navigate(['/precommande'], { queryParams: { productId: product.id, productType: product.type } });
+  }
+
+  private applySeo(product: CatalogProduct): void {
+    const category = product.type === 'spc' ? 'Sol SPC' : 'Panneau acoustique';
+    const description = `${category} ${product.name} : ${product.shortDescription} Livraison et pose à Dakar, Saly et au Sénégal. Devis Sopiker.`;
+    const url = `https://sopikeur.sn/product/${product.type}/${encodeURIComponent(product.id)}/`;
+    this.seo.setPage(`${category} ${product.name} au Sénégal | Sopiker`, description, this.toAssetUrl(product.image));
+    const price = Number(product.effectivePrice);
+    this.seo.setStructuredData({
+      '@context': 'https://schema.org',
+      '@type': 'Product',
+      '@id': `${url}#product`,
+      name: `${category} ${product.name}`,
+      description: product.shortDescription || description,
+      image: this.buildCandidateImages(product),
+      sku: product.sku,
+      url,
+      ...(Number.isFinite(price) && price > 0 ? {
+        offers: {
+          '@type': 'Offer',
+          url,
+          price,
+          priceCurrency: 'XOF',
+          ...(product.inStock !== undefined ? {
+            availability: product.inStock ? 'https://schema.org/InStock' : 'https://schema.org/PreOrder',
+          } : {}),
+          seller: { '@id': 'https://sopikeur.sn/#organization' },
+          itemCondition: 'https://schema.org/NewCondition',
+        },
+      } : {}),
+    });
   }
 
   private loadRelatedProducts(type: CatalogProductType, currentId: string): void {

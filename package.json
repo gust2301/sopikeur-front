@@ -8,7 +8,11 @@
     "build:staging": "ng build --configuration staging",
     "build:ssr": "ng build && ng run frontend:server",
     "serve:ssr": "node dist/frontend/server/server.mjs",
-    "lint": "ng lint"
+    "lint": "ng lint",
+    "prebuild": "node scripts/generate-seo-routes.mjs",
+    "seo:generate": "node scripts/generate-seo-routes.mjs",
+    "seo:verify": "node scripts/verify-seo-build.mjs",
+    "postbuild": "npm run seo:verify"
   },
   "private": true,
   "dependencies": {

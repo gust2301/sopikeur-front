@@ -28,7 +28,7 @@
         @for (article of articles(); track article.id) {
           <article class="blog-card">
             @if (article.coverUrl) {
-              <a [routerLink]="['/blog', article.slug]" class="blog-card__image-link">
+              <a [routerLink]="['/blog', article.slug, '']" class="blog-card__image-link">
                 <img class="blog-card__cover" [src]="article.coverUrl" [alt]="article.title" />
               </a>
             }
@@ -37,9 +37,9 @@
                 <span>{{ article.publishedAt | date: 'dd MMMM yyyy' }}</span>
                 <span>{{ article.readingTimeMinutes }} min de lecture</span>
               </div>
-              <h2><a [routerLink]="['/blog', article.slug]">{{ article.title }}</a></h2>
+              <h2><a [routerLink]="['/blog', article.slug, '']">{{ article.title }}</a></h2>
               <p>{{ article.excerpt }}</p>
-              <a class="blog-card__cta" [routerLink]="['/blog', article.slug]">Lire l'article</a>
+              <a class="blog-card__cta" [routerLink]="['/blog', article.slug, '']">Lire l'article</a>
             </div>
           </article>
         }

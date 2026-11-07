@@ -1,4 +1,7 @@
 User-agent: *
 Allow: /
 
+# Cloudflare email-protection endpoints are not content pages.
+Disallow: /cdn-cgi/
+
 Sitemap: https://sopikeur.sn/sitemap.xml

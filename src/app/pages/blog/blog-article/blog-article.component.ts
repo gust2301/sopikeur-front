@@ -2,6 +2,7 @@ import { DOCUMENT, CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, OnInit, Renderer2, inject, signal } from '@angular/core';
 import { Meta, Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { PageSeoService } from '../../../shared/services/page-seo.service';
 import { Article } from '../../../shared/models/article.model';
 import { ArticlesPublicApiService } from '../../../shared/services/articles-public-api.service';
 
@@ -20,6 +21,7 @@ export class BlogArticleComponent implements OnInit {
   private readonly meta = inject(Meta);
   private readonly renderer = inject(Renderer2);
   private readonly document = inject(DOCUMENT);
+  private readonly seo = inject(PageSeoService);
   private readonly articlesApi = inject(ArticlesPublicApiService);
 
   readonly article = signal<Article | null>(null);
@@ -48,8 +50,20 @@ export class BlogArticleComponent implements OnInit {
   private applySeo(article: Article): void {
     const seoTitle = article.metaTitle || `${article.title} | SOPIKËR`;
     const seoDescription = article.metaDescription || article.excerpt;
-    const canonicalUrl = `https://sopikeur.sn/blog/${article.slug}`;
+    const canonicalUrl = `https://sopikeur.sn/blog/${encodeURIComponent(article.slug)}/`;
 
+    this.seo.setPage(seoTitle, seoDescription, article.coverUrl || undefined);
+    this.seo.setStructuredData({
+      '@context': 'https://schema.org',
+      '@type': 'BlogPosting',
+      headline: article.title,
+      description: seoDescription,
+      mainEntityOfPage: canonicalUrl,
+      datePublished: article.publishedAt,
+      inLanguage: 'fr-SN',
+      ...(article.coverUrl ? { image: article.coverUrl } : {}),
+      publisher: { '@id': 'https://sopikeur.sn/#organization' },
+    });
     this.title.setTitle(seoTitle);
     this.meta.updateTag({ name: 'description', content: seoDescription });
     this.meta.updateTag({ property: 'og:title', content: seoTitle });

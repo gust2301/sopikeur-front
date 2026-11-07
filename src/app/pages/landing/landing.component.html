@@ -9,10 +9,11 @@
   <div class="container hero-content">
     <div class="hero-copy">
       <p class="eyebrow">REVÊTEMENTS & DESIGN INTÉRIEUR — SÉNÉGAL.</p>
-      <p class="subtitle">Sols SPC + panneaux muraux design. Simple, propre, durable.</p>
+      <h1>Sols SPC et panneaux acoustiques au Sénégal</h1>
+      <p class="subtitle">Sopiker (Sopi Kër) vous accompagne à Dakar et à Saly : choix des revêtements, livraison et pose.</p>
       <div class="hero-ctas">
         <a routerLink="/spc/" class="btn btn-primary">Nos sols SPC</a>
-        <a routerLink="/panneaux/" class="btn btn-primary">Nos panneaux accoustiques</a>
+        <a routerLink="/panneaux/" class="btn btn-primary">Nos panneaux acoustiques</a>
       </div>
     </div>
   </div>
@@ -28,7 +29,7 @@
         <div class="kpi-item">
           <div class="kpi-value">Beau &amp; calme</div>
           <div class="kpi-label">Panneaux acoustiques</div>
-          <p class="kpi-desc">Décore, améliore l’écho, et structure ton mur (TV, déco, rangements légers.</p>
+          <p class="kpi-desc">Décore vos murs et réduit la réverbération dans votre intérieur.</p>
         </div>
 
         <div class="kpi-item">
@@ -91,10 +92,9 @@
       </button>
       <div class="catalog-track" #colorsTrack>
         <div class="catalog-card" *ngFor="let color of colors">
-          <button
+          <a
             class="catalog-media"
-            type="button"
-          (click)="viewProduct(color)"
+            [routerLink]="['/product', color.type, color.id, '']"
           [attr.aria-label]="'Voir le détail de ' + color.name"
         >
             <span class="stock-badge" *ngIf="color.inStock; else preorderBadge">En stock</span>
@@ -102,7 +102,7 @@
               <span class="stock-badge stock-badge--preorder">PRÉCOMMANDE</span>
             </ng-template>
             <img [src]="color.image | assetUrl" [alt]="color.name" loading="lazy" class="catalog-image" />
-          </button>
+          </a>
           <div class="catalog-info">
             <div class="catalog-name">{{ color.name }}</div>
             <div class="catalog-specs">
@@ -134,10 +134,9 @@
       </button>
       <div class="catalog-track" #panelsTrack>
         <article class="catalog-card" *ngFor="let panel of acousticPanels">
-          <button
+          <a
             class="catalog-media"
-            type="button"
-          (click)="viewProduct(panel)"
+            [routerLink]="['/product', panel.type, panel.id, '']"
           [attr.aria-label]="'Voir le détail de ' + panel.name"
         >
             <span class="stock-badge" *ngIf="panel.inStock; else panelPreorderBadge">En stock</span>
@@ -145,7 +144,7 @@
               <span class="stock-badge stock-badge--preorder">PRÉCOMMANDE</span>
             </ng-template>
             <img [src]="panel.image | assetUrl" [alt]="panel.name" loading="lazy" class="catalog-image catalog-image--contain" />
-          </button>
+          </a>
           <div class="catalog-info">
             <div class="catalog-name">{{ panel.name }}</div>
             <div class="catalog-specs">

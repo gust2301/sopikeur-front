@@ -282,6 +282,8 @@
 }
 
 .related-card {
+  color: inherit;
+  text-decoration: none;
   background: #fff;
   border: 1px solid rgba($color-ink, 0.06);
   border-radius: $radius-lg;

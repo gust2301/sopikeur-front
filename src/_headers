@@ -14,3 +14,11 @@
   Cache-Control: public, max-age=3600, must-revalidate
 /assets/og/og-image.jpg
   Cache-Control: public, max-age=86400, must-revalidate
+
+# Keep transactional and private tracking pages out of search, including SPA fallback.
+/panier*
+  X-Robots-Tag: noindex, follow
+/precommande*
+  X-Robots-Tag: noindex, follow
+/suivi/*
+  X-Robots-Tag: noindex, follow

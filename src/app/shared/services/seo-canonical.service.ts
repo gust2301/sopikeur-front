@@ -3,11 +3,13 @@ import { Injectable, PLATFORM_ID, inject } from '@angular/core';
 import { Meta, Title } from '@angular/platform-browser';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { filter } from 'rxjs';
+import { PageSeoService } from './page-seo.service';
 import { environment } from '../../../environments/environment';
 
 interface RouteSeoData {
   title?: string;
   description?: string;
+  robots?: string;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -19,7 +21,10 @@ export class SeoCanonicalService {
   private readonly titleService = inject(Title);
   private readonly metaService = inject(Meta);
 
+  private readonly pageSeo = inject(PageSeoService);
+
   private initialized = false;
+  private previousPath = "";
 
   init(): void {
     if (this.initialized) {
@@ -39,6 +44,13 @@ export class SeoCanonicalService {
   }
 
   private handleRouteUpdate(urlAfterRedirects: string): void {
+    const path = this.parseUrl(urlAfterRedirects).path;
+    if (path !== this.previousPath) {
+      this.pageSeo.clearStructuredData();
+      this.metaService.updateTag({ property: 'og:image', content: 'https://assets.sopikeur.sn/og/og-image.jpg' });
+      this.metaService.updateTag({ name: 'twitter:image', content: 'https://assets.sopikeur.sn/og/og-image.jpg' });
+      this.previousPath = path;
+    }
     const parsedUrl = this.parseUrl(urlAfterRedirects);
     const normalizedPath = this.withTrailingSlash(parsedUrl.path);
     const canonicalBase = this.resolveCanonicalBaseUrl();
@@ -51,7 +63,8 @@ export class SeoCanonicalService {
       this.updateOpenGraphUrl(canonicalHref);
     }
 
-    this.updateMetaRobots('index, follow');
+    const seo = this.getDeepestRoute(this.activatedRoute).snapshot.data?.['seo'] as RouteSeoData | undefined;
+    this.updateMetaRobots(seo?.robots ?? 'index, follow');
     this.applyRouteSeoData();
   }
 

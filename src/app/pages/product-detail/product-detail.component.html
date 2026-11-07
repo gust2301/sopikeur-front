@@ -94,11 +94,10 @@
       <h2>{{ product.type === 'spc' ? 'Autres teintes SPC' : 'Autres panneaux acoustiques' }}</h2>
     </div>
     <div class="related-grid">
-      <button
-        type="button"
+      <a
         class="related-card"
         *ngFor="let item of relatedProducts"
-        (click)="navigateTo(item)"
+        [routerLink]="['/product', item.type, item.id, '']"
         [attr.aria-label]="'Voir ' + item.name"
       >
         <img [src]="getRelatedImage(item) | assetUrl" [alt]="item.name" loading="lazy" decoding="async" />
@@ -109,7 +108,7 @@
             <span class="price">{{ item.price }} {{ item.unit }}</span>
           </span>
         </div>
-      </button>
+      </a>
     </div>
   </div>
 </section>

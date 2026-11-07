@@ -11,7 +11,7 @@ export const routes: Routes = [
         loadComponent: () => import('./pages/landing/landing.component').then(m => m.LandingComponent),
         data: {
           seo: {
-            title: 'Revêtement de sol SPC au Sénégal | Sopi Kër Dakar',
+            title: 'Sopiker | Sol SPC et panneaux acoustiques au Sénégal',
             description:
               'Sopi Kër vous propose des revêtements de sol SPC et panneaux muraux acoustiques au Sénégal. Commande en ligne, livraison et pose à Dakar et partout au pays.',
           },
@@ -89,6 +89,7 @@ export const routes: Routes = [
         data: {
           seo: {
             title: 'Panier | Sopi Kër Sénégal',
+            robots: 'noindex, follow',
             description: 'Validez votre commande de produits en stock avec options de livraison et pose.',
           },
         },
@@ -100,6 +101,7 @@ export const routes: Routes = [
         data: {
           seo: {
             title: 'Suivi de commande | Sopi Kër Sénégal',
+            robots: 'noindex, follow',
             description: 'Suivez l’avancement de votre commande Sopi Kër : préparation, livraison, pose et paiement.',
           },
         },
@@ -110,6 +112,7 @@ export const routes: Routes = [
         data: {
           seo: {
             title: 'Précommande | Sopi Kër Sénégal',
+            robots: 'noindex, follow',
             description: 'Réservez vos produits hors-stock et recevez la confirmation des délais et modalités.',
           },
         },
