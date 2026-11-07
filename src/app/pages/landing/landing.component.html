@@ -94,7 +94,7 @@
         <div class="catalog-card" *ngFor="let color of colors">
           <a
             class="catalog-media"
-            [routerLink]="['/product', color.type, color.id, '']"
+            [routerLink]="['/product', color.type, color.id]"
           [attr.aria-label]="'Voir le détail de ' + color.name"
         >
             <span class="stock-badge" *ngIf="color.inStock; else preorderBadge">En stock</span>
@@ -136,7 +136,7 @@
         <article class="catalog-card" *ngFor="let panel of acousticPanels">
           <a
             class="catalog-media"
-            [routerLink]="['/product', panel.type, panel.id, '']"
+            [routerLink]="['/product', panel.type, panel.id]"
           [attr.aria-label]="'Voir le détail de ' + panel.name"
         >
             <span class="stock-badge" *ngIf="panel.inStock; else panelPreorderBadge">En stock</span>

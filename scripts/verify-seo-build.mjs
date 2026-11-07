@@ -12,6 +12,7 @@ for (const url of urls) {
   assert.equal(canonical, url.href, `Canonical mismatch: ${url.pathname}`);
   assert.equal((html.match(/<h1\b/g) || []).length, 1, `Expected one H1: ${url.pathname}`);
   assert(!/<meta\b(?=[^>]*name="robots")(?=[^>]*content="[^"]*noindex)/.test(html), `Indexable route has noindex: ${url.pathname}`);
+  assert(!/href="\/product\/[^"]+\/"/.test(html), `Product router link has an empty final segment: ${url.pathname}`);
   const title = html.match(/<title>([^<]+)<\/title>/)?.[1];
   assert(title, `Missing title: ${url.pathname}`);
   assert(!titles.has(title), `Duplicate title: ${url.pathname}`);

@@ -97,7 +97,7 @@
       <a
         class="related-card"
         *ngFor="let item of relatedProducts"
-        [routerLink]="['/product', item.type, item.id, '']"
+        [routerLink]="['/product', item.type, item.id]"
         [attr.aria-label]="'Voir ' + item.name"
       >
         <img [src]="getRelatedImage(item) | assetUrl" [alt]="item.name" loading="lazy" decoding="async" />
